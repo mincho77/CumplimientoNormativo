@@ -1,0 +1,81 @@
+case_id,detected_at,entidad,fuente_url,document_url,publication_date,status,priority,aplica_sura,link_status,link_error,notes
+case_0000,2026-05-26 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_000.pdf,2026-05-26,detectado,alta,si,ok,,Caso de prueba 0
+case_0001,2026-05-25 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_001.pdf,2026-05-25,en_validacion,media,no,timeout,Error de conexión,Caso de prueba 1
+case_0002,2026-05-24 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_002.pdf,2026-05-24,validado,baja,parcial,http_404,Error de conexión,Caso de prueba 2
+case_0003,2026-05-23 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_003.pdf,2026-05-23,consolidado,alta,si,ok,,Caso de prueba 3
+case_0004,2026-05-22 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_004.pdf,2026-05-22,detectado,media,no,timeout,Error de conexión,Caso de prueba 4
+case_0005,2026-05-21 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_005.pdf,2026-05-21,en_validacion,baja,parcial,http_404,Error de conexión,Caso de prueba 5
+case_0006,2026-05-20 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_006.pdf,2026-05-20,validado,alta,si,ok,,Caso de prueba 6
+case_0007,2026-05-19 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_007.pdf,2026-05-19,consolidado,media,no,timeout,Error de conexión,Caso de prueba 7
+case_0008,2026-05-18 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_008.pdf,2026-05-18,detectado,baja,parcial,http_404,Error de conexión,Caso de prueba 8
+case_0009,2026-05-17 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_009.pdf,2026-05-17,en_validacion,alta,si,ok,,Caso de prueba 9
+case_0010,2026-05-16 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_010.pdf,2026-05-16,validado,media,no,timeout,Error de conexión,Caso de prueba 10
+case_0011,2026-05-15 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_011.pdf,2026-05-15,consolidado,baja,parcial,http_404,Error de conexión,Caso de prueba 11
+case_0012,2026-05-14 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_012.pdf,2026-05-14,detectado,alta,si,ok,,Caso de prueba 12
+case_0013,2026-05-13 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_013.pdf,2026-05-13,en_validacion,media,no,timeout,Error de conexión,Caso de prueba 13
+case_0014,2026-05-12 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_014.pdf,2026-05-12,validado,baja,parcial,http_404,Error de conexión,Caso de prueba 14
+case_0015,2026-05-11 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_015.pdf,2026-05-11,consolidado,alta,si,ok,,Caso de prueba 15
+case_0016,2026-05-10 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_016.pdf,2026-05-10,detectado,media,no,timeout,Error de conexión,Caso de prueba 16
+case_0017,2026-05-09 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_017.pdf,2026-05-09,en_validacion,baja,parcial,http_404,Error de conexión,Caso de prueba 17
+case_0018,2026-05-08 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_018.pdf,2026-05-08,validado,alta,si,ok,,Caso de prueba 18
+case_0019,2026-05-07 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_019.pdf,2026-05-07,consolidado,media,no,timeout,Error de conexión,Caso de prueba 19
+case_0020,2026-05-06 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_020.pdf,2026-05-06,detectado,baja,parcial,http_404,Error de conexión,Caso de prueba 20
+case_0021,2026-05-05 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_021.pdf,2026-05-05,en_validacion,alta,si,ok,,Caso de prueba 21
+case_0022,2026-05-04 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_022.pdf,2026-05-04,validado,media,no,timeout,Error de conexión,Caso de prueba 22
+case_0023,2026-05-03 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_023.pdf,2026-05-03,consolidado,baja,parcial,http_404,Error de conexión,Caso de prueba 23
+case_0024,2026-05-02 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_024.pdf,2026-05-02,detectado,alta,si,ok,,Caso de prueba 24
+case_0025,2026-05-01 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_025.pdf,2026-05-01,en_validacion,media,no,timeout,Error de conexión,Caso de prueba 25
+case_0026,2026-04-30 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_026.pdf,2026-04-30,validado,baja,parcial,http_404,Error de conexión,Caso de prueba 26
+case_0027,2026-04-29 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_027.pdf,2026-04-29,consolidado,alta,si,ok,,Caso de prueba 27
+case_0028,2026-04-28 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_028.pdf,2026-04-28,detectado,media,no,timeout,Error de conexión,Caso de prueba 28
+case_0029,2026-04-27 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_029.pdf,2026-04-27,en_validacion,baja,parcial,http_404,Error de conexión,Caso de prueba 29
+case_0030,2026-05-26 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_030.pdf,2026-05-26,validado,alta,si,ok,,Caso de prueba 30
+case_0031,2026-05-25 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_031.pdf,2026-05-25,consolidado,media,no,timeout,Error de conexión,Caso de prueba 31
+case_0032,2026-05-24 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_032.pdf,2026-05-24,detectado,baja,parcial,http_404,Error de conexión,Caso de prueba 32
+case_0033,2026-05-23 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_033.pdf,2026-05-23,en_validacion,alta,si,ok,,Caso de prueba 33
+case_0034,2026-05-22 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_034.pdf,2026-05-22,validado,media,no,timeout,Error de conexión,Caso de prueba 34
+case_0035,2026-05-21 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_035.pdf,2026-05-21,consolidado,baja,parcial,http_404,Error de conexión,Caso de prueba 35
+case_0036,2026-05-20 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_036.pdf,2026-05-20,detectado,alta,si,ok,,Caso de prueba 36
+case_0037,2026-05-19 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_037.pdf,2026-05-19,en_validacion,media,no,timeout,Error de conexión,Caso de prueba 37
+case_0038,2026-05-18 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_038.pdf,2026-05-18,validado,baja,parcial,http_404,Error de conexión,Caso de prueba 38
+case_0039,2026-05-17 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_039.pdf,2026-05-17,consolidado,alta,si,ok,,Caso de prueba 39
+case_0040,2026-05-16 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_040.pdf,2026-05-16,detectado,media,no,timeout,Error de conexión,Caso de prueba 40
+case_0041,2026-05-15 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_041.pdf,2026-05-15,en_validacion,baja,parcial,http_404,Error de conexión,Caso de prueba 41
+case_0042,2026-05-14 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_042.pdf,2026-05-14,validado,alta,si,ok,,Caso de prueba 42
+case_0043,2026-05-13 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_043.pdf,2026-05-13,consolidado,media,no,timeout,Error de conexión,Caso de prueba 43
+case_0044,2026-05-12 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_044.pdf,2026-05-12,detectado,baja,parcial,http_404,Error de conexión,Caso de prueba 44
+case_0045,2026-05-11 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_045.pdf,2026-05-11,en_validacion,alta,si,ok,,Caso de prueba 45
+case_0046,2026-05-10 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_046.pdf,2026-05-10,validado,media,no,timeout,Error de conexión,Caso de prueba 46
+case_0047,2026-05-09 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_047.pdf,2026-05-09,consolidado,baja,parcial,http_404,Error de conexión,Caso de prueba 47
+case_0048,2026-05-08 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_048.pdf,2026-05-08,detectado,alta,si,ok,,Caso de prueba 48
+case_0049,2026-05-07 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_049.pdf,2026-05-07,en_validacion,media,no,timeout,Error de conexión,Caso de prueba 49
+case_0050,2026-05-06 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_050.pdf,2026-05-06,validado,baja,parcial,http_404,Error de conexión,Caso de prueba 50
+case_0051,2026-05-05 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_051.pdf,2026-05-05,consolidado,alta,si,ok,,Caso de prueba 51
+case_0052,2026-05-04 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_052.pdf,2026-05-04,detectado,media,no,timeout,Error de conexión,Caso de prueba 52
+case_0053,2026-05-03 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_053.pdf,2026-05-03,en_validacion,baja,parcial,http_404,Error de conexión,Caso de prueba 53
+case_0054,2026-05-02 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_054.pdf,2026-05-02,validado,alta,si,ok,,Caso de prueba 54
+case_0055,2026-05-01 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_055.pdf,2026-05-01,consolidado,media,no,timeout,Error de conexión,Caso de prueba 55
+case_0056,2026-04-30 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_056.pdf,2026-04-30,detectado,baja,parcial,http_404,Error de conexión,Caso de prueba 56
+case_0057,2026-04-29 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_057.pdf,2026-04-29,en_validacion,alta,si,ok,,Caso de prueba 57
+case_0058,2026-04-28 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_058.pdf,2026-04-28,validado,media,no,timeout,Error de conexión,Caso de prueba 58
+case_0059,2026-04-27 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_059.pdf,2026-04-27,consolidado,baja,parcial,http_404,Error de conexión,Caso de prueba 59
+case_0060,2026-05-26 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_060.pdf,2026-05-26,detectado,alta,si,ok,,Caso de prueba 60
+case_0061,2026-05-25 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_061.pdf,2026-05-25,en_validacion,media,no,timeout,Error de conexión,Caso de prueba 61
+case_0062,2026-05-24 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_062.pdf,2026-05-24,validado,baja,parcial,http_404,Error de conexión,Caso de prueba 62
+case_0063,2026-05-23 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_063.pdf,2026-05-23,consolidado,alta,si,ok,,Caso de prueba 63
+case_0064,2026-05-22 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_064.pdf,2026-05-22,detectado,media,no,timeout,Error de conexión,Caso de prueba 64
+case_0065,2026-05-21 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_065.pdf,2026-05-21,en_validacion,baja,parcial,http_404,Error de conexión,Caso de prueba 65
+case_0066,2026-05-20 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_066.pdf,2026-05-20,validado,alta,si,ok,,Caso de prueba 66
+case_0067,2026-05-19 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_067.pdf,2026-05-19,consolidado,media,no,timeout,Error de conexión,Caso de prueba 67
+case_0068,2026-05-18 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_068.pdf,2026-05-18,detectado,baja,parcial,http_404,Error de conexión,Caso de prueba 68
+case_0069,2026-05-17 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_069.pdf,2026-05-17,en_validacion,alta,si,ok,,Caso de prueba 69
+case_0070,2026-05-16 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_070.pdf,2026-05-16,validado,media,no,timeout,Error de conexión,Caso de prueba 70
+case_0071,2026-05-15 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_071.pdf,2026-05-15,consolidado,baja,parcial,http_404,Error de conexión,Caso de prueba 71
+case_0072,2026-05-14 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_072.pdf,2026-05-14,detectado,alta,si,ok,,Caso de prueba 72
+case_0073,2026-05-13 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_073.pdf,2026-05-13,en_validacion,media,no,timeout,Error de conexión,Caso de prueba 73
+case_0074,2026-05-12 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_074.pdf,2026-05-12,validado,baja,parcial,http_404,Error de conexión,Caso de prueba 74
+case_0075,2026-05-11 09:41:44,Superintendencia de Sociedades,https://regulatory.gov/source/0,https://regulatory.gov/docs/normativa_075.pdf,2026-05-11,consolidado,alta,si,ok,,Caso de prueba 75
+case_0076,2026-05-10 09:41:44,Superintendencia Financiera,https://regulatory.gov/source/1,https://regulatory.gov/docs/normativa_076.pdf,2026-05-10,detectado,media,no,timeout,Error de conexión,Caso de prueba 76
+case_0077,2026-05-09 09:41:44,DIAN,https://regulatory.gov/source/2,https://regulatory.gov/docs/normativa_077.pdf,2026-05-09,en_validacion,baja,parcial,http_404,Error de conexión,Caso de prueba 77
+case_0078,2026-05-08 09:41:44,Banco de la República,https://regulatory.gov/source/3,https://regulatory.gov/docs/normativa_078.pdf,2026-05-08,validado,alta,si,ok,,Caso de prueba 78
+case_0079,2026-05-07 09:41:44,Procuraduría,https://regulatory.gov/source/4,https://regulatory.gov/docs/normativa_079.pdf,2026-05-07,consolidado,media,no,timeout,Error de conexión,Caso de prueba 79

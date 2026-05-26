@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cumplimiento Normativo</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Dashboard Cumplimiento Normativo Colombia</h1>
+            <p class="subtitle">Monitoreo de normativa y obligaciones regulatorias</p>
+        </header>
+
+        <!-- Summary Cards -->
+        <div class="summary-section">
+            <div class="card danger">
+                <div class="card-number" id="count-rojo">0</div>
+                <div class="card-label">🔴 ROJO</div>
+                <div class="card-desc">Revisar primero</div>
+            </div>
+            <div class="card warning">
+                <div class="card-number" id="count-amarillo">0</div>
+                <div class="card-label">🟡 AMARILLO</div>
+                <div class="card-desc">Pendientes</div>
+            </div>
+            <div class="card success">
+                <div class="card-number" id="count-verde">0</div>
+                <div class="card-label">🟢 VERDE</div>
+                <div class="card-desc">Cerrados</div>
+            </div>
+            <div class="card primary">
+                <div class="card-number" id="count-consolidado">0</div>
+                <div class="card-label">✅ CONSOLIDADOS</div>
+                <div class="card-desc">En matriz</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <h2>Filtros</h2>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Semáforo:</label>
+                    <select id="filter-semaforo">
+                        <option value="">Todos</option>
+                        <option value="ROJO">🔴 ROJO</option>
+                        <option value="AMARILLO">🟡 AMARILLO</option>
+                        <option value="VERDE">🟢 VERDE</option>
+                        <option value="CONSOLIDADO">✅ CONSOLIDADO</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Entidad:</label>
+                    <select id="filter-entidad">
+                        <option value="">Todas</option>
+                        {% for entity in entities %}
+                        <option value="{{ entity }}">{{ entity }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Prioridad:</label>
+                    <select id="filter-priority">
+                        <option value="">Todas</option>
+                        {% for p in priorities %}
+                        <option value="{{ p }}">{{ p }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Link Status:</label>
+                    <select id="filter-link-status">
+                        <option value="">Todos</option>
+                        {% for s in link_statuses %}
+                        <option value="{{ s }}">{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Búsqueda:</label>
+                    <input type="text" id="filter-search" placeholder="Entidad, motivo, notas...">
+                </div>
+
+                <button id="btn-filter" class="btn-primary">Filtrar</button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-section">
+            <h2>Casos Detectados</h2>
+            <table id="casos-table" class="display responsive">
+                <thead>
+                    <tr>
+                        <th>Semáforo</th>
+                        <th>Entidad</th>
+                        <th>Motivo</th>
+                        <th>Priority</th>
+                        <th>Aplica SURA</th>
+                        <th>Status</th>
+                        <th>Link Status</th>
+                        <th>Detectado</th>
+                        <th>Documento</th>
+                    </tr>
+                </thead>
+                <tbody id="casos-tbody">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="chart-container">
+                <h3>Distribución por Semáforo</h3>
+                <canvas id="chart-semaforo"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Top 10 Entidades</h3>
+                <canvas id="chart-entidades"></canvas>
+            </div>
+        </div>
+
+        <footer>
+            <p>Último actualizado: <span id="last-updated">--</span></p>
+        </footer>
+    </div>
+
+    <script>
+        let table;
+        let allCasos = [];
+
+        function formatSemaforo(value) {
+            const map = {
+                'ROJO': '🔴 ROJO',
+                'AMARILLO': '🟡 AMARILLO',
+                'VERDE': '🟢 VERDE',
+                'CONSOLIDADO': '🔵 CONSOLIDADO'
+            };
+            return map[value] || value;
+        }
+
+        function formatDocumentLink(url) {
+            if (!url) return '-';
+            const display = url.substring(0, 50) + (url.length > 50 ? '...' : '');
+            return `<a href="${url}" target="_blank" class="link-doc">${display}</a>`;
+        }
+
+        function loadSummary() {
+            $.get('/api/summary', function(data) {
+                $('#count-rojo').text(data.ROJO || 0);
+                $('#count-amarillo').text(data.AMARILLO || 0);
+                $('#count-verde').text(data.VERDE || 0);
+                $('#count-consolidado').text(data.CONSOLIDADO || 0);
+            });
+        }
+
+        function loadCasos() {
+            const semaforo = $('#filter-semaforo').val();
+            const entidad = $('#filter-entidad').val();
+            const priority = $('#filter-priority').val();
+            const link_status = $('#filter-link-status').val();
+            const search = $('#filter-search').val();
+
+            const params = new URLSearchParams();
+            if (semaforo) params.append('semaforo', semaforo);
+            if (entidad) params.append('entidad', entidad);
+            if (priority) params.append('priority', priority);
+            if (link_status) params.append('link_status', link_status);
+            if (search) params.append('search', search);
+
+            $.get('/api/casos?' + params.toString(), function(casos) {
+                allCasos = casos;
+                renderTable(casos);
+                updateCharts(casos);
+            });
+        }
+
+        function renderTable(casos) {
+            const tbody = $('#casos-tbody');
+            tbody.empty();
+
+            // Agrupar por semáforo
+            const grouped = {};
+            casos.forEach(caso => {
+                const semaforo = caso.semaforo || 'N/A';
+                if (!grouped[semaforo]) grouped[semaforo] = [];
+                grouped[semaforo].push(caso);
+            });
+
+            // Orden de semáforos
+            const order = ['ROJO', 'AMARILLO', 'VERDE', 'CONSOLIDADO', 'N/A'];
+            const sortedKeys = order.filter(k => grouped[k]);
+
+            // Renderizar grupos
+            sortedKeys.forEach(semaforo => {
+                const color = {'ROJO': '#dc3545', 'AMARILLO': '#ffc107', 'VERDE': '#28a745', 'CONSOLIDADO': '#007bff'}[semaforo] || '#ccc';
+                const count = grouped[semaforo].length;
+
+                // Header de grupo colapsible
+                const groupHeader = `
+                    <tr class="group-header" style="background: ${color}20; cursor: pointer;">
+                        <td colspan="9" style="padding: 12px; font-weight: bold; color: ${color};">
+                            <span class="group-toggle" style="margin-right: 10px;">▼</span>
+                            ${formatSemaforo(semaforo)} (${count})
+                        </td>
+                    </tr>
+                `;
+                tbody.append(groupHeader);
+
+                // Filas de grupo
+                grouped[semaforo].forEach(caso => {
+                    const row = `
+                        <tr class="group-row-${semaforo}">
+                            <td><strong>${formatSemaforo(caso.semaforo || 'N/A')}</strong></td>
+                            <td>${caso.entidad || '-'}</td>
+                            <td>${caso.motivo || '-'}</td>
+                            <td>${caso.priority || '-'}</td>
+                            <td>${caso.aplica_sura || '-'}</td>
+                            <td><span class="badge badge-${caso.status}">${caso.status || '-'}</span></td>
+                            <td><span class="badge badge-${caso.link_status}">${caso.link_status || '-'}</span></td>
+                            <td><small>${caso.detected_at ? caso.detected_at.substring(0, 10) : '-'}</small></td>
+                            <td>${formatDocumentLink(caso.document_url)}</td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+            });
+
+            // Agregar toggle para expandir/contraer
+            $('.group-header').on('click', function() {
+                const toggle = $(this).find('.group-toggle');
+                const semaforo = $(this).text().match(/🔴|🟡|🟢|✅/) ? $(this).text().match(/🔴|🟡|🟢|✅/)[0] : '';
+                const isCollapsed = toggle.text() === '▶';
+
+                // Buscar el semáforo en el texto
+                let targetSemaforo = 'ROJO';
+                if ($(this).text().includes('AMARILLO')) targetSemaforo = 'AMARILLO';
+                else if ($(this).text().includes('VERDE')) targetSemaforo = 'VERDE';
+                else if ($(this).text().includes('CONSOLIDADO')) targetSemaforo = 'CONSOLIDADO';
+
+                $(`.group-row-${targetSemaforo}`).toggle();
+                toggle.text(isCollapsed ? '▼' : '▶');
+            });
+
+            // No usar DataTable para mantener grouping
+            if (table) {
+                table.destroy();
+            }
+        }
+
+        function updateCharts(casos) {
+            // Register datalabels plugin
+            Chart.register(ChartDataLabels);
+
+            // Chart 1: Semaforo distribution
+            const semaforo_counts = { ROJO: 0, AMARILLO: 0, VERDE: 0, CONSOLIDADO: 0 };
+            casos.forEach(c => {
+                if (c.semaforo in semaforo_counts) semaforo_counts[c.semaforo]++;
+            });
+
+            const ctx1 = document.getElementById('chart-semaforo').getContext('2d');
+            if (window.chartSemaforo) window.chartSemaforo.destroy();
+            window.chartSemaforo = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['🔴 ROJO', '🟡 AMARILLO', '🟢 VERDE', '🔵 CONSOLIDADO'],
+                    datasets: [{
+                        data: [semaforo_counts.ROJO, semaforo_counts.AMARILLO, semaforo_counts.VERDE, semaforo_counts.CONSOLIDADO],
+                        backgroundColor: ['#dc3545', '#ffc107', '#28a745', '#007bff']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        datalabels: {
+                            color: '#fff',
+                            font: { weight: 'bold', size: 14 },
+                            formatter: (value) => value > 0 ? value : ''
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Top entities
+            const entity_counts = {};
+            casos.forEach(c => {
+                if (c.entidad) {
+                    entity_counts[c.entidad] = (entity_counts[c.entidad] || 0) + 1;
+                }
+            });
+
+            const top_entities = Object.entries(entity_counts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const ctx2 = document.getElementById('chart-entidades').getContext('2d');
+            if (window.chartEntidades) window.chartEntidades.destroy();
+            window.chartEntidades = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: top_entities.map(e => e[0]),
+                    datasets: [{
+                        label: 'Casos',
+                        data: top_entities.map(e => e[1]),
+                        backgroundColor: '#007bff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    indexAxis: 'y',
+                    plugins: {
+                        datalabels: {
+                            color: '#000',
+                            font: { weight: 'bold', size: 12 },
+                            anchor: 'end',
+                            align: 'right',
+                            formatter: (value) => value > 0 ? value : ''
+                        }
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            loadSummary();
+            loadCasos();
+
+            $('#btn-filter').click(function() {
+                loadCasos();
+            });
+
+            $('#filter-search').keyup(function(e) {
+                if (e.key === 'Enter') {
+                    loadCasos();
+                }
+            });
+
+            $('#last-updated').text(new Date().toLocaleString());
+        });
+    </script>
+</body>
+</html>
