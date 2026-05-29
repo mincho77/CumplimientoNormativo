@@ -34,7 +34,7 @@ python3 "$ROOT/scripts/generar_tablero_semaforo.py"
 echo "[run] iniciando Flask..."
 echo ""
 echo "=========================================="
-echo "✅ Dashboard disponible en: http://localhost:5000"
+echo "✅ Dashboard disponible en: http://localhost:5001"
 echo "=========================================="
 echo ""
 

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analítica - Cumplimiento Normativo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        .btn-back {
+            display: inline-block;
+            margin-bottom: 25px;
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1em;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .btn-back:hover {
+            background: #fff;
+            transform: translateX(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            color: #0056b3;
+        }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        @media (max-width: 900px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        .chart-card h3 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn-back">← Volver al Dashboard</a>
+        
+        <header style="text-align: left; padding: 20px;">
+            <h1>📊 Analítica y Estadísticas</h1>
+            <p class="subtitle">Distribución general de la normativa y métricas de Inteligencia Artificial</p>
+        </header>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>Distribución por Semáforo</h3>
+                <div style="max-height: 400px; position: relative;">
+                    <canvas id="chart-semaforo"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>Top 10 Entidades con más Hallazgos</h3>
+                <div style="max-height: 400px; position: relative;">
+                    <canvas id="chart-entidades"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="charts-grid" style="margin-top: 30px;">
+            <div class="chart-card">
+                <h3>🪙 Consumo de Tokens IA por Día</h3>
+                <div style="max-height: 350px; position: relative;">
+                    <canvas id="chart-tokens-date"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>🪙 Costo (Tokens) por Entidad</h3>
+                <div style="max-height: 350px; position: relative;">
+                    <canvas id="chart-tokens-entity"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateCharts(casos) {
+            Chart.register(ChartDataLabels);
+
+            // Chart 1: Semaforo distribution
+            const semaforo_counts = { ROJO: 0, AMARILLO: 0, VERDE: 0, CONSOLIDADO: 0 };
+            casos.forEach(c => {
+                const sem = (c.semaforo || '').toUpperCase();
+                if (sem in semaforo_counts) semaforo_counts[sem]++;
+            });
+
+            const ctx1 = document.getElementById('chart-semaforo').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['ALERTA', 'PENDIENTE', 'CUMPLIDO', 'ARCHIVADO'],
+                    datasets: [{
+                        data: [semaforo_counts.ROJO, semaforo_counts.AMARILLO, semaforo_counts.VERDE, semaforo_counts.CONSOLIDADO],
+                        backgroundColor: ['#dc3545', '#ffc107', '#28a745', '#007bff']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        datalabels: {
+                            color: '#fff',
+                            font: { weight: 'bold', size: 14 },
+                            formatter: (value) => value > 0 ? value : ''
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Top entities
+            const entity_counts = {};
+            casos.forEach(c => {
+                if (c.entidad) {
+                    entity_counts[c.entidad] = (entity_counts[c.entidad] || 0) + 1;
+                }
+            });
+
+            const top_entities = Object.entries(entity_counts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const ctx2 = document.getElementById('chart-entidades').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: top_entities.map(e => e[0]),
+                    datasets: [{
+                        label: 'Casos Detectados',
+                        data: top_entities.map(e => e[1]),
+                        backgroundColor: '#007bff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        datalabels: {
+                            color: '#000',
+                            font: { weight: 'bold', size: 12 },
+                            anchor: 'end',
+                            align: 'right',
+                            formatter: (value) => value > 0 ? value : ''
+                        }
+                    },
+                    scales: {
+                        x: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function loadTokenStats() {
+            $.get('/api/tokens_stats', function(stats) {
+                // Chart 3: Tokens por día
+                const dates = Object.keys(stats.by_date).sort();
+                const dateValues = dates.map(d => stats.by_date[d]);
+                
+                const ctx3 = document.getElementById('chart-tokens-date').getContext('2d');
+                new Chart(ctx3, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Tokens consumidos',
+                            data: dateValues,
+                            borderColor: '#845ef7',
+                            backgroundColor: 'rgba(132, 94, 247, 0.2)',
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { datalabels: { display: false } }
+                    }
+                });
+
+                // Chart 4: Tokens por Entidad (Top 10)
+                const entitiesWithTokens = Object.entries(stats.by_entity).filter(e => e[1] > 0);
+                const topEntities = entitiesWithTokens
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10);
+                
+                const ctx4 = document.getElementById('chart-tokens-entity').getContext('2d');
+                new Chart(ctx4, {
+                    type: 'bar',
+                    data: {
+                        labels: topEntities.map(e => e[0]),
+                        datasets: [{
+                            label: 'Total Tokens',
+                            data: topEntities.map(e => e[1]),
+                            backgroundColor: '#20c997'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            datalabels: {
+                                color: '#000',
+                                anchor: 'end',
+                                align: 'right',
+                                formatter: (val) => val.toLocaleString()
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            $.get('/api/casos', function(casos) {
+                updateCharts(casos);
+            });
+            loadTokenStats();
+        });
+    </script>
+</body>
+</html>

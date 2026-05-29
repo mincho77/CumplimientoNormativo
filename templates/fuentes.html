@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Fuentes Normativas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .source-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .source-info { flex: 1; }
+        .btn-delete { background: #ff4d4f; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .btn-edit { background: #1890ff; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
+        .add-form { background: #e6f7ff; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #1890ff; }
+        input[type="text"] { padding: 8px; border: 1px solid #d9d9d9; border-radius: 4px; margin-right: 10px; width: 30%; }
+    </style>
+</head>
+<body style="background:#f0f2f5; padding: 20px; font-family: 'Inter', sans-serif;">
+    <div style="max-width: 1000px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #4facfe, #00f2fe); padding: 30px; border-radius: 12px; margin-bottom: 30px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <div>
+                <h1 style="margin:0; font-size: 2em;">🔗 Fuentes Normativas</h1>
+                <p style="margin: 5px 0 0 0; opacity: 0.9;">Gestión de enlaces semilla para el monitoreo</p>
+            </div>
+            <a href="/" style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); font-weight: 600; transition: background 0.3s;">← Volver al Dashboard</a>
+        </div>
+
+        <div class="add-form" style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e3e8ee;">
+            <h3 style="margin-top:0; color:#333;">➕ Añadir Nueva Fuente</h3>
+            <div style="display: flex; gap: 15px; align-items: center; margin-top: 15px;">
+                <div style="flex: 1;">
+                    <label style="display:block; font-size:0.85em; color:#666; margin-bottom:5px;">Nombre de la Entidad</label>
+                    <input type="text" id="new-entidad" placeholder="Ej: Ministerio de Salud" style="width: 100%; box-sizing: border-box;">
+                </div>
+                <div style="flex: 2;">
+                    <label style="display:block; font-size:0.85em; color:#666; margin-bottom:5px;">URL Semilla (Enlace de Normatividad)</label>
+                    <input type="text" id="new-enlace" placeholder="https://..." style="width: 100%; box-sizing: border-box;">
+                </div>
+                <div style="display: flex; align-items: center; margin-top: 20px;">
+                    <input type="checkbox" id="new-sox" style="transform: scale(1.2); margin-right: 8px;">
+                    <label for="new-sox" style="font-size:0.9em; font-weight:600; color:#495057;">Control SOX</label>
+                </div>
+                <div style="margin-top: 20px;">
+                    <button onclick="manageSource('add')" style="background: #22c55e; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">Guardar Fuente</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="sources-list">
+            {% for f in fuentes %}
+            <div class="source-card">
+                <div class="source-info" style="overflow: hidden; padding-right: 15px;">
+                    <strong>{{ f.Entidad }}</strong><br>
+                    <span style="font-size: 0.85em; color: #666; word-break: break-all; display: block; margin-top: 5px;" id="enlace-{{ loop.index }}">{{ f.Enlace }}</span>
+                </div>
+                <div style="flex-shrink: 0;">
+                    <button class="btn-edit" onclick="editSource('{{ f.Entidad }}', '{{ f.Enlace }}')">✏️ Editar Enlace</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function manageSource(action, entidad = '') {
+            let data = { action: action };
+            
+            if (action === 'add') {
+                data.entidad = $('#new-entidad').val();
+                data.enlace = $('#new-enlace').val();
+                data.sox = $('#new-sox').is(':checked') ? 'X' : '';
+                
+                if (!data.entidad || !data.enlace) {
+                    alert('Completa el nombre y el enlace de la entidad');
+                    return;
+                }
+            } 
+
+            $.ajax({
+                url: '/api/update_fuente',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function() {
+                    location.reload();
+                }
+            });
+        }
+
+        function editSource(entidad, currentEnlace) {
+            let newEnlace = prompt(`Editar enlace para:\n${entidad}`, currentEnlace);
+            
+            if (newEnlace !== null && newEnlace.trim() !== "" && newEnlace !== currentEnlace) {
+                $.ajax({
+                    url: '/api/update_fuente',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        action: 'edit',
+                        old_entidad: entidad,
+                        entidad: entidad, // La entidad no cambia
+                        enlace: newEnlace.trim()
+                    }),
+                    success: function() {
+                        location.reload();
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

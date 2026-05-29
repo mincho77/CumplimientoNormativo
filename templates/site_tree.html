@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapa de Arquitectura | {{ entidad }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { background: #f2f2f7; overflow: hidden; height: 100vh; }
+        .canvas-area { width: 100%; height: calc(100vh - 100px); background: white; border-radius: 20px; box-shadow: var(--card-shadow); margin-top: 20px; }
+        .node circle { fill: #fff; stroke: var(--apple-blue); stroke-width: 3px; }
+        .node text { font: 12px 'Inter', sans-serif; font-weight: 500; }
+        .link { fill: none; stroke: #ccc; stroke-width: 2px; }
+        .controls { position: absolute; top: 120px; right: 40px; display: flex; flex-direction: column; gap: 10px; }
+        .legend { position: absolute; bottom: 40px; left: 40px; background: white; padding: 15px; border-radius: 12px; font-size: 0.8em; box-shadow: var(--card-shadow); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>🗺️ Arquitectura de Sitio: {{ entidad }}</h1>
+                <p class="subtitle">Visualización interactiva del rastreo realizado por el bot</p>
+            </div>
+            <a href="/" class="btn-secondary">← Volver al Dashboard</a>
+        </header>
+
+        <div id="tree-container" class="canvas-area"></div>
+
+        <div class="legend">
+            <div>🔵 <strong>Azul:</strong> Punto de Navegación (Página)</div>
+            <div>🔗 <strong>Link:</strong> Enlace seguido por el bot</div>
+            <div>📄 <strong>Documento:</strong> PDF / Resolución encontrada</div>
+        </div>
+    </div>
+
+    <script>
+        const treeData = {{ tree_json|safe }};
+
+        const width = window.innerWidth - 100;
+        const height = window.innerHeight - 200;
+
+        const svg = d3.select("#tree-container").append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .call(d3.zoom().on("zoom", function (event) {
+                g.attr("transform", event.transform)
+            }))
+            .append("g");
+
+        const g = svg.append("g").attr("transform", "translate(100,0)");
+
+        const tree = d3.tree().size([height, width - 400]);
+        const root = d3.hierarchy(treeData);
+
+        tree(root);
+
+        const link = g.selectAll(".link")
+            .data(root.descendants().slice(1))
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", d => `
+                M${d.y},${d.x}
+                C${(d.y + d.parent.y) / 2},${d.x}
+                 ${(d.y + d.parent.y) / 2},${d.parent.x}
+                 ${d.parent.y},${d.parent.x}
+            `);
+
+        const node = g.selectAll(".node")
+            .data(root.descendants())
+            .enter().append("g")
+            .attr("class", d => "node" + (d.children ? " node--internal" : " node--leaf"))
+            .attr("transform", d => `translate(${d.y},${d.x})`);
+
+        node.append("circle").attr("r", 6);
+
+        node.append("text")
+            .attr("dy", ".35em")
+            .attr("x", d => d.children ? -12 : 12)
+            .style("text-anchor", d => d.children ? "end" : "start")
+            .text(d => d.data.name.length > 50 ? d.data.name.substring(0, 50) + "..." : d.data.name)
+            .style("fill", d => d.data.name.includes("📄") ? "#d70015" : "#1d1d1f");
+
+    </script>
+</body>
+</html>

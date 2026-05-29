@@ -4,7 +4,7 @@ Dashboard API endpoints.
 
 ## Base URL
 ```
-http://localhost:5000
+http://localhost:5001
 ```
 
 ---
@@ -64,27 +64,27 @@ Retorna array de casos con opción de filtrar.
 
 **Obtener todos los casos ROJO:**
 ```bash
-curl "http://localhost:5000/api/casos?semaforo=ROJO"
+curl "http://localhost:5001/api/casos?semaforo=ROJO"
 ```
 
 **Filtrar AMARILLO de Superintendencia Financiera:**
 ```bash
-curl "http://localhost:5000/api/casos?semaforo=AMARILLO&entidad=Superintendencia+Financiera"
+curl "http://localhost:5001/api/casos?semaforo=AMARILLO&entidad=Superintendencia+Financiera"
 ```
 
 **Buscar casos con error de conexión:**
 ```bash
-curl "http://localhost:5000/api/casos?link_status=conexion_error"
+curl "http://localhost:5001/api/casos?link_status=conexion_error"
 ```
 
 **Búsqueda libre:**
 ```bash
-curl "http://localhost:5000/api/casos?search=decreto"
+curl "http://localhost:5001/api/casos?search=decreto"
 ```
 
 #### Filtros combinados
 ```bash
-curl "http://localhost:5000/api/casos?semaforo=ROJO&priority=alta&link_status=ok"
+curl "http://localhost:5001/api/casos?semaforo=ROJO&priority=alta&link_status=ok"
 ```
 
 ---
@@ -106,7 +106,7 @@ Retorna cantidad de casos por semáforo.
 
 #### Example
 ```bash
-curl "http://localhost:5000/api/summary"
+curl "http://localhost:5001/api/summary"
 ```
 
 ---
@@ -211,7 +211,7 @@ Sin autenticación. Aplicar si acceso remoto.
 
 ```javascript
 // Obtener casos ROJO
-const response = await fetch('http://localhost:5000/api/casos?semaforo=ROJO');
+const response = await fetch('http://localhost:5001/api/casos?semaforo=ROJO');
 const casos = await response.json();
 console.log(casos);
 ```
@@ -221,7 +221,7 @@ console.log(casos);
 ```python
 import requests
 
-resp = requests.get('http://localhost:5000/api/casos', params={
+resp = requests.get('http://localhost:5001/api/casos', params={
     'semaforo': 'ROJO',
     'priority': 'alta'
 })
@@ -233,10 +233,10 @@ print(casos)
 
 ```bash
 # Resumen
-curl http://localhost:5000/api/summary
+curl http://localhost:5001/api/summary
 
 # Casos ROJO alta prioridad con error de conexión
-curl "http://localhost:5000/api/casos?semaforo=ROJO&priority=alta&link_status=conexion_error"
+curl "http://localhost:5001/api/casos?semaforo=ROJO&priority=alta&link_status=conexion_error"
 ```
 
 ---
@@ -258,7 +258,7 @@ Listado de fuentes a monitorear:
 
 ## Deployment Notes
 
-- Flask default: `localhost:5000`
+- Flask default: `localhost:5001`
 - Para producción: usar Gunicorn + Nginx
 - CSV location: `data/` (relativo a app.py)
 - CORS: no configurado, agregar si acceso remoto

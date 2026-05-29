@@ -29,19 +29,25 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Ejecuta startup
+### 3. Ejecuta el sistema
+
+El flujo está dividido en dos partes:
+
+**A) Monitor (Ingesta de datos):**
+Ejecuta esto para buscar nuevos documentos en las fuentes oficiales o generar datos de prueba.
 ```bash
-./start.sh
+./run_monitor.sh
 ```
 
-Elige:
-- **A)** Monitor real (visita URLs, tarda ~5 min)
-- **B)** Mock rápido (datos de prueba, segundos)
-- **C)** Solo servidor (usa datos existentes)
+**B) Dashboard & Visuals (Servidor):**
+Ejecuta esto para levantar la interfaz web y actualizar automáticamente el gráfico y el tablero Kanban en Obsidian.
+```bash
+./run_server.sh
+```
 
 ### 4. Abre dashboard
 ```
-http://localhost:5000
+http://localhost:5001
 ```
 
 ---
@@ -209,7 +215,7 @@ Werkzeug==3.0.1
 
 ### `start.sh`
 Script completo que:
-1. Limpia puerto 5000
+1. Limpia puerto 5001
 2. Elige: Monitor real / Mock / Solo servidor
 3. Genera semáforo
 4. Levanta Flask
@@ -232,6 +238,18 @@ Script completo que:
 - [ ] Notificaciones (Teams/Email) en ROJO
 - [ ] Extracción automática de obligaciones
 - [ ] Versionado de cambios (auditoría)
+
+---
+
+## 🕒 Log de Sesiones
+
+### [2026-05-27] Refactorización y Visualización en Obsidian
+**Cambios:**
+- **Separación de Concerns:** Se dividió `start.sh` en `./run_monitor.sh` (ingesta) y `./run_server.sh` (servidor y visuales) para mayor flexibilidad.
+- **Tablero Kanban:** Se creó el script `scripts/generar_kanban.py` para sincronizar automáticamente el estado de los casos con una nota de Obsidian compatible con el plugin Kanban.
+- **Gráficos Dinámicos:** Se integró un gráfico de dona en `Tablero Visual Cumplimiento.md` utilizando **DataviewJS**.
+- **Automatización:** Los visuales se actualizan automáticamente al iniciar el servidor o al recibir cambios vía API.
+- **Documentación:** Actualización de README con las nuevas instrucciones de ejecución.
 
 ---
 

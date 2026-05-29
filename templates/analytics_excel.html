@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas Excel | SURA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+        .metadata-section {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin-top: 30px;
+        }
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .tag {
+            background: #f2f2f7;
+            color: #1d1d1f;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        h3 { color: var(--sura-blue-dark); margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>📊 Analítica de Seguimiento Manual</h1>
+                <p class="subtitle">Datos extraídos del archivo: Seguimiento Regulatorio - 2026</p>
+            </div>
+            <div class="header-right">
+                <a href="/" class="btn-secondary">← Volver al Dashboard</a>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="chart-card">
+                <h3>Distribución por Tipo</h3>
+                <canvas id="chartTipo"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Top 10 Emisores (Excel)</h3>
+                <canvas id="chartEmisores"></canvas>
+            </div>
+            <div class="chart-card" style="grid-column: span 2;">
+                <h3>Distribución por Norma</h3>
+                <canvas id="chartNormas"></canvas>
+            </div>
+        </div>
+
+        <div class="metadata-section">
+            <h3>📖 Listas de Referencia (Valores Posibles)</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div>
+                    <h4 style="color:#86868b; font-size: 0.75em; text-transform: uppercase;">Responsables de Análisis</h4>
+                    <div class="tag-list">
+                        {% for r in metadata.responsables %}
+                        <span class="tag">👤 {{ r }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <h4 style="color:#86868b; font-size: 0.75em; text-transform: uppercase;">Ámbitos de Aplicación</h4>
+                    <div class="tag-list">
+                        {% for a in metadata.ambitos %}
+                        <span class="tag">🌍 {{ a }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div style="grid-column: span 2;">
+                    <h4 style="color:#86868b; font-size: 0.75em; text-transform: uppercase;">Regionales SURA</h4>
+                    <div class="tag-list">
+                        {% for reg in metadata.regionales %}
+                        <span class="tag">📍 {{ reg }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stats = {{ stats|tojson }};
+
+        // Gráfico Tipo
+        new Chart(document.getElementById('chartTipo'), {
+            type: 'pie',
+            data: {
+                labels: stats.por_tipo.map(d => d.label),
+                datasets: [{
+                    data: stats.por_tipo.map(d => d.value),
+                    backgroundColor: ['#007aff', '#ffcc00', '#34c759', '#ff3b30']
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Gráfico Emisores
+        const topEmisores = stats.por_emisor.slice(0, 10);
+        new Chart(document.getElementById('chartEmisores'), {
+            type: 'bar',
+            data: {
+                labels: topEmisores.map(d => d.label),
+                datasets: [{
+                    label: 'Cantidad de Documentos',
+                    data: topEmisores.map(d => d.value),
+                    backgroundColor: '#5856d6'
+                }]
+            },
+            options: { indexAxis: 'y', responsive: true }
+        });
+
+        // Gráfico Normas
+        const topNormas = stats.por_norma.slice(0, 12);
+        new Chart(document.getElementById('chartNormas'), {
+            type: 'bar',
+            data: {
+                labels: topNormas.map(d => d.label),
+                datasets: [{
+                    label: 'Frecuencia por Tipo de Norma',
+                    data: topNormas.map(d => d.value),
+                    backgroundColor: '#00a9e0'
+                }]
+            },
+            options: { responsive: true }
+        });
+    </script>
+</body>
+</html>
