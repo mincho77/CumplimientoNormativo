@@ -684,6 +684,14 @@
                             <option value="detailed">Entes + documentos</option>
                         </select>
                     </div>
+                    <div class="rel-fld"><label for="f-toprelations">Top relaciones</label>
+                        <select id="f-toprelations">
+                            <option value="30">30</option>
+                            <option value="60">60</option>
+                            <option value="90" selected>90</option>
+                            <option value="120">120</option>
+                        </select>
+                    </div>
                     <button class="rel-btn" id="btn-refresh">Actualizar grafo</button>
                     <button class="rel-btn alt" id="btn-toggle-groups" title="Expandir o colapsar documentos por ente">Docs: OFF</button>
                     <button class="rel-btn alt" id="btn-export-brief" title="Descargar resumen para comité">Preparar comité</button>
@@ -884,13 +892,21 @@
                 document.getElementById('f-viewmode').value = 'entities';
                 document.getElementById('f-minscore').value = '45';
                 document.getElementById('f-maxnodes').value = '60';
+                document.getElementById('f-toprelations').value = '60';
                 graphState.expandedEntities.clear();
                 return;
             }
             document.getElementById('f-viewmode').value = 'detailed';
             document.getElementById('f-minscore').value = '30';
             document.getElementById('f-maxnodes').value = '120';
+            document.getElementById('f-toprelations').value = '90';
             graphState.expandedEntities.clear();
+        }
+
+        function getDetailedRelationCap() {
+            var raw = parseInt(document.getElementById('f-toprelations').value || '90', 10);
+            if (!Number.isFinite(raw)) return 90;
+            return Math.max(30, Math.min(120, raw));
         }
 
         function updateGroupToggleLabel() {
@@ -1153,7 +1169,7 @@
 
             if (empty) empty.style.display = 'none';
             if (title) title.textContent = 'Unión gráfica: ' + cleanDocumentName(node.title || node.label || 'Documento');
-            if (sub) sub.textContent = 'Construyendo red temporal de documentos asociados...';
+            if (sub) sub.textContent = 'Preparando tabla cronológica de antecedentes...';
             if (modal) {
                 modal.classList.add('is-open');
                 modal.setAttribute('aria-hidden', 'false');
@@ -1175,12 +1191,12 @@
                 .then(function(data) {
                     if (reqSeq !== graphState.modalRequestSeq) return;
                     var related = data.related || [];
-                    if (sub) sub.textContent = 'Puntos por fecha y fuerza de relación. Azul: misma entidad, Naranja: cruce entre entes.';
+                    if (sub) sub.textContent = 'Tabla cronológica de antecedentes con fuerza y motivo de relación.';
                     drawDocRelationsTemporalGraph(node, related);
                 })
                 .catch(function() {
                     if (reqSeq !== graphState.modalRequestSeq) return;
-                    if (sub) sub.textContent = 'No se pudo cargar la red temporal para este documento.';
+                    if (sub) sub.textContent = 'No se pudo cargar la tabla de antecedentes para este documento.';
                     drawDocRelationsTemporalGraph(node, []);
                 });
         }
@@ -1281,6 +1297,34 @@
             return node.node_type === 'entity' ? '#2D6DF6' : '#ED8B00';
         }
 
+        function computeEntityAnchors(entityNodes, width, height) {
+            var anchors = {};
+            if (!entityNodes.length) return anchors;
+
+            var cols = Math.max(2, Math.ceil(Math.sqrt(entityNodes.length)));
+            var rows = Math.max(1, Math.ceil(entityNodes.length / cols));
+            var padX = 90;
+            var padY = 86;
+            var usableWidth = Math.max(220, width - (padX * 2));
+            var usableHeight = Math.max(220, height - (padY * 2));
+            var stepX = cols > 1 ? usableWidth / (cols - 1) : 0;
+            var stepY = rows > 1 ? usableHeight / (rows - 1) : 0;
+
+            entityNodes
+                .slice()
+                .sort(function(a, b) { return (b.doc_count || 0) - (a.doc_count || 0); })
+                .forEach(function(node, index) {
+                    var col = index % cols;
+                    var row = Math.floor(index / cols);
+                    anchors[node.entidad] = {
+                        x: padX + (col * stepX),
+                        y: padY + (row * stepY)
+                    };
+                });
+
+            return anchors;
+        }
+
         function drawGraph(payload) {
             var svg = d3.select('#rel-svg');
             svg.selectAll('*').remove();
@@ -1361,6 +1405,8 @@
 
             var links = [];
             var nodes = [];
+            var hiddenDocLinks = 0;
+            var detailedRelationCap = getDetailedRelationCap();
 
             if (viewMode === 'entities' && !fallbackEntityView) {
                 nodes = entityNodes;
@@ -1379,11 +1425,20 @@
                 var expanded = fallbackEntityView ? new Set(entityNodes.map(function(n) { return n.entidad; })) : graphState.expandedEntities;
                 var visibleDocNodes = docNodes.filter(function(d) { return expanded.has(d.entidad); });
                 var visibleDocIds = new Set(visibleDocNodes.map(function(d) { return d.id; }));
+                var visibleDocLinks = docLinks.filter(function(e) {
+                    return visibleDocIds.has('doc::' + e.source) && visibleDocIds.has('doc::' + e.target);
+                });
 
-                docLinks.forEach(function(e) {
-                    if (!visibleDocIds.has('doc::' + e.source) || !visibleDocIds.has('doc::' + e.target)) {
-                        return;
-                    }
+                visibleDocLinks.sort(function(a, b) {
+                    return (b.score || 0) - (a.score || 0);
+                });
+
+                if (!fallbackEntityView && visibleDocLinks.length > detailedRelationCap) {
+                    hiddenDocLinks = visibleDocLinks.length - detailedRelationCap;
+                    visibleDocLinks = visibleDocLinks.slice(0, detailedRelationCap);
+                }
+
+                visibleDocLinks.forEach(function(e) {
                     links.push({
                         source: 'doc::' + e.source,
                         target: 'doc::' + e.target,
@@ -1458,6 +1513,44 @@
                 setZoom(d3.zoomIdentity.translate(zoomState.x + dx, zoomState.y + dy).scale(zoomState.k));
             }
 
+            function fitGraphToViewport() {
+                if (!nodes.length) return;
+                var minX = Infinity;
+                var minY = Infinity;
+                var maxX = -Infinity;
+                var maxY = -Infinity;
+
+                nodes.forEach(function(n) {
+                    if (typeof n.x !== 'number' || typeof n.y !== 'number') return;
+                    minX = Math.min(minX, n.x);
+                    minY = Math.min(minY, n.y);
+                    maxX = Math.max(maxX, n.x);
+                    maxY = Math.max(maxY, n.y);
+                });
+
+                if (!isFinite(minX) || !isFinite(minY) || !isFinite(maxX) || !isFinite(maxY)) return;
+
+                var pad = 56;
+                var boxWidth = Math.max(120, (maxX - minX) + (pad * 2));
+                var boxHeight = Math.max(120, (maxY - minY) + (pad * 2));
+                var scale = Math.min(width / boxWidth, height / boxHeight);
+                scale = Math.max(0.68, Math.min(1.18, scale));
+
+                var tx = ((width - ((minX + maxX) * scale)) / 2);
+                var ty = ((height - ((minY + maxY) * scale)) / 2);
+                setZoom(d3.zoomIdentity.translate(tx, ty).scale(scale));
+            }
+
+            var fitScheduled = false;
+            function scheduleAutoFit() {
+                if (fitScheduled) return;
+                fitScheduled = true;
+                window.setTimeout(function() {
+                    fitGraphToViewport();
+                    refreshDocLabelVisibility();
+                }, 900);
+            }
+
             document.getElementById('zoom-in').onclick = function() {
                 svg.call(zoomBehavior.scaleBy, 1.2);
             };
@@ -1488,7 +1581,22 @@
                 document.getElementById('top-edges').innerHTML = '<div class="rel-small">No hay líneas documento-documento con este filtro, pero sí puedes explorar documentos por ente.</div>';
             } else if (graphState.expandedEntities.size === 0) {
                 document.getElementById('top-edges').innerHTML = '<div class="rel-small">Haz clic en un ente (azul) para expandir sus documentos.</div>';
+            } else if (hiddenDocLinks > 0) {
+                document.getElementById('top-edges').innerHTML = '<div class="rel-small">Vista analítica: mostrando las ' + detailedRelationCap + ' relaciones documentales más fuertes. Las restantes ' + hiddenDocLinks + ' siguen disponibles en el detalle del documento.</div>';
             }
+
+            var entityAnchors = computeEntityAnchors(entityNodes, width, height);
+            nodes.forEach(function(n) {
+                if (viewMode === 'entities') return;
+                var anchor = entityAnchors[n.entidad || n.label] || { x: width / 2, y: height / 2 };
+                if (n.node_type === 'entity') {
+                    n.x = anchor.x;
+                    n.y = anchor.y;
+                } else if (typeof n.x !== 'number' || typeof n.y !== 'number') {
+                    n.x = anchor.x + ((Math.random() - 0.5) * 36);
+                    n.y = anchor.y + 26 + ((Math.random() - 0.5) * 36);
+                }
+            });
 
             var simulation = d3.forceSimulation(nodes)
                 .force('link', d3.forceLink(links).id(function(d) { return d.id; }).distance(function(d) {
@@ -1503,6 +1611,22 @@
                     return 9 + Math.min(11, d.degree || 0);
                 }));
 
+            if (viewMode !== 'entities') {
+                simulation
+                    .force('x', d3.forceX(function(d) {
+                        var anchor = entityAnchors[d.entidad || d.label] || { x: width / 2 };
+                        return anchor.x;
+                    }).strength(function(d) {
+                        return d.node_type === 'entity' ? 0.42 : 0.22;
+                    }))
+                    .force('y', d3.forceY(function(d) {
+                        var anchor = entityAnchors[d.entidad || d.label] || { y: height / 2 };
+                        return d.node_type === 'entity' ? anchor.y : (anchor.y + 24);
+                    }).strength(function(d) {
+                        return d.node_type === 'entity' ? 0.38 : 0.16;
+                    }));
+            }
+
             var link = graphLayer.append('g')
                 .attr('stroke', '#9AAFC9')
                 .attr('stroke-opacity', 0.45)
@@ -1516,12 +1640,16 @@
                     if (d.link_type === 'entity_relation') return '4 4';
                     return d.cross_entity ? '6 4' : '0';
                 })
-                .attr('stroke-opacity', function(d) { return d.link_type === 'membership' ? 0.28 : 0.52; })
                 .attr('stroke-linecap', 'round')
                 .attr('stroke', function(d) {
                     if (d.link_type === 'membership') return '#8FA7C8';
                     if (d.link_type === 'entity_relation') return '#2D6DF6';
                     return d.cross_entity ? '#ED8B00' : '#9AAFC9';
+                })
+                .attr('stroke-opacity', function(d) {
+                    if (d.link_type === 'membership') return viewMode === 'entities' ? 0.28 : 0.18;
+                    if (d.link_type === 'entity_relation') return viewMode === 'entities' ? 0.52 : 0.28;
+                    return d.cross_entity ? 0.56 : 0.20;
                 })
                 .on('click', function(event, d) {
                     event.stopPropagation();
@@ -1649,6 +1777,8 @@
                 });
             }
 
+            scheduleAutoFit();
+
             simulation.on('tick', function() {
                 link
                     .attr('x1', function(d) { return d.source.x; })
@@ -1668,6 +1798,11 @@
                     .attr('x', function(d) { return d.x + (d.node_type === 'entity' ? 13 : 10); })
                     .attr('y', function(d) { return d.y + 16; });
 
+                refreshDocLabelVisibility();
+            });
+
+            simulation.on('end', function() {
+                fitGraphToViewport();
                 refreshDocLabelVisibility();
             });
         }
@@ -1729,6 +1864,7 @@
             }
         });
         document.getElementById('f-viewmode').addEventListener('change', loadGraph);
+        document.getElementById('f-toprelations').addEventListener('change', loadGraph);
         document.getElementById('f-profile').addEventListener('change', function() {
             applyProfilePreset();
             loadGraph();
