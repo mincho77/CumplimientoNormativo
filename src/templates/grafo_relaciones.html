@@ -254,8 +254,69 @@
             height: 520px;
             border: 1px solid var(--color-border, #E5E9EA);
             border-radius: 12px;
-            background: radial-gradient(circle at 50% 42%, rgba(45,109,246,.10), transparent 38%), radial-gradient(circle at 22% 17%, rgba(0,174,199,.06), transparent 55%), #fff;
+            background: #fff;
+            overflow-y: auto;
         }
+        .rel-relations-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        .rel-relations-table thead {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(130deg, #0033A0, #2D6DF6);
+            z-index: 2;
+        }
+        .rel-relations-table th {
+            padding: 8px 10px;
+            text-align: left;
+            color: #fff;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(0,0,0,.10);
+        }
+        .rel-relations-table tbody tr {
+            border-bottom: 1px solid var(--color-border, #E5E9EA);
+            transition: background .12s ease;
+        }
+        .rel-relations-table tbody tr:hover {
+            background: rgba(45,109,246,.08);
+        }
+        .rel-relations-table td {
+            padding: 10px;
+            vertical-align: middle;
+        }
+        .rel-rel-date {
+            font-weight: 700;
+            color: #0033A0;
+            white-space: nowrap;
+        }
+        .rel-rel-doc {
+            line-height: 1.35;
+            max-width: 280px;
+        }
+        .rel-rel-doc-title {
+            font-weight: 700;
+            color: var(--color-text, #030912);
+        }
+        .rel-rel-doc-meta {
+            font-size: 10px;
+            color: var(--color-text-muted, #888B8D);
+            margin-top: 2px;
+        }
+        .rel-rel-reason {
+            font-size: 10px;
+            color: #315079;
+            line-height: 1.3;
+        }
+        .rel-rel-score {
+            text-align: center;
+            font-weight: 700;
+            color: #2D6DF6;
+            min-width: 40px;
+        }
+        body[data-rel-theme='dark'] .rel-relations-table th { background: #1a2341; }
+        body[data-rel-theme='dark'] .rel-relations-table tbody tr:hover { background: rgba(45,109,246,.15); }
         .rel-modal-side {
             border: 1px solid var(--color-border, #E5E9EA);
             border-radius: 12px;
@@ -687,7 +748,7 @@
                 <button class="rel-modal-close" id="doc-rel-modal-close">Cerrar</button>
             </div>
             <div class="rel-modal-body">
-                <svg class="rel-modal-canvas" id="doc-rel-modal-canvas"></svg>
+                <div class="rel-modal-canvas" id="doc-rel-modal-canvas"></div>
                 <div class="rel-modal-side">
                     <h4>Diferencias clave</h4>
                     <div class="rel-modal-list" id="doc-rel-diff-list"></div>
@@ -1012,170 +1073,52 @@
         }
 
         function drawDocRelationsTemporalGraph(seedNode, related) {
-            var svg = d3.select('#doc-rel-modal-canvas');
-            svg.selectAll('*').remove();
+            var container = document.getElementById('doc-rel-modal-canvas');
+            container.innerHTML = '';
 
             var empty = document.getElementById('doc-rel-modal-empty');
             var diffList = document.getElementById('doc-rel-diff-list');
             if (!related.length) {
                 if (empty) empty.style.display = 'block';
                 if (diffList) diffList.innerHTML = '<div class="rel-small">Sin diferencias para mostrar.</div>';
+                container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--color-text-muted, #888B8D);font-size:12px;">No hay documentos relacionados para mostrar.</div>';
                 return;
             }
             if (empty) empty.style.display = 'none';
 
-            var width = document.getElementById('doc-rel-modal-canvas').clientWidth || 980;
-            var height = 520;
-            svg.attr('viewBox', '0 0 ' + width + ' ' + height);
-
-            var margin = { top: 28, right: 20, bottom: 60, left: 56 };
-            var plotWidth = width - margin.left - margin.right;
-            var plotHeight = height - margin.top - margin.bottom;
-            var root = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-            var allNodes = related.map(function(r, idx) {
-                return {
-                    id: r.id,
-                    title: r.title || '-',
-                    entidad: r.entidad || '-',
-                    date: r.detected_at || '',
-                    score: r.score || 0,
-                    cross: !!r.cross_entity,
-                    isSeed: false,
-                    seq: idx + 1
-                };
+            // Crear tabla de relaciones
+            var sortedRelated = related.slice().sort(function(a, b) {
+                var dateA = new Date((a.detected_at || '2000-01-01') + 'T00:00:00');
+                var dateB = new Date((b.detected_at || '2000-01-01') + 'T00:00:00');
+                return dateB - dateA; // Más recientes primero
             });
 
-            allNodes.push({
-                id: seedNode.original_id || seedNode.id,
-                title: seedNode.title || seedNode.label || 'Documento base',
-                entidad: seedNode.entidad || '-',
-                date: seedNode.detected_at || '',
-                score: d3.max(allNodes, function(n) { return n.score; }) || 20,
-                cross: false,
-                isSeed: true,
-                seq: 0
-            });
+            var tableHtml = '<table class="rel-relations-table">' +
+                '<thead><tr>' +
+                '<th style="width:80px;">Fecha</th>' +
+                '<th style="width:280px;">Documento</th>' +
+                '<th style="width:100px;">Relación</th>' +
+                '<th style="width:60px;">Fuerza</th>' +
+                '</tr></thead><tbody>' +
+                sortedRelated.map(function(item, idx) {
+                    var dateStr = item.detected_at ? item.detected_at.slice(0, 10) : '-';
+                    var reasons = (item.reasons || []).join(', ');
+                    var title = cleanDocumentName(item.title || '-');
+                    return '<tr>' +
+                        '<td class="rel-rel-date">' + safe(dateStr) + '</td>' +
+                        '<td class="rel-rel-doc">' +
+                            '<div class="rel-rel-doc-title">' + safe(shortText(title, 50)) + '</div>' +
+                            '<div class="rel-rel-doc-meta">' + safe(item.entidad || 'N/A') + '</div>' +
+                        '</td>' +
+                        '<td class="rel-rel-reason">' + safe(reasons || 'conexión') + '</td>' +
+                        '<td class="rel-rel-score">' + (item.score || 0) + '</td>' +
+                        '</tr>';
+                }).join('') +
+                '</tbody></table>';
 
-            var validDates = allNodes
-                .map(function(n) { return n.date ? new Date(n.date + 'T00:00:00') : null; })
-                .filter(function(d) { return d && !isNaN(d.getTime()); });
+            container.innerHTML = tableHtml;
 
-            var minDate = d3.min(validDates);
-            var maxDate = d3.max(validDates);
-            if (!minDate || !maxDate || minDate.getTime() === maxDate.getTime()) {
-                minDate = minDate || new Date();
-                maxDate = new Date(minDate.getTime() + (1000 * 60 * 60 * 24 * 5));
-            }
-
-            var x = d3.scaleTime().domain([minDate, maxDate]).range([0, plotWidth]);
-            var centerY = Math.round(plotHeight * 0.54);
-
-            root.append('line')
-                .attr('x1', 0)
-                .attr('y1', centerY)
-                .attr('x2', plotWidth)
-                .attr('y2', centerY)
-                .attr('stroke', graphState.theme === 'dark' ? 'rgba(205,220,255,.28)' : 'rgba(0,51,160,.25)')
-                .attr('stroke-width', 1.4)
-                .attr('stroke-linecap', 'round');
-
-            root.append('g')
-                .attr('transform', 'translate(0,' + plotHeight + ')')
-                .call(d3.axisBottom(x).ticks(6).tickFormat(d3.timeFormat('%d/%m')))
-                .selectAll('text')
-                .attr('fill', graphState.theme === 'dark' ? '#BDD0F2' : '#5D708D')
-                .attr('font-size', 10);
-
-            root.selectAll('.domain, .tick line')
-                .attr('stroke', graphState.theme === 'dark' ? 'rgba(205,220,255,.22)' : 'rgba(0,51,160,.18)');
-
-            var seed = allNodes.find(function(n) { return n.isSeed; });
-            var seedDate = seed && seed.date ? new Date(seed.date + 'T00:00:00') : minDate;
-            var seedX = x(seedDate);
-            var seedY = centerY;
-
-            var groupedByDate = {};
-            allNodes.forEach(function(n) {
-                var key = n.date || 'sin_fecha';
-                if (!groupedByDate[key]) groupedByDate[key] = [];
-                groupedByDate[key].push(n);
-            });
-
-            Object.keys(groupedByDate).forEach(function(key) {
-                var group = groupedByDate[key];
-                group.sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
-                group.forEach(function(n, idx) {
-                    if (n.isSeed) {
-                        n.y = centerY;
-                        n.xOffset = 0;
-                        n.showLabel = true;
-                        return;
-                    }
-                    var lane = idx % 10;
-                    var sign = (lane % 2 === 0) ? -1 : 1;
-                    var step = Math.floor(lane / 2) + 1;
-                    n.y = centerY + (sign * step * 24);
-                    n.xOffset = Math.floor(idx / 10) * 16;
-                    n.showLabel = idx < 3;
-                });
-            });
-
-            root.selectAll('.rel-link-seed')
-                .data(allNodes.filter(function(n) { return !n.isSeed; }))
-                .enter()
-                .append('line')
-                .attr('x1', seedX)
-                .attr('y1', seedY)
-                .attr('x2', function(d) {
-                    var dt = d.date ? new Date(d.date + 'T00:00:00') : minDate;
-                    return x(dt) + (d.xOffset || 0);
-                })
-                .attr('y2', function(d) { return d.y || centerY; })
-                .attr('stroke', function(d) { return d.cross ? '#ED8B00' : '#2D6DF6'; })
-                .attr('stroke-opacity', 0.45)
-                .attr('stroke-width', 1.6)
-                .attr('stroke-linecap', 'round');
-
-            var point = root.selectAll('.rel-time-point')
-                .data(allNodes)
-                .enter()
-                .append('g')
-                .attr('transform', function(d) {
-                    var dt = d.date ? new Date(d.date + 'T00:00:00') : minDate;
-                    return 'translate(' + (x(dt) + (d.xOffset || 0)) + ',' + (d.y || centerY) + ')';
-                });
-
-            point.append('circle')
-                .attr('r', function(d) { return d.isSeed ? 7 : 5; })
-                .attr('fill', function(d) {
-                    if (d.isSeed) return '#00AEC7';
-                    return d.cross ? '#ED8B00' : '#2D6DF6';
-                })
-                .attr('stroke', '#fff')
-                .attr('stroke-width', 1.6);
-
-            point.append('text')
-                .text(function(d) {
-                    if (d.isSeed) return 'BASE';
-                    return d.showLabel ? ('#' + d.seq) : '';
-                })
-                .attr('x', 8)
-                .attr('y', function(d) { return d.isSeed ? -12 : -10; })
-                .attr('fill', graphState.theme === 'dark' ? '#D8E6FF' : '#233852')
-                .attr('font-size', 10)
-                .attr('font-weight', function(d) { return d.isSeed ? 700 : 600; });
-
-            point.append('text')
-                .text(function(d) {
-                    if (d.isSeed) return (d.date || '-') + ' · F' + d.score;
-                    return d.showLabel ? ('F' + d.score) : '';
-                })
-                .attr('x', 8)
-                .attr('y', 5)
-                .attr('fill', graphState.theme === 'dark' ? '#9FB4DE' : '#6A7D96')
-                .attr('font-size', 9);
-
+            // Llenar panel de diferencias
             if (diffList) {
                 var seedSem = (seedNode.semaforo || '').toUpperCase();
                 var seedEnt = (seedNode.entidad || '').trim().toLowerCase();
