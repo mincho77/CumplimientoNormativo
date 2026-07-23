@@ -1,0 +1,17 @@
+---
+type: entity
+tags: [entidad]
+updated: 2026-06-17
+---
+
+
+
+
+
+
+
+
+
+
+## Descripción
+Información sobre Banco de la República (Circular Reglamentaria Externa DCIN-83).

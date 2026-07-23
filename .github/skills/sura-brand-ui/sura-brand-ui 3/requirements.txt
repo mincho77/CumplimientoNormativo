@@ -1,0 +1,16 @@
+# sura-brand-ui — Dependencias Python
+#
+# Instalar con:  pip install -r requirements.txt
+#
+# Estas son las únicas dependencias Python del skill. Las dependencias del
+# SISTEMA (no se instalan con pip) están documentadas en README.md:
+#   - fontconfig (comando `fc-cache`) — OBLIGATORIO para registrar la fuente
+#     Sura Sans antes de renderizar con cairosvg.
+#   - LibreOffice (`soffice`) + poppler (`pdftoppm`) — OPCIONAL, solo si se
+#     renderizan mockups en HTML en lugar de SVG.
+
+# Render SVG -> PNG (ruta canónica y recomendada del skill).
+cairosvg>=2.7
+
+# Redimensionado del PNG en la ruta de render HTML (scripts/render_mockup.py).
+Pillow>=10.0

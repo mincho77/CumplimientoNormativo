@@ -1,6 +1,6 @@
 # Wiki Index
 
-Updated: 2026-05-25
+Updated: 2026-05-31
 
 ## Overview
 - [[Cumplimiento Normativo]]: Root note of the vault context.
@@ -19,3 +19,4 @@ Updated: 2026-05-25
 
 ## Operations
 - [[log]]: Chronological operation history.
+- [[Tablero Kanban Cumplimiento]]: Regenerated compliance workflow board.

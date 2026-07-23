@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Triage de Errores | SURA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .entity-group { margin-bottom: 25px; background: white; border-radius: 18px; box-shadow: var(--card-shadow); overflow: hidden; border: 1px solid rgba(0,0,0,0.03); }
+        .entity-header { background: var(--sura-blue-dark); color: white; padding: 15px 25px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .error-row { border-bottom: 1px solid #f2f2f7; padding: 20px 25px; display: flex; align-items: flex-start; }
+        .error-row:last-child { border-bottom: none; }
+        .status-badge-err { padding: 4px 10px; border-radius: 8px; font-size: 0.7em; font-weight: 800; text-transform: uppercase; background: #ff3b3015; color: #ff3b30; border: 1px solid #ff3b3030; }
+        .btn-action-mini { background: var(--apple-blue); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 0.85em; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-action-mini:hover { background: #0062cc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-left">
+                <h1>🛠 Triage de Errores</h1>
+                <p class="subtitle">Gestión de conectividad y fallos técnicos</p>
+            </div>
+            <a href="/" class="btn-secondary">← Volver al Dashboard</a>
+        </header>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <form action="/errores" method="get" class="filter-row">
+                <div class="filter-group">
+                    <label>Estado de Gestión</label>
+                    <select name="estado">
+                        <option value="pendientes" {{ 'selected' if filters.estado == 'pendientes' }}>🔴 Errores Pendientes</option>
+                        <option value="gestionados" {{ 'selected' if filters.estado == 'gestionados' }}>🟢 Ya Gestionados</option>
+                        <option value="todos" {{ 'selected' if filters.estado == 'todos' }}>🔍 Todos los registros</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Entidad</label>
+                    <select name="entidad">
+                        <option value="">Todas las entidades</option>
+                        {% for ent in entities %}
+                        <option value="{{ ent }}" {{ 'selected' if filters.entidad == ent }}>{{ ent }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Tipo de Falla</label>
+                    <select name="tipo">
+                        <option value="">Todos los tipos</option>
+                        {% for type in error_types %}
+                        <option value="{{ type }}" {{ 'selected' if filters.tipo == type }}>{{ type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group" style="min-width: 150px;">
+                    <label>Fecha</label>
+                    <input type="date" name="date" value="{{ filters.date or '' }}">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn-primary">Filtrar</button>
+                    <a href="/errores" class="btn-secondary">Limpiar</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Content -->
+        {% for entidad, lista in errores_grouped.items() %}
+        <div class="entity-group">
+            <div class="entity-header">
+                <span>🏢 {{ entidad }}</span>
+                <span style="font-size: 0.8em; opacity: 0.9; font-weight: 500;">{{ lista|length }} incidencias</span>
+            </div>
+            {% for err in lista %}
+            <div class="error-row" id="row-{{ err.case_id }}">
+                <input type="checkbox" class="resolved-check" style="margin-right: 20px; transform: scale(1.3);"
+                       {{ 'checked disabled' if err.status == 'error_gestionado' }}
+                       onclick="resolveError('{{ err.case_id }}')">
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                        <span class="status-badge-err">{{ err.error_category }}</span>
+                        <span style="font-size: 0.85em; color: #86868b; font-weight: 600;">🕒 {{ err.detected_at }}</span>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <a href="{{ err.document_url or err.fuente_url }}" target="_blank" style="color: var(--apple-blue); font-weight: 600; text-decoration: none; font-size: 0.95em; word-break: break-all;">
+                            🔗 {{ (err.document_url or err.fuente_url)[:140] }}...
+                        </a>
+                    </div>
+                    <div style="background: #f5f5f7; padding: 15px; border-radius: 12px; border-left: 4px solid #d2d2d7; font-size: 0.9em; color: #424245;">
+                        <div style="margin-bottom: 5px;"><strong>Detalle Técnico:</strong> {{ err.notes }}</div>
+                        <strong>Recomendación:</strong> {{ propuestas.get(err.error_category, 'Verificación manual requerida.') }}
+                    </div>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="btn-action-mini" style="background: #f2f2f7; color: var(--sura-blue-dark); border: 1px solid #d2d2d7;" 
+                                onclick="editSource('{{ err.entidad }}', '{{ err.fuente_url }}')">✏️ Editar Fuente</button>
+                        <button class="btn-action-mini" style="background: #34c759; color: white;" 
+                                onclick="triggerUpload('{{ err.entidad }}')">📤 Subir PDF Manualmente</button>
+                        <input type="file" id="file-{{ err.entidad|replace(' ', '-') }}" style="display:none;" accept=".pdf" onchange="uploadFile('{{ err.entidad }}')">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align:center; padding: 100px 20px; background:white; border-radius:18px; box-shadow: var(--card-shadow);">
+            <div style="font-size: 5em; margin-bottom: 20px;">🏝️</div>
+            <h2 style="color: var(--sura-blue-dark); font-weight: 800;">¡Todo en calma!</h2>
+            <p style="color: #86868b;">No hay errores pendientes que coincidan con estos filtros.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal de Carga Manual -->
+    <div id="modal-upload" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:white; padding:30px; border-radius:18px; width:450px; box-shadow: var(--card-shadow);">
+            <h3 id="modal-upload-entidad" style="margin-top:0; color:var(--sura-blue-dark);">📤 Cargar Documento Manual</h3>
+            <p style="color:#86868b; font-size:0.85em; margin-bottom:20px;">Proporciona el contexto del archivo para que la IA y el dashboard lo identifiquen correctamente.</p>
+            
+            <form id="form-upload-manual">
+                <input type="hidden" id="upload-entidad-val">
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label style="display:block; font-size:0.8em; font-weight:700; margin-bottom:5px;">Título o Referencia</label>
+                    <input type="text" id="upload-titulo" placeholder="Ej: Resolución 123 de 2026" style="width:100%; padding:10px; border-radius:10px; border:1px solid #d2d2d7;" required>
+                </div>
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label style="display:block; font-size:0.8em; font-weight:700; margin-bottom:5px;">URL / Ruta de Origen (opcional)</label>
+                    <input type="text" id="upload-url" placeholder="https://www.dian.gov.co/..." style="width:100%; padding:10px; border-radius:10px; border:1px solid #d2d2d7;">
+                </div>
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label style="display:block; font-size:0.8em; font-weight:700; margin-bottom:5px;">Fecha de Publicación</label>
+                    <input type="date" id="upload-fecha" style="width:100%; padding:10px; border-radius:10px; border:1px solid #d2d2d7;" required>
+                </div>
+                <div class="form-group" style="margin-bottom:25px;">
+                    <label style="display:block; font-size:0.8em; font-weight:700; margin-bottom:5px;">Archivo PDF</label>
+                    <input type="file" id="upload-file" accept=".pdf" style="width:100%;" required>
+                </div>
+                
+                <div style="display:flex; gap:10px; justify-content:flex-end;">
+                    <button type="button" class="btn-secondary" onclick="closeUploadModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Subir y Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function resolveError(id) {
+            if(!confirm('¿Marcar como gestionado?')) return;
+            $.ajax({
+                url: '/api/update_case',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ case_id: id, status: 'error_gestionado' }),
+                success: function() { location.reload(); }
+            });
+        }
+        function editSource(entidad, currentEnlace) {
+            let newEnlace = prompt(`Editar enlace para:\n${entidad}`, currentEnlace);
+            if (newEnlace && newEnlace !== currentEnlace) {
+                $.ajax({
+                    url: '/api/update_fuente',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ action: 'edit', old_entidad: entidad, entidad: entidad, enlace: newEnlace.trim() }),
+                    success: function() { alert('Fuente actualizada.'); location.reload(); }
+                });
+            }
+        }
+
+        function triggerUpload(entidad) {
+            $('#upload-entidad-val').val(entidad);
+            $('#modal-upload-entidad').text('📤 Cargar para: ' + entidad);
+            $('#modal-upload').css('display', 'flex');
+            // Auto-llenar fecha de hoy
+            document.getElementById('upload-fecha').valueAsDate = new Date();
+        }
+
+        function closeUploadModal() {
+            $('#modal-upload').hide();
+            $('#form-upload-manual')[0].reset();
+        }
+
+        $('#form-upload-manual').on('submit', function(e) {
+            e.preventDefault();
+            
+            const entidad = $('#upload-entidad-val').val();
+            const fileInput = document.getElementById('upload-file');
+            if (fileInput.files.length === 0) return;
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('entidad', entidad);
+            formData.append('titulo', $('#upload-titulo').val());
+            formData.append('url_origen', $('#upload-url').val());
+            formData.append('fecha_pub', $('#upload-fecha').val());
+
+            const btn = $(this).find('button[type="submit"]');
+            btn.prop('disabled', true).text('Subiendo...');
+
+            $.ajax({
+                url: '/api/upload_manual',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    alert('Archivo cargado exitosamente. Ahora aparecerá en el dashboard principal.');
+                    location.reload();
+                },
+                error: function(xhr) {
+                    alert('Error al subir: ' + xhr.responseText);
+                    btn.prop('disabled', false).text('Subir y Registrar');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

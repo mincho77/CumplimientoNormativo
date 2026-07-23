@@ -1,0 +1,59 @@
+---
+case_id: 4c3cff4b042474cd
+tipo: Norma
+estado: detectado
+entidad: [[Organización Nacional de Trasplantes (Ministerio de Sanidad, España)]]
+linea_negocio: [[Salud]]
+riesgo: [[Riesgo Bajo]]
+impacto_ti: NO
+ejecutado: NO
+plazo: Inmediato (recomendación/criterio vigente, sin plazo expreso)
+tema: [[Tipaje HLA previo DNE]]
+sox: NO
+created: 2026-06-01
+published: 2023-10-02
+tags: []
+---
+
+
+
+
+
+## Detalles del Hallazgo
+- **Entidad Emisora:** [[Organización Nacional de Trasplantes (Ministerio de Sanidad, España)]]
+- **Tipo de Norma:** Norma
+- **Fecha de Expedición:** 2023-10-02
+- **Fecha de Detección:** 2026-06-01
+- **URL:** https://www.ont.es/wp-content/uploads/2023/10/Circular-ONT-5_2023_TIPAJE-HLA-DE-FAMILIARES-ANTES-DE-BUSQUEDA-INTERNACIONAL.pdf
+- **Control SOX:** NO
+
+## Análisis
+MINISTERIO Organización Nacional de Trasplantes, O.A.
+DE SANIDAD
+CIRCULAR Nº 5/2023 – ORGANIZACIÓN NACIONAL DE TRASPLANTES
+OBJETO: Tipaje HLA de familiares antes de una búsqueda internacional.
+DESTINATARIOS: Coordinadores Autonómicos de Trasplante, Equipos de Trasplante de
+Progenitores Hematopoyéticos.
+FECHA: 2 de octubre de 2023.
+El documento de consenso sobre “Recomendaciones y requerimientos mínimos de
+compatibilidad en la búsqueda de donantes no emparentados (DNE) para la práctica de
+Trasplante de Progenitores Hematopoyéticos” aprobado por la Comisión Permanente de
+Trasplantes del Consejo Interterritorial del Sistema Nacional de Salud (CT-CIT) en noviembre de
+2020 (https://www.ont.es/informacion-a-los-profesionales-4/documentos-de-referencia-4-4/),
+establece que el donante ideal para la práctica de un TPH es un hermano HLA genotípicamente
+idéntico al paciente, estableciéndose dicha identidad genotípica mediante determinación de
+los haplotipos HLA familiares. En dicho supuesto es suficiente la determinación de los loci A, B
+y DRB1 por técnicas de baja resolución.
+Se han detectado varios casos recientes en los cuales, por edad avanzada de los hermanos, el
+centro de Trasplante solicita la búsqueda de un DNE, siendo esta práctica cada vez más
+habitual debido a que cada vez son de más edad los receptores de trasplante.
+Sin embargo, el tipaje HLA de los familiares sigue siendo un requisito imprescindible para
+iniciar una búsqueda tal y como se recoge en el mismo documento porque, entre otras cosas,
+sirve para confirmar el tipaje HLA del receptor.
+Por tanto, aunque a criterio del centro se descarten como donantes los hermanos de un
+paciente debido a su edad u otros factores, se deberá realizar el tipaje HLA de los mismos
+antes de solicitar una búsqueda de DNE.
+C/ Sinesio Delgado 8 (Pabellón 3)
+ont@sanidad.gob.es 1 de 1 28029 Madrid
+Tel: 91 727 8699
+Fax: 91 314 2956

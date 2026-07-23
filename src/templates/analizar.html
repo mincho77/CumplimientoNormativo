@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizar Norma - Cumplimiento Normativo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.0.2">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='sura-ui.js') }}"></script>
+    <style>
+        .analizar-layout {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 28px;
+            margin-top: 24px;
+            align-items: start;
+        }
+        @media (max-width: 960px) {
+            .analizar-layout { grid-template-columns: 1fr; }
+        }
+        .panel-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--elevation-dp2);
+            padding: 28px;
+        }
+        body.dark-theme .panel-card {
+            background: #001263;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .panel-card h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0 0 20px 0;
+            color: var(--sura-primary-blue, #0033A0);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        body.dark-theme .panel-card h2 { color: #81B1FF; }
+        
+        /* Segmented Tabs Control */
+        .source-tabs {
+            display: flex;
+            background: var(--gray-100);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            border: none;
+        }
+        .source-tab {
+            flex: 1;
+            padding: 10px 16px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.88rem;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: var(--gray-500);
+            border: none;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .source-tab:hover {
+            color: var(--sura-blue-dark);
+        }
+        .source-tab.active {
+            background: white;
+            color: var(--sura-blue-dark);
+            box-shadow: var(--elevation-dp1);
+        }
+        body.dark-theme .source-tabs {
+            background: #000c40;
+        }
+        body.dark-theme .source-tab {
+            color: #aaa;
+        }
+        body.dark-theme .source-tab.active {
+            background: #001263;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .source-panel { display: none; }
+        .source-panel.active { display: block; }
+
+        .form-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 6px;
+            display: block;
+        }
+        body.dark-theme .form-label { color: #ccc; }
+
+        /* Custom PDF list items */
+        .pdf-list-item {
+            background: white;
+            border: 1px solid var(--gray-200);
+            transition: all 0.2s ease;
+        }
+        body.dark-theme .pdf-list-item {
+            background: #00104a;
+            border-color: rgba(255,255,255,0.1);
+        }
+        .pdf-list-item:hover {
+            background: rgba(45, 109, 246, 0.05);
+            border-color: var(--color-primary);
+        }
+        .pdf-list-item.selected {
+            background: rgba(45, 109, 246, 0.12);
+            border-color: var(--color-primary);
+            box-shadow: var(--elevation-dp1);
+        }
+        body.dark-theme .pdf-list-item.selected {
+            background: rgba(129, 177, 255, 0.15);
+            border-color: #81B1FF;
+        }
+
+        select, input[type="file"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #D0D5E5;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            background: #F8F9FB;
+            color: #111;
+            box-sizing: border-box;
+            margin-bottom: 16px;
+        }
+        body.dark-theme select, body.dark-theme input[type="file"] {
+            background: #00104a;
+            color: #e0e0e0;
+            border-color: rgba(255,255,255,0.15);
+        }
+        .upload-area {
+            border: 2px dashed #B0BCDB;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            margin-bottom: 16px;
+        }
+        .upload-area:hover { border-color: #0033A0; background: #EEF2FF; }
+        .upload-area .upload-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
+        .upload-area p { margin: 0; font-size: 0.85rem; color: #666; }
+        #file-name-display { font-size: 0.8rem; color: #0033A0; font-weight: 600; margin-top: 4px; }
+
+        .btn-analizar {
+            width: 100%;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #0033A0, #2D6DF6);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 42px;
+            margin-top: 8px;
+        }
+        .btn-analizar:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: var(--elevation-dp2); }
+        .btn-analizar:active { transform: translateY(0); }
+        .btn-analizar:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* Results Placeholders & Custom PDF list */
+        .results-placeholder {
+            border: 2px dashed var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            text-align: center;
+            background: var(--bg-5);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        body.dark-theme .results-placeholder {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: #000c40;
+        }
+        .results-placeholder .icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(45, 109, 246, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        body.dark-theme .results-placeholder .icon-wrapper {
+            background: rgba(129, 177, 255, 0.15);
+        }
+        .pdf-list-container {
+            max-height: 280px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 8px;
+            background: var(--bg-5);
+        }
+        body.dark-theme .pdf-list-container {
+            background: #000c40;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .datos-generales-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 700px) { .datos-generales-grid { grid-template-columns: 1fr; } }
+        .dato-item {
+            background: #F4F7FF;
+            border-radius: 10px;
+            padding: 12px 16px;
+        }
+        body.dark-theme .dato-item { background: #00104a; }
+        .dato-item .dato-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #0033A0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        body.dark-theme .dato-item .dato-label { color: #81B1FF; }
+        .dato-item .dato-value { font-size: 0.88rem; color: #222; }
+        body.dark-theme .dato-item .dato-value { color: #e0e0e0; }
+        .dato-item .tag-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+        .tag-chip {
+            background: #E0EAFF;
+            color: #0033A0;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        body.dark-theme .tag-chip { background: #002080; color: #81B1FF; }
+
+        .obligaciones-list { display: flex; flex-direction: column; gap: 14px; }
+        .obligacion-card {
+            border: 1px solid #E0E4EF;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        body.dark-theme .obligacion-card { border-color: rgba(255,255,255,0.1); }
+        .obligacion-header {
+            background: #F4F7FF;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        body.dark-theme .obligacion-header { background: #00104a; }
+        .obligacion-header:hover { background: #E8EEFF; }
+        body.dark-theme .obligacion-header:hover { background: #001580; }
+        .obligacion-num {
+            background: #0033A0;
+            color: white;
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .obligacion-title { font-weight: 600; font-size: 0.9rem; flex: 1; }
+        .obligacion-body {
+            padding: 16px 18px;
+            display: none;
+            border-top: 1px solid #E0E4EF;
+        }
+        body.dark-theme .obligacion-body { border-color: rgba(255,255,255,0.08); }
+        .obligacion-body.open { display: block; }
+        .obligacion-row { display: flex; gap: 12px; margin-bottom: 10px; font-size: 0.87rem; }
+        .obligacion-row .row-label { font-weight: 700; color: #555; min-width: 140px; }
+        body.dark-theme .obligacion-row .row-label { color: #aaa; }
+        .frecuencia-badge {
+            background: #FFF5EC;
+            color: #C15700;
+            border-radius: 6px;
+            padding: 2px 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border: 1px solid #FFDAB5;
+            display: inline-block;
+        }
+
+        .results-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #E0E4EF;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        body.dark-theme .results-footer { border-color: rgba(255,255,255,0.08); }
+        .tokens-info { font-size: 0.8rem; color: #888; }
+        .btn-guardar {
+            background: #067014;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 22px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-guardar:hover { opacity: 0.85; }
+
+        /* Spinner */
+        .spinner {
+            width: 36px; height: 36px;
+            border: 4px solid #E0E4EF;
+            border-top-color: #0033A0;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .analyzing-state { text-align: center; padding: 60px 20px; }
+        .analyzing-state p { color: #555; margin-top: 8px; }
+
+        .error-state {
+            background: #FFF4F3;
+            border: 1px solid #FFCCC9;
+            border-radius: 12px;
+            padding: 20px;
+            color: #D12D35;
+            font-size: 0.9rem;
+        }
+        .alert-advertencia {
+            background: #FFF8E6;
+            border: 1px solid #FFD97A;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            color: #8a5c00;
+            margin-bottom: 16px;
+        }
+        #btn-ver-prompt {
+            margin-top: 12px;
+            background: transparent;
+            border: 2px solid #0033A0;
+            color: #0033A0;
+            box-shadow: none;
+            transition: all 0.2s;
+        }
+        #btn-ver-prompt:hover {
+            background: rgba(0, 51, 160, 0.05);
+        }
+        body.dark-theme #btn-ver-prompt {
+            border-color: #81B1FF;
+            color: #81B1FF;
+        }
+        body.dark-theme #btn-ver-prompt:hover {
+            background: rgba(129, 177, 255, 0.08);
+        }
+        body.dark-theme #prompt-text {
+            background: #00104a;
+            border-color: rgba(255,255,255,0.1);
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn-back"><span class="ic ic-arrow-left"></span> Volver al Dashboard</a>
+
+        <div class="app-bar">
+            <div class="app-bar__brand">
+                <img src="{{ url_for('static', filename='sura-logo.svg') }}" alt="SURA" class="brand-logo">
+                <div class="app-bar__divider"></div>
+                <div class="app-bar__titles">
+                    <h1><span class="ic ic-shield"></span> Analizar Norma</h1>
+                    <p class="subtitle">Extrae datos generales y obligaciones de un documento normativo usando Inteligencia Artificial</p>
+                </div>
+            </div>
+            <div class="app-bar__actions">
+                <div class="theme-switch" id="theme-toggle" title="Cambiar tema">
+                    <div class="theme-switch__btn light active" id="theme-light"><span class="ic ic-sun"></span></div>
+                    <div class="theme-switch__btn dark" id="theme-dark"><span class="ic ic-moon"></span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="analizar-layout">
+            <!-- Panel Izquierdo: Selector de fuente -->
+            <div class="panel-card">
+                <h2><span class="ic ic-folder"></span> Fuente del Documento</h2>
+
+                <div class="source-tabs">
+                    <button class="source-tab active" id="tab-monitor" onclick="switchTab('monitor')">
+                        <span class="ic ic-search"></span> Del Monitor
+                    </button>
+                    <button class="source-tab" id="tab-upload" onclick="switchTab('upload')">
+                        <span class="ic ic-upload"></span> Subir PDF
+                    </button>
+                    <button class="source-tab" id="tab-analizados" onclick="switchTab('analizados')">
+                        <span class="ic ic-clipboard"></span> Ya Analizados
+                    </button>
+                </div>
+
+                <!-- Opción A: Del Monitor -->
+                <div class="source-panel active" id="panel-monitor">
+                    <label class="form-label">Selecciona un documento detectado</label>
+                    <input type="hidden" id="select-pdf" value="">
+                    <div class="pdf-list-container">
+                        {% for pdf in pdfs_monitor %}
+                        <div class="pdf-list-item" data-value="{{ pdf.url }}" onclick="selectPdfItem(this)" style="padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; border: 1px solid var(--gray-200); font-size: 0.82rem; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 4px;">
+                            <span style="font-weight: 700; color: var(--sura-primary-blue, #0033A0); display: flex; align-items: center; gap: 6px;">
+                                <span class="ic ic-building"></span> {{ pdf.entidad[:50] }}
+                            </span>
+                            <span style="color: var(--gray-900); font-weight: 500;">
+                                {{ pdf.titulo or pdf.url.split('/')[-1] }}
+                            </span>
+                        </div>
+                        {% else %}
+                        <div style="padding: 16px; text-align: center; color: var(--gray-500); font-size: 0.85rem;">
+                            No hay PDFs disponibles del monitor
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <p style="font-size:0.78rem; color:#888; margin-top:-8px; margin-bottom:16px;">
+                        Mostrando {{ pdfs_monitor|length }} documentos PDF detectados
+                    </p>
+                </div>
+
+                <!-- Opción B: Subir PDF -->
+                <div class="source-panel" id="panel-upload">
+                    <label class="form-label">Sube un PDF desde tu computador</label>
+                    <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
+                        <span class="ic ic-file ic-xl" style="color: var(--color-primary); margin-bottom: 8px;"></span>
+                        <p>Haz clic para seleccionar un PDF</p>
+                        <p style="font-size:0.75rem; margin-top:6px;">Solo archivos .pdf</p>
+                    </div>
+                    <input type="file" id="file-input" accept=".pdf" style="display:none;" onchange="onFileSelected(this)">
+                    <div id="file-name-display"></div>
+                </div>
+
+                <!-- Opción C: Ya Analizados -->
+                <div class="source-panel" id="panel-analizados">
+                    <label class="form-label">Selecciona un análisis guardado</label>
+                    <input type="hidden" id="select-analizado" value="">
+                    <div class="pdf-list-container">
+                        {% for a in analizados %}
+                        <div class="pdf-list-item" data-filename="{{ a.filename }}" onclick="selectAnalizadoItem(this)" style="padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; border: 1px solid var(--gray-200); font-size: 0.82rem; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 4px;">
+                            <span style="font-weight: 700; color: var(--sura-primary-blue, #0033A0); display: flex; align-items: center; gap: 6px;">
+                                <span class="ic ic-file-text"></span> {{ a.title[:50] }}
+                            </span>
+                            <span style="color: var(--gray-500); font-size: 0.75rem;">
+                                Guardado: {{ a.created }}
+                            </span>
+                        </div>
+                        {% else %}
+                        <div style="padding: 16px; text-align: center; color: var(--gray-500); font-size: 0.85rem;">
+                            No hay análisis guardados en la Wiki
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <p style="font-size:0.78rem; color:#888; margin-top:-8px; margin-bottom:16px;">
+                        Mostrando {{ analizados|length }} análisis guardados
+                    </p>
+                </div>
+
+                <button class="btn-analizar" id="btn-analizar" onclick="ejecutarAnalisis()">
+                    <span class="ic ic-settings"></span> Analizar Documento
+                </button>
+                <button class="btn-analizar" id="btn-ver-prompt" onclick="abrirPromptModal()">
+                    <span class="ic ic-file-text"></span> Ver Prompt de la IA
+                </button>
+            </div>
+
+            <!-- Panel Derecho: Resultados -->
+            <div class="panel-card" id="results-panel">
+                <div class="results-placeholder" id="placeholder-state">
+                    <div class="icon-wrapper">
+                        <span class="ic ic-balanza" style="font-size: 2rem; color: var(--color-primary);"></span>
+                    </div>
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--sura-primary-blue, #0033A0); margin-bottom: 8px;">Análisis de Obligaciones Normativas</h3>
+                    <p style="color: var(--gray-500); max-width: 320px; font-size: 0.88rem; line-height: 1.5; margin: 0;">
+                        Selecciona un documento de la barra lateral o sube un PDF y presiona <strong>Analizar Documento</strong> para iniciar el procesamiento inteligente.
+                    </p>
+                </div>
+                <div class="analyzing-state" id="analyzing-state" style="display:none;">
+                    <div class="spinner"></div>
+                    <p>Analizando documento con IA...<br><small>Esto puede tardar hasta 30 segundos</small></p>
+                </div>
+                <div id="error-state" style="display:none;"></div>
+                <div id="results-content" style="display:none;"></div>
+                <div id="repair-metrics-panel" style="margin-top:12px; border:1px solid var(--gray-200); border-radius:10px; padding:12px; background:#FAFBFE;">
+                    <h3 style="margin:0 0 8px 0; font-size:0.95rem; color:var(--sura-primary-blue,#0033A0); display:flex; align-items:center; gap:6px;">
+                        <span class="ic ic-cpu"></span> Métricas de Auto-reparación
+                    </h3>
+                    <div id="repair-metrics-content" style="font-size:0.82rem; color:var(--gray-500);">
+                        Cargando métricas...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para visualizar el prompt -->
+    <div class="sura-modal-overlay" id="prompt-modal">
+        <div class="sura-modal-card" style="max-width: 900px; width: 90%;">
+            <div class="sura-modal-title" style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 16px;">
+                <span style="display:flex; align-items:center; gap:8px;"><span class="ic ic-file-text"></span> Prompt Completo de la IA</span>
+                <button onclick="cerrarPromptModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--gray-500);">&times;</button>
+            </div>
+            <div class="sura-modal-body" style="max-height: 60vh; overflow-y: auto; margin-bottom: 20px;">
+                <p style="font-size:0.85rem; margin-bottom:12px; line-height: 1.4;">
+                    Este es el prompt del sistema dinámico que se envía a Azure OpenAI para el análisis de obligaciones, incluyendo los macroprocesos, emisores y tipos de norma actuales:
+                </p>
+                <pre id="prompt-text" style="background:#F4F7FF; padding:16px; border-radius:8px; font-size:0.82rem; font-family:monospace; white-space:pre-wrap; border:1px solid #E0E4EF; color:#222; overflow-x:auto; text-align:left;"></pre>
+            </div>
+            <div class="sura-modal-actions">
+                <button class="btn-secondary" onclick="cerrarPromptModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'monitor';
+        let currentResultado = null;
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.source-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.source-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('panel-' + tab).classList.add('active');
+        }
+
+        function onFileSelected(input) {
+            const file = input.files[0];
+            if (file) {
+                document.getElementById('file-name-display').innerHTML = '<span class="ic ic-check" style="color:var(--alert-success);"></span> ' + file.name;
+            }
+        }
+
+        // Drag and drop
+        const uploadArea = document.getElementById('upload-area');
+        uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.style.borderColor = '#0033A0'; });
+        uploadArea.addEventListener('dragleave', () => { uploadArea.style.borderColor = '#B0BCDB'; });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#B0BCDB';
+            const file = e.dataTransfer.files[0];
+            if (file && file.name.endsWith('.pdf')) {
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                document.getElementById('file-input').files = dt.files;
+                document.getElementById('file-name-display').innerHTML = '<span class="ic ic-check" style="color:var(--alert-success);"></span> ' + file.name;
+            }
+        });
+
+        let progressInterval = null;
+        const progressSteps = [
+            "Descargando documento PDF desde la fuente original...",
+            "Leyendo y extrayendo texto del documento...",
+            "Preparando contexto y prompt dinámico de SURA...",
+            "Enviando contenido a Azure OpenAI...",
+            "Extrayendo y estructurando obligaciones regulatorias...",
+            "Asignando macroprocesos, procesos y líderes...",
+            "Cotejando controles y afinando los resultados...",
+            "Finalizando estructuración del análisis..."
+        ];
+
+        function startProgressSimulation() {
+            const pElement = document.querySelector('#analyzing-state p');
+            if (!pElement) return;
+            let step = 0;
+            pElement.innerHTML = `<strong>${progressSteps[0]}</strong><br><small>Paso 1 de ${progressSteps.length} | Analizando con IA</small>`;
+            
+            progressInterval = setInterval(() => {
+                step++;
+                if (step < progressSteps.length) {
+                    pElement.innerHTML = `<strong>${progressSteps[step]}</strong><br><small>Paso ${step + 1} de ${progressSteps.length} | Analizando con IA</small>`;
+                } else {
+                    pElement.innerHTML = `<strong>Finalizando procesamiento...</strong><br><small>Tomará solo unos segundos más</small>`;
+                }
+            }, 3000);
+        }
+
+        function stopProgressSimulation() {
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+        }
+
+        function setUIState(state) {
+            document.getElementById('placeholder-state').style.display = state === 'placeholder' ? 'flex' : 'none';
+            document.getElementById('analyzing-state').style.display = state === 'analyzing' ? 'block' : 'none';
+            document.getElementById('error-state').style.display = state === 'error' ? 'block' : 'none';
+            document.getElementById('results-content').style.display = state === 'results' ? 'block' : 'none';
+            document.getElementById('btn-analizar').disabled = state === 'analyzing';
+
+            if (state === 'analyzing') {
+                startProgressSimulation();
+            } else {
+                stopProgressSimulation();
+            }
+        }
+
+
+        function selectPdfItem(element) {
+            document.querySelectorAll('#panel-monitor .pdf-list-item').forEach(item => item.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('select-pdf').value = element.getAttribute('data-value');
+        }
+
+        function selectAnalizadoItem(element) {
+            document.querySelectorAll('#panel-analizados .pdf-list-item').forEach(item => item.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('select-analizado').value = element.getAttribute('data-filename');
+        }
+
+        function ejecutarAnalisis() {
+            if (currentTab === 'monitor') {
+                const url = document.getElementById('select-pdf').value;
+                if (!url) { showToast('Selecciona un documento del monitor.', 'warning'); return; }
+                setUIState('analyzing');
+                fetch('/api/analizar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                })
+                .then(r => r.json())
+                .then(handleResponse)
+                .catch(err => mostrarError('Error de red: ' + err.message));
+            } else if (currentTab === 'analizados') {
+                const filename = document.getElementById('select-analizado').value;
+                if (!filename) { showToast('Selecciona un análisis guardado.', 'warning'); return; }
+                setUIState('analyzing');
+                fetch('/api/analisis_existente?wiki_file=' + encodeURIComponent(filename))
+                .then(r => r.json())
+                .then(handleResponse)
+                .catch(err => mostrarError('Error de red: ' + err.message));
+            } else {
+                const fileInput = document.getElementById('file-input');
+                if (!fileInput.files.length) { showToast('Selecciona un archivo PDF.', 'warning'); return; }
+                setUIState('analyzing');
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                fetch('/api/analizar', { method: 'POST', body: formData })
+                .then(r => r.json())
+                .then(handleResponse)
+                .catch(err => mostrarError('Error de red: ' + err.message));
+            }
+        }
+
+        function handleResponse(data) {
+            if (data.error) { mostrarError(data.error); return; }
+            currentResultado = data.resultado;
+            renderResultados(currentResultado);
+            setUIState('results');
+            loadRepairMetrics();
+        }
+
+        function mostrarError(msg) {
+            setUIState('error');
+            document.getElementById('error-state').innerHTML = `
+                <div class="error-state">
+                    <strong><span class="ic ic-alert" style="margin-right: 4px;"></span> Error al analizar el documento</strong><br><br>${msg}
+                </div>`;
+        }
+
+        function chips(arr) {
+            if (!arr || arr.length === 0) return '<span style="color:#aaa">No especificado</span>';
+            return arr.map(v => `<span class="tag-chip">${v}</span>`).join('');
+        }
+        function val(v) { return v || '<span style="color:#aaa">No especificado</span>'; }
+
+        function renderResultados(res) {
+            const dg = res.datos_generales || {};
+            const obs = res.obligaciones || [];
+            const repairInfo = res._repair_info || {};
+            const advertencia = res._advertencia ? `<div class="alert-advertencia"><span class="ic ic-alert" style="margin-right: 4px;"></span> ${res._advertencia}</div>` : '';
+            const repairBadge = repairInfo.auto_repaired
+                ? `<span style="display:inline-flex;align-items:center;gap:4px;background:#FFF3E0;color:#9A5D00;border:1px solid #F3D7A5;border-radius:999px;padding:2px 8px;font-size:0.72rem;font-weight:700;"><span class="ic ic-alert"></span> Auto-reparado</span>`
+                : `<span style="display:inline-flex;align-items:center;gap:4px;background:#E7F5EA;color:#0F6B26;border:1px solid #BFE6C9;border-radius:999px;padding:2px 8px;font-size:0.72rem;font-weight:700;"><span class="ic ic-check"></span> Salida válida al primer intento</span>`;
+            const repairReason = repairInfo.repair_reason ? repairInfo.repair_reason : 'N/A';
+            const repairAttempts = Number.isFinite(repairInfo.repair_attempts) ? repairInfo.repair_attempts : 0;
+            const maxAttempts = Number.isFinite(repairInfo.max_attempts) ? repairInfo.max_attempts : 'N/A';
+
+            // Datos generales
+            const dgHTML = `
+                <h2 style="margin-top:0;font-size:1rem;color:var(--sura-primary-blue,#0033A0);display:flex;align-items:center;gap:6px;">
+                    <span class="ic ic-clipboard"></span> Datos Generales de la Norma
+                </h2>
+                ${advertencia}
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                    ${repairBadge}
+                    <span style="display:inline-flex;align-items:center;gap:4px;background:#F4F7FF;color:#0033A0;border:1px solid #D7E0FA;border-radius:999px;padding:2px 8px;font-size:0.72rem;font-weight:700;"><span class="ic ic-refresh"></span> Intentos: ${repairAttempts}/${maxAttempts}</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;background:#F9FAFB;color:#4B5563;border:1px solid #E5E7EB;border-radius:999px;padding:2px 8px;font-size:0.72rem;font-weight:700;"><span class="ic ic-file-text"></span> Motivo: ${repairReason}</span>
+                </div>
+                <div class="datos-generales-grid">
+                    <div class="dato-item" style="grid-column:1/-1;">
+                        <div class="dato-label">Título</div>
+                        <div class="dato-value">${val(dg.titulo)}</div>
+                    </div>
+                    <div class="dato-item">
+                        <div class="dato-label">Norma</div>
+                        <div class="dato-value"><strong>${val(dg.norma)}</strong></div>
+                    </div>
+                    <div class="dato-item">
+                        <div class="dato-label">Tipo de Norma</div>
+                        <div class="dato-value">${val(dg.tipo_norma)}</div>
+                    </div>
+                    <div class="dato-item">
+                        <div class="dato-label">Emisor</div>
+                        <div class="dato-value">${val(dg.emisor)}</div>
+                    </div>
+                    <div class="dato-item">
+                        <div class="dato-label">Fecha de Publicación</div>
+                        <div class="dato-value">${val(dg.fecha_publicacion)}</div>
+                    </div>
+                    <div class="dato-item">
+                        <div class="dato-label">Jurisdicción</div>
+                        <div class="dato-value">${val(dg.jurisdiccion)}</div>
+                    </div>
+                    <div class="dato-item">
+                        <div class="dato-label">Anexos</div>
+                        <div class="dato-value">${val(dg.anexos)}</div>
+                    </div>
+                    <div class="dato-item" style="grid-column:1/-1;">
+                        <div class="dato-label">Temas</div>
+                        <div class="tag-list">${chips(dg.temas)}</div>
+                    </div>
+                    <div class="dato-item" style="grid-column:1/-1;">
+                        <div class="dato-label">Compañías Impactadas</div>
+                        <div class="tag-list">${chips(dg.companias_impactadas)}</div>
+                    </div>
+                    <div class="dato-item">
+                        <div class="dato-label">Incidencia SURA</div>
+                        <div class="dato-value" style="color:#888;font-style:italic;">${val(dg.incidencia_sura)}</div>
+                    </div>
+                    <div class="dato-item">
+                        <div class="dato-label">Control SOX</div>
+                        <div class="dato-value" style="color:#888;font-style:italic;">${val(dg.control_sox)}</div>
+                    </div>
+                </div>
+            `;
+
+            // Obligaciones
+            let obsHTML = `<h2 style="font-size:1rem;color:var(--sura-primary-blue,#0033A0);display:flex;align-items:center;gap:6px;"><span class="ic ic-file-text"></span> Obligaciones Identificadas (${obs.length})</h2>`;
+            if (obs.length === 0) {
+                obsHTML += '<p style="color:#aaa;">No se identificaron obligaciones específicas.</p>';
+            } else {
+                obsHTML += '<div class="obligaciones-list">';
+                obs.forEach((o, i) => {
+                    const TIPO_CFG = {
+                        'Reportar':    {bg:'#0033A0',icon:'ic-upload'},
+                        'Pagar':       {bg:'#067014',icon:'ic-link'},
+                        'Implementar': {bg:'#7B2D8B',icon:'ic-settings'},
+                        'Controlar':   {bg:'#ED8B00',icon:'ic-search'},
+                        'Documentar':  {bg:'#795548',icon:'ic-folder'},
+                        'Autorizar':   {bg:'#3F51B5',icon:'ic-check'},
+                        'Capacitar':   {bg:'#00838F',icon:'ic-book'},
+                        'Prohibición': {bg:'#D12D35',icon:'ic-alert'},
+                        'Divulgar':    {bg:'#C47A00',icon:'ic-megaphone'},
+                        'Garantizar':  {bg:'#2E7D32',icon:'ic-shield'},
+                        'Actualizar':  {bg:'#546E7A',icon:'ic-refresh'},
+                        'General':     {bg:'#888B8D',icon:'ic-file-text'},
+                    };
+                    const tipo = o.tipo_obligacion || 'General';
+                    const tcfg = TIPO_CFG[tipo] || TIPO_CFG['General'];
+                    obsHTML += `
+                    <div class="obligacion-card" style="border-left:4px solid ${tcfg.bg};">
+                        <div class="obligacion-header" onclick="toggleObl(${i})" style="border-left:none;">
+                            <span class="obligacion-num" style="background:${tcfg.bg};">${o.numeral_articulo || 'Art. ?'}</span>
+                            <span style="display:inline-block;background:${tcfg.bg}20;color:${tcfg.bg};
+                                border:1px solid ${tcfg.bg}40;border-radius:9999px;
+                                padding:2px 9px;font-size:0.72rem;font-weight:700;
+                                white-space:nowrap;"><span class="ic ${tcfg.icon}"></span> ${tipo}</span>
+                            <span class="obligacion-title">${(o.texto_obligacion || '').substring(0, 90)}${(o.texto_obligacion||'').length > 90 ? '…' : ''}</span>
+                            <span id="arrow-${i}" style="color:#aaa;transition:transform 0.2s;">▼</span>
+                        </div>
+                        <div class="obligacion-body" id="obl-body-${i}">
+                            <div class="obligacion-row">
+                                <span class="row-label">Texto completo:</span>
+                                <span>${val(o.texto_obligacion)}</span>
+                            </div>
+                            <div class="obligacion-row">
+                                <span class="row-label">Frecuencia / Plazo:</span>
+                                <span class="frecuencia-badge" style="display:inline-flex;align-items:center;gap:4px;"><span class="ic ic-clock"></span> ${o.frecuencia || 'Permanente'}</span>
+                            </div>
+                            ${o.vigencia_desde && o.vigencia_desde !== 'No especificado' ? `
+                            <div class="obligacion-row">
+                                <span class="row-label">Vigente desde:</span>
+                                <span style="color:#0033A0;font-weight:600;"><span class="ic ic-calendar"></span> ${o.vigencia_desde}</span>
+                            </div>` : ''}
+                            <div class="obligacion-row">
+                                <span class="row-label">Entregable:</span>
+                                <span>${val(o.entregable)}</span>
+                            </div>
+                            <div class="obligacion-row">
+                                <span class="row-label">Normas relacionadas:</span>
+                                <span>${val(o.normas_relacionadas)}</span>
+                            </div>
+                            <div class="obligacion-row">
+                                <span class="row-label">Macroproceso:</span>
+                                <span>${val(o.macroproceso)}</span>
+                            </div>
+                            <div class="obligacion-row">
+                                <span class="row-label">Proceso:</span>
+                                <span>${val(o.proceso)}</span>
+                            </div>
+                            <div class="obligacion-row">
+                                <span class="row-label">Líder:</span>
+                                <span>${val(o.lider_proceso)}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+                obsHTML += '</div>';
+            }
+
+            const footerHTML = `
+                <div class="results-footer">
+                    <span class="tokens-info" style="display:inline-flex;align-items:center;gap:4px;"><span class="ic ic-cpu"></span> Tokens utilizados: ${res._tokens || 'N/A'} | Fuente: ${res._fuente || 'N/A'}</span>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button class="btn-guardar" onclick="guardarAnalisis()" style="display:inline-flex;align-items:center;gap:6px;"><span class="ic ic-archive"></span> Guardar en Wiki</button>
+                        <button class="btn-guardar" onclick="verMapaMental()" style="background:#7B2D8B; display:inline-flex;align-items:center;gap:6px;"><span class="ic ic-brain"></span> Mapa Mental</button>
+                        <button class="btn-guardar" onclick="exportarPDF()" style="background:#0033A0; display:inline-flex;align-items:center;gap:6px;"><span class="ic ic-file-text"></span> Exportar a PDF</button>
+                    </div>
+                </div>`;
+
+            document.getElementById('results-content').innerHTML = dgHTML + obsHTML + footerHTML;
+        }
+
+        function fmtPct(v) {
+            const n = Number(v);
+            if (!Number.isFinite(n)) return '0.00%';
+            return `${n.toFixed(2)}%`;
+        }
+
+        function renderRepairMetrics(metrics) {
+            const container = document.getElementById('repair-metrics-content');
+            if (!metrics || !metrics.total_runs) {
+                container.innerHTML = '<span style="color:#888;">Sin datos aún. Ejecuta análisis para poblar historial.</span>';
+                return;
+            }
+
+            const reasons = (metrics.top_repair_reasons || [])
+                .map(r => `<li>${r.reason} <strong>(${r.count})</strong></li>`)
+                .join('');
+
+            container.innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:10px;">
+                    <div style="background:white;border:1px solid #E5E7EB;border-radius:8px;padding:8px;"><div style="font-weight:700;color:#111;">${metrics.total_runs}</div><div style="color:#6B7280;">Ejecuciones</div></div>
+                    <div style="background:white;border:1px solid #E5E7EB;border-radius:8px;padding:8px;"><div style="font-weight:700;color:#111;">${fmtPct(metrics.initial_invalid_rate)}</div><div style="color:#6B7280;">Invalidación inicial</div></div>
+                    <div style="background:white;border:1px solid #E5E7EB;border-radius:8px;padding:8px;"><div style="font-weight:700;color:#111;">${fmtPct(metrics.recovery_rate)}</div><div style="color:#6B7280;">Recuperación</div></div>
+                    <div style="background:white;border:1px solid #E5E7EB;border-radius:8px;padding:8px;"><div style="font-weight:700;color:#111;">${fmtPct(metrics.fallback_rate_total)}</div><div style="color:#6B7280;">Fallback (total)</div></div>
+                </div>
+                <div style="margin-bottom:8px; color:#374151;">
+                    Promedio de intentos en inválidos: <strong>${metrics.avg_repair_attempts_invalid}</strong>
+                </div>
+                <div style="margin-bottom:8px; color:#374151;">
+                    Último evento: <strong>${metrics.last_event_at || 'N/A'}</strong>
+                </div>
+                <div>
+                    <div style="font-weight:700; margin-bottom:4px; color:#111;">Top motivos de falla</div>
+                    <ol style="margin:0; padding-left:18px; color:#374151;">
+                        ${reasons || '<li>Sin motivos registrados</li>'}
+                    </ol>
+                </div>
+            `;
+        }
+
+        function loadRepairMetrics() {
+            fetch('/api/repair_metrics')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.success) throw new Error(data.error || 'No se pudieron cargar métricas');
+                renderRepairMetrics(data.metrics || {});
+            })
+            .catch(err => {
+                const container = document.getElementById('repair-metrics-content');
+                container.innerHTML = `<span style="color:#B42318;">Error cargando métricas: ${err.message}</span>`;
+            });
+        }
+
+        function toggleObl(i) {
+            const body = document.getElementById('obl-body-' + i);
+            const arrow = document.getElementById('arrow-' + i);
+            body.classList.toggle('open');
+            arrow.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+        }
+
+        function guardarAnalisis() {
+            if (!currentResultado) return;
+            fetch('/api/guardar_analisis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ resultado: currentResultado })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Análisis guardado con éxito en la Wiki', 'success');
+                } else {
+                    showToast('Error al guardar: ' + data.error, 'error');
+                }
+            });
+        }
+
+        function exportarPDF() {
+            if (!currentResultado) return;
+            fetch('/api/exportar_pdf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ resultado: currentResultado })
+            })
+            .then(r => {
+                if (!r.ok) throw new Error('Error al generar el PDF.');
+                return r.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const docName = (currentResultado.datos_generales && currentResultado.datos_generales.norma) ? currentResultado.datos_generales.norma : 'analisis';
+                a.download = `Analisis_Obligaciones_${docName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            })
+            .catch(err => {
+                showToast('Error al generar PDF: ' + err.message, 'error');
+            });
+        }
+
+        function verMapaMental() {
+            if (!currentResultado) return;
+            fetch('/mapa-norma', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ resultado: currentResultado })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.ok) window.open('/mapa-norma', '_blank');
+            })
+            .catch(err => showToast('Error al abrir el mapa: ' + err.message, 'error'));
+        }
+
+        // Theme
+        $(document).ready(function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeLight = document.getElementById('theme-light');
+            const themeDark = document.getElementById('theme-dark');
+            function setTheme(theme) {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    themeDark.classList.add('active');
+                    themeLight.classList.remove('active');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    themeLight.classList.add('active');
+                    themeDark.classList.remove('active');
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+            const saved = localStorage.getItem('theme');
+            if (saved) setTheme(saved);
+            else if (window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
+            themeToggle.addEventListener('click', () => {
+                setTheme(document.body.classList.contains('dark-theme') ? 'light' : 'dark');
+            });
+
+            loadRepairMetrics();
+        });
+
+        function abrirPromptModal() {
+            const modal = document.getElementById('prompt-modal');
+            const promptText = document.getElementById('prompt-text');
+            
+            promptText.textContent = "Cargando prompt...";
+            modal.classList.add('show');
+            
+            fetch('/api/prompt')
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) {
+                    promptText.textContent = "Error al cargar el prompt: " + data.error;
+                } else {
+                    promptText.textContent = data.prompt;
+                }
+            })
+            .catch(err => {
+                promptText.textContent = "Error de red al cargar el prompt: " + err.message;
+            });
+        }
+
+        function cerrarPromptModal() {
+            document.getElementById('prompt-modal').classList.remove('show');
+        }
+    </script>
+</body>
+</html>

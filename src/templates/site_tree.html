@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapa de Arquitectura | {{ entidad }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { background: var(--bg-gray); overflow: hidden; height: 100vh; transition: background 0.2s; }
+        .canvas-area { width: 100%; height: calc(100vh - 120px); background: white; border-radius: 16px; box-shadow: var(--card-shadow); margin-top: 20px; border: 1px solid var(--gray-200); position: relative; }
+        body.dark-theme .canvas-area { background: #001263; }
+        .node circle { fill: #fff; stroke: var(--apple-blue); stroke-width: 3px; cursor: pointer; }
+        .node text { font: 12px var(--font-family); font-weight: 500; fill: var(--gray-900); pointer-events: none; }
+        .link { fill: none; stroke: var(--gray-200); stroke-width: 2px; }
+        .legend { position: absolute; bottom: 40px; left: 40px; background: white; padding: 15px; border-radius: 12px; font-size: 0.8em; box-shadow: var(--card-shadow); border: 1px solid var(--gray-200); }
+        body.dark-theme .legend { background: #001263; color: var(--gray-900); }
+        
+        /* Tooltip style */
+        .tooltip {
+            position: absolute;
+            padding: 8px 12px;
+            background: rgba(0, 51, 160, 0.9);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.75em;
+            pointer-events: none;
+            box-shadow: var(--elevation-dp3);
+            max-width: 400px;
+            word-break: break-all;
+            z-index: 2000;
+            display: none;
+            font-family: monospace;
+        }
+    </style>
+    <script src="{{ url_for('static', filename='sura-ui.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="app-bar">
+            <div class="app-bar__brand">
+                <img src="{{ url_for('static', filename='sura-logo.svg') }}" alt="SURA" class="brand-logo">
+                <div class="app-bar__divider"></div>
+                <div class="app-bar__titles">
+                    <h1><span class="ic ic-map"></span> Arquitectura de Sitio: {{ entidad }}</h1>
+                    <p class="subtitle">Visualización interactiva del rastreo realizado por el bot</p>
+                </div>
+            </div>
+            <div class="app-bar__actions">
+                <div class="theme-switch" id="theme-toggle" title="Cambiar tema" style="margin-right: 12px;">
+                    <div class="theme-switch__btn light active" id="theme-light">
+                        <span class="ic ic-sun"></span>
+                    </div>
+                    <div class="theme-switch__btn dark" id="theme-dark">
+                        <span class="ic ic-moon"></span>
+                    </div>
+                </div>
+                <a href="/" class="btn-back" style="margin:0;"><span class="ic ic-arrow-left"></span> Volver al Dashboard</a>
+            </div>
+        </div>
+
+        <div id="tree-container" class="canvas-area"></div>
+        <div id="tooltip" class="tooltip"></div>
+
+        <div class="legend">
+            <div class="legend-row"><span class="sem-dot consolidado"></span> <strong>Página:</strong> Punto de Navegación</div>
+            <div class="legend-row"><span class="ic ic-link"></span> <strong>Link:</strong> Enlace seguido por el bot</div>
+            <div class="legend-row"><span class="ic ic-file-text"></span> <strong>Documento:</strong> PDF / Resolución encontrada</div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Logic for Theme Toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeLight = document.getElementById('theme-light');
+            const themeDark = document.getElementById('theme-dark');
+
+            function setTheme(theme) {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    themeDark.classList.add('active');
+                    themeLight.classList.remove('active');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    themeLight.classList.add('active');
+                    themeDark.classList.remove('active');
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme) setTheme(savedTheme);
+            else if (systemPrefersDark) setTheme('dark');
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+                setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+        });
+
+        const treeData = {{ tree_json|safe }};
+        const container = document.getElementById('tree-container');
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        const tooltip = d3.select("#tooltip");
+
+        const svg = d3.select("#tree-container").append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .call(d3.zoom().on("zoom", function (event) {
+                g.attr("transform", event.transform)
+            }))
+            .append("g");
+
+        const g = svg.append("g").attr("transform", "translate(100,0)");
+
+        const tree = d3.tree().size([height, width - 400]);
+        const root = d3.hierarchy(treeData);
+
+        tree(root);
+
+        const link = g.selectAll(".link")
+            .data(root.descendants().slice(1))
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", d => `
+                M${d.y},${d.x}
+                C${(d.y + d.parent.y) / 2},${d.x}
+                 ${(d.y + d.parent.y) / 2},${d.parent.x}
+                 ${d.parent.y},${d.parent.x}
+            `);
+
+        const node = g.selectAll(".node")
+            .data(root.descendants())
+            .enter().append("g")
+            .attr("class", d => "node" + (d.children ? " node--internal" : " node--leaf"))
+            .attr("transform", d => `translate(${d.y},${d.x})`)
+            .on("mouseover", function(event, d) {
+                tooltip.style("display", "block")
+                    .html(d.data.name)
+                    .style("left", (event.pageX + 15) + "px")
+                    .style("top", (event.pageY - 10) + "px");
+                d3.select(this).select("circle").transition().duration(200).attr("r", 10);
+            })
+            .on("mousemove", function(event) {
+                tooltip.style("left", (event.pageX + 15) + "px")
+                    .style("top", (event.pageY - 10) + "px");
+            })
+            .on("mouseout", function() {
+                tooltip.style("display", "none");
+                d3.select(this).select("circle").transition().duration(200).attr("r", 6);
+            });
+
+        node.append("circle").attr("r", 6);
+
+        node.append("text")
+            .attr("dy", ".35em")
+            .attr("x", d => d.children ? -12 : 12)
+            .style("text-anchor", d => d.children ? "end" : "start")
+            .text(d => {
+                const name = d.data.name;
+                if (name.length > 40) {
+                    if (name.includes('://')) {
+                         const url = new URL(name);
+                         return url.pathname.length > 30 ? '...' + url.pathname.substring(url.pathname.length - 30) : name;
+                    }
+                    return name.substring(0, 40) + "...";
+                }
+                return name;
+            })
+            .style("fill", d => d.data.name.includes("[DOC]") ? "#D12D35" : "inherit");
+
+    </script>
+</body>
+</html>

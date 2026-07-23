@@ -1,0 +1,22 @@
+---
+type: entity
+tags: [entidad]
+updated: 2026-06-17
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Descripción
+Información sobre Departamento Administrativo Nacional de Estadística (DANE) y Fondo Rotatorio del DANE (FONDANE).

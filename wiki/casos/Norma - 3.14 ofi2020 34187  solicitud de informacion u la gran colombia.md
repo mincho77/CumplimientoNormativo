@@ -1,0 +1,34 @@
+---
+case_id: 5aa8f64aa0b52f82
+tipo: Norma
+estado: detectado
+entidad: [[Ministerio del Interior]]
+linea_negocio: [[Transversal]]
+riesgo: [[Riesgo ]]
+impacto_ti: NO
+ejecutado: NO
+plazo: No especificado
+tema: [[Sin clasificar]]
+sox: NO
+created: 2026-05-28
+published: No especificada
+tags: []
+---
+
+
+
+
+
+
+
+## Detalles del Hallazgo
+- **Entidad Emisora:** [[Ministerio del Interior]]
+- **Tipo de Norma:** Norma
+- **Fecha de Expedición:** No especificada
+- **Fecha de Detección:** 2026-05-28
+- **URL:** https://pruebaw.mininterior.gov.co/sites/default/files/documentos/3.14_ofi2020-34187-_solicitud_de_informacion_u_la_gran_colombia.pdf
+- **Incidencia SURA:** 
+- **Control SOX:** NO
+
+## Análisis
+Error en descarga: <urlopen error timed out>

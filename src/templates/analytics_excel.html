@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas Excel | SURA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+        .metadata-section {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin-top: 30px;
+        }
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .tag {
+            background: #F4F4F4;
+            color: #0D0D0D;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        h3 { color: var(--sura-blue-dark); margin-bottom: 15px; }
+    </style>
+    <script src="{{ url_for('static', filename='sura-ui.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="app-bar">
+            <div class="app-bar__brand">
+                <img src="{{ url_for('static', filename='sura-logo.svg') }}" alt="SURA" class="brand-logo">
+                <div class="app-bar__divider"></div>
+                <div class="app-bar__titles">
+                    <h1><span class="ic ic-bar-chart"></span> Analítica de Seguimiento Manual</h1>
+                    <p class="subtitle">Datos extraídos del archivo: Seguimiento Regulatorio - 2026</p>
+                </div>
+            </div>
+            <div class="app-bar__actions">
+                <div class="theme-switch" id="theme-toggle" title="Cambiar tema" style="margin-right: 12px;">
+                    <div class="theme-switch__btn light active" id="theme-light">
+                        <span class="ic ic-sun"></span>
+                    </div>
+                    <div class="theme-switch__btn dark" id="theme-dark">
+                        <span class="ic ic-moon"></span>
+                    </div>
+                </div>
+                <a href="/" class="btn-back" style="margin:0;"><span class="ic ic-arrow-left"></span> Volver al Dashboard</a>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="chart-card">
+                <h3>Distribución por Tipo</h3>
+                <canvas id="chartTipo"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Top 10 Emisores (Excel)</h3>
+                <canvas id="chartEmisores"></canvas>
+            </div>
+            <div class="chart-card" style="grid-column: span 2;">
+                <h3>Distribución por Norma</h3>
+                <canvas id="chartNormas"></canvas>
+            </div>
+        </div>
+
+        <div class="metadata-section">
+            <h3 class="section-title"><span class="ic ic-book"></span> Listas de Referencia (Valores Posibles)</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div>
+                    <h4 style="color:#3F3F41; font-size: 0.75em; text-transform: uppercase;">Responsables de Análisis</h4>
+                    <div class="tag-list">
+                        {% for r in metadata.responsables %}
+                        <span class="tag"><span class="ic ic-user"></span> {{ r }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <h4 style="color:#3F3F41; font-size: 0.75em; text-transform: uppercase;">Ámbitos de Aplicación</h4>
+                    <div class="tag-list">
+                        {% for a in metadata.ambitos %}
+                        <span class="tag"><span class="ic ic-globe"></span> {{ a }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div style="grid-column: span 2;">
+                    <h4 style="color:#3F3F41; font-size: 0.75em; text-transform: uppercase;">Regionales SURA</h4>
+                    <div class="tag-list">
+                        {% for reg in metadata.regionales %}
+                        <span class="tag"><span class="ic ic-map-pin"></span> {{ reg }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Logic for Theme Toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeLight = document.getElementById('theme-light');
+            const themeDark = document.getElementById('theme-dark');
+
+            function setTheme(theme) {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    themeDark.classList.add('active');
+                    themeLight.classList.remove('active');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    themeLight.classList.add('active');
+                    themeDark.classList.remove('active');
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+
+            // Initialize theme
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (systemPrefersDark) {
+                setTheme('dark');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+                setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+        });
+
+        const stats = {{ stats|tojson }};
+
+        // Gráfico Tipo
+        new Chart(document.getElementById('chartTipo'), {
+            type: 'pie',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: stats.por_tipo.map(d => d.label),
+                datasets: [{
+                    data: stats.por_tipo.map(d => d.value),
+                    backgroundColor: ['#2D6DF6', '#ED8B00', '#067014', '#D12D35']
+                }]
+            },
+            options: { 
+                responsive: true, 
+                plugins: { 
+                    legend: { position: 'bottom' },
+                    datalabels: {
+                        color: '#fff',
+                        font: { weight: 'bold', size: 12 },
+                        formatter: (value, ctx) => {
+                            let sum = 0;
+                            let dataArr = ctx.chart.data.datasets[0].data;
+                            dataArr.map(data => { sum += data; });
+                            let percentage = (value*100 / sum).toFixed(1) + "%";
+                            return `${value}\n(${percentage})`;
+                        },
+                        textAlign: 'center'
+                    }
+                } 
+            }
+        });
+
+        // Gráfico Emisores
+        const topEmisores = stats.por_emisor.slice(0, 10);
+        new Chart(document.getElementById('chartEmisores'), {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: topEmisores.map(d => d.label),
+                datasets: [{
+                    label: 'Cantidad de Documentos',
+                    data: topEmisores.map(d => d.value),
+                    backgroundColor: '#0033A0'
+                }]
+            },
+            options: { 
+                indexAxis: 'y', 
+                responsive: true,
+                plugins: {
+                    datalabels: {
+                        color: '#444',
+                        anchor: 'end',
+                        align: 'right',
+                        font: { weight: 'bold' }
+                    }
+                }
+            }
+        });
+
+        // Gráfico Normas
+        const topNormas = stats.por_norma.slice(0, 12);
+        new Chart(document.getElementById('chartNormas'), {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: topNormas.map(d => d.label),
+                datasets: [{
+                    label: 'Frecuencia por Tipo de Norma',
+                    data: topNormas.map(d => d.value),
+                    backgroundColor: '#00AEC7'
+                }]
+            },
+            options: { 
+                responsive: true,
+                plugins: {
+                    datalabels: {
+                        color: '#444',
+                        anchor: 'end',
+                        align: 'top',
+                        font: { weight: 'bold' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

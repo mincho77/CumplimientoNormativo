@@ -1,0 +1,34 @@
+---
+case_id: 13d5c0ab214a9ed0
+tipo: Norma
+estado: rechazado
+entidad: [[MinHacienda]]
+linea_negocio: [[Transversal]]
+riesgo: [[Riesgo ]]
+impacto_ti: NO
+ejecutado: NO
+plazo: No especificado
+tema: [[Sin clasificar]]
+sox: NO
+created: 2026-05-29
+published: 2026-04-29
+tags: [rechazado]
+---
+
+
+
+
+
+
+
+## Detalles del Hallazgo
+- **Entidad Emisora:** [[MinHacienda]]
+- **Tipo de Norma:** Norma
+- **Fecha de Expedición:** 2026-04-29
+- **Fecha de Detección:** 2026-05-29
+- **URL:** 
+- **Incidencia SURA:** 
+- **Control SOX:** 
+
+## Análisis
+Pendiente de análisis detallado.

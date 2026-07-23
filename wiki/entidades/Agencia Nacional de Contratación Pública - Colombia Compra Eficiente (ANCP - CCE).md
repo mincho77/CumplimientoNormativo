@@ -1,0 +1,12 @@
+---
+type: entity
+tags: [entidad]
+updated: 2026-06-17
+---
+
+
+
+
+
+## Descripción
+Información sobre Agencia Nacional de Contratación Pública - Colombia Compra Eficiente (ANCP - CCE).

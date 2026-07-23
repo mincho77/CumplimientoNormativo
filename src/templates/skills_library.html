@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Skills | SURA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='sura-ui.js') }}"></script>
+    <style>
+        .skills-page { padding-bottom: 42px; }
+        .skills-hero {
+            margin: 20px 0 18px;
+            padding: 28px 32px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0033A0 0%, #2D6DF6 100%);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            align-items: flex-end;
+        }
+        .skills-hero h2 { margin: 0 0 8px; color: white; font-size: 26px; line-height: 1.15; }
+        .skills-hero p { margin: 0; color: rgba(255,255,255,.82); max-width: 720px; line-height: 1.5; }
+        .skills-kpi { min-width: 160px; padding: 14px 18px; border-radius: 10px; background: rgba(255,255,255,.14); text-align: right; }
+        .skills-kpi strong { display: block; color: white; font-size: 32px; line-height: 1; }
+        .skills-kpi span { display: block; margin-top: 6px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.78); text-transform: uppercase; letter-spacing: .04em; }
+        .skills-toolbar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 18px;
+            padding: 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            background: var(--color-surface);
+        }
+        .skills-search {
+            flex: 1;
+            min-width: 220px;
+            height: 42px;
+            border: 1px solid var(--color-border);
+            border-radius: 21px;
+            padding: 0 16px;
+            font: 14px var(--font-family);
+            background: var(--color-background);
+            color: var(--color-text);
+        }
+        .skills-search:focus { outline: 2px solid #2D6DF6; border-color: transparent; }
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        .skill-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 230px;
+            transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+        }
+        .skill-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,.12); border-color: #2D6DF6; }
+        .skill-card__top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+        .skill-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            background: #DFEAFF;
+            color: #0033A0;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .skill-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; }
+        .skill-name { margin: 0; font-size: 18px; line-height: 1.25; color: var(--color-primary); }
+        .skill-desc { margin: 0; color: var(--color-text-muted); line-height: 1.45; font-size: 14px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+        .skill-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+        .skill-chip { padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+        .chip-active { background: #DEF6DE; color: #067014; }
+        .chip-general { background: #DFEAFF; color: #0033A0; }
+        .chip-assets { background: #F8F8F8; color: #888B8D; border: 1px solid var(--color-border); }
+        .skill-path { color: var(--color-text-muted); font-size: 12px; word-break: break-all; }
+        .skill-actions { display: flex; gap: 8px; align-items: center; }
+        .skill-open {
+            height: 40px;
+            border-radius: 20px;
+            padding: 0 18px;
+            background: #2D6DF6;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            min-width: 132px;
+        }
+        .skill-open:hover { background: #0033A0; }
+        .skills-empty { grid-column: 1 / -1; padding: 28px; text-align: center; color: var(--color-text-muted); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; }
+        @media (max-width: 760px) {
+            .skills-hero, .skills-toolbar { display: block; }
+            .skills-kpi { text-align: left; margin-top: 18px; }
+            .skills-search { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container skills-page">
+        <div class="app-bar">
+            <div class="app-bar__brand">
+                <img src="{{ url_for('static', filename='sura-logo.svg') }}" alt="SURA" class="brand-logo">
+                <div class="app-bar__divider"></div>
+                <div class="app-bar__titles">
+                    <h1><span class="ic ic-folder"></span> Biblioteca de Skills</h1>
+                    <p class="subtitle">Skills instalados y configurables</p>
+                </div>
+            </div>
+            <div class="app-bar__actions">
+                <div class="theme-switch" id="theme-toggle" title="Cambiar tema">
+                    <div class="theme-switch__btn light active" id="theme-light"><span class="ic ic-sun"></span></div>
+                    <div class="theme-switch__btn dark" id="theme-dark"><span class="ic ic-moon"></span></div>
+                </div>
+                <a href="/gobierno" class="btn-secondary" style="margin-right:8px;"><span class="ic ic-shield"></span> Gobierno</a>
+                <a href="/" class="btn-primary"><span class="ic ic-clipboard"></span> Dashboard</a>
+            </div>
+        </div>
+
+        <section class="skills-hero">
+            <div>
+                <h2>Skills disponibles para el sistema</h2>
+                <p>Esta biblioteca lee primero los skills instalados en <strong>/Users/cmotalvaro/Code/Skills</strong> y luego los del repositorio. Abre cada skill para revisar su descripción, assets y configuración.</p>
+            </div>
+            <div class="skills-kpi">
+                <strong id="skills-count">--</strong>
+                <span>Skills activos</span>
+            </div>
+        </section>
+
+        <section class="skills-toolbar">
+            <input id="skills-search" class="skills-search" type="search" placeholder="Buscar por nombre, descripción o ruta">
+        </section>
+
+        <main class="skills-grid" id="skills-grid">
+            <div class="skills-empty">Cargando skills...</div>
+        </main>
+    </div>
+
+    <script>
+        let skills = [];
+
+        function iconSvg() {
+            return '<svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.2L18.5 21 12 16.7 5.5 21l2-7.8L2 9h7z"></path></svg>';
+        }
+
+        function renderSkills() {
+            const q = document.getElementById('skills-search').value.trim().toLowerCase();
+            const filtered = skills.filter(skill => [skill.name, skill.description, skill.path, skill.id].join(' ').toLowerCase().includes(q));
+            document.getElementById('skills-count').textContent = skills.length;
+            const grid = document.getElementById('skills-grid');
+            if (!filtered.length) {
+                grid.innerHTML = '<div class="skills-empty">No hay skills que coincidan con la búsqueda.</div>';
+                return;
+            }
+            grid.innerHTML = filtered.map(skill => `
+                <article class="skill-card">
+                    <div class="skill-card__top">
+                        <div>
+                            <h3 class="skill-name">${skill.name}</h3>
+                            <p class="skill-path">${skill.path}</p>
+                        </div>
+                        <div class="skill-icon">${iconSvg()}</div>
+                    </div>
+                    <p class="skill-desc">${skill.description || 'Sin descripción registrada.'}</p>
+                    <div class="skill-meta">
+                        <span class="skill-chip chip-active">${skill.status}</span>
+                        <span class="skill-chip chip-general">${skill.category}</span>
+                        <span class="skill-chip chip-assets">${skill.asset_count} assets</span>
+                    </div>
+                    <div class="skill-actions">
+                        <a class="skill-open" href="${skill.url}">Abrir skill</a>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        async function loadSkills() {
+            const data = await fetch('/api/skills').then(r => r.json());
+            skills = data.skills || [];
+            renderSkills();
+        }
+
+        document.getElementById('skills-search').addEventListener('input', renderSkills);
+        loadSkills();
+    </script>
+</body>
+</html>

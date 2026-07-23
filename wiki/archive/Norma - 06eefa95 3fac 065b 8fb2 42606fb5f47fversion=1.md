@@ -1,0 +1,18 @@
+---
+case_id: b5ff739113a53b4d
+type: source
+status: detectado
+entidad: [[Ministerio del Trabajo]]
+created: 2026-05-27
+tags: [normativa, detectado, norma, no_sox, firmada]
+---
+
+## Detalles del Hallazgo
+- **Entidad Emisora:** [[Ministerio del Trabajo]]
+- **Tipo de Norma:** Norma
+- **URL:** https://www.mintrabajo.gov.co/documents/20147/61518932/40204+-+DESCUENTO+DE+VACACIONES+ANTICIPADAS+POR++COVID+19+FIRMADO+EN+ORIGINAL+%281%29.pdf/06eefa95-3fac-065b-8fb2-42606fb5f47f?version=1.0&t=1646478619254&documentThumbnail=1
+- **Incidencia SURA:** pendiente
+- **Control SOX:** NO
+
+## Análisis
+Error en descarga: [Errno 2] No such file or directory: '/Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/b5ff739113a53b4d.pdf/06eefa95-3fac-065b-8fb2-42606fb5f47f'

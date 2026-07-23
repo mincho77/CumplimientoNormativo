@@ -1,0 +1,26 @@
+---
+type: entity
+tags: [entidad]
+updated: 2026-06-03
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Descripción
+Información sobre Superintendencia de Notariado y Registro (SNR) – Oficina de Atención al Ciudadano.

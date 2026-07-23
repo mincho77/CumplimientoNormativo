@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diccionario Normativo | SURA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --sura-primary: #0033A0;
+            --sura-secondary: #00A9E0;
+            --sura-accent: #FFCD00;
+            --sura-dark: #00003F;
+            --sura-soft-bg: #F2F2F7;
+        }
+
+        body { background: var(--bg-gray); padding: 0; font-family: var(--font-family); transition: background 0.3s ease; }
+        
+        .hero-banner { background: linear-gradient(135deg, var(--sura-primary) 0%, #001A72 100%); color: white; padding: 40px 0; margin-bottom: 40px; box-shadow: var(--elevation-dp4); }
+        .hero-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .expert-panel { background: white; border-radius: 24px; padding: 30px; margin-bottom: 40px; box-shadow: var(--elevation-dp2); border: 1px solid var(--gray-200); position: relative; overflow: hidden; }
+        body.dark-theme .expert-panel { background: #001263; }
+        .expert-panel::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--sura-accent); }
+        
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .section-header h2 { margin: 0; font-size: 1.4em; color: var(--sura-primary); display: flex; align-items: center; gap: 12px; }
+        body.dark-theme .section-header h2 { color: #81B1FF; }
+
+        .expert-list { display: flex; flex-wrap: wrap; gap: 12px; }
+        .expert-pill { background: var(--bg-gray); color: var(--gray-900); padding: 8px 16px; border-radius: 12px; border: 1px solid var(--gray-200); display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.85em; transition: all 0.2s; }
+        body.dark-theme .expert-pill { background: #00003F; border-color: #26328C; }
+        .expert-pill:hover { border-color: var(--sura-primary); transform: translateY(-2px); }
+        
+        .btn-icon { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .btn-icon.delete { color: var(--gray-500); }
+        .btn-icon.delete:hover { background: #fee2e2; color: #d12d35; }
+
+        .tag-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px; }
+        .tag-card { background: white; border-radius: 24px; padding: 30px; box-shadow: var(--elevation-dp1); border: 1px solid var(--gray-200); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; position: relative; }
+        body.dark-theme .tag-card { background: #001263; }
+        .tag-card:hover { transform: translateY(-5px); box-shadow: var(--elevation-dp4); border-color: var(--sura-secondary); }
+        
+        .tag-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .tag-identity { display: flex; align-items: center; gap: 15px; }
+        .tag-icon-box { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        
+        .tag-title-area h3 { margin: 0; font-size: 1.2em; color: var(--gray-900); }
+        .tag-expert-label { font-size: 0.7em; font-weight: 700; text-transform: uppercase; color: var(--sura-secondary); letter-spacing: 0.5px; }
+
+        .tag-body { flex: 1; color: var(--gray-900); line-height: 1.6; }
+        .tag-desc { font-weight: 500; margin-bottom: 20px; }
+        
+        .logic-box { background: var(--bg-gray); padding: 15px 20px; border-radius: 16px; font-size: 0.85em; border-left: 4px solid var(--sura-primary); position: relative; }
+        body.dark-theme .logic-box { background: #00003F; }
+        .logic-box strong { display: block; margin-bottom: 5px; color: var(--sura-primary); font-size: 0.8em; text-transform: uppercase; }
+        body.dark-theme .logic-box strong { color: #81B1FF; }
+
+        .tag-footer { margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
+        .doc-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+        .pill-sm { background: var(--gray-100); color: var(--gray-500); padding: 4px 10px; border-radius: 8px; font-size: 0.75em; font-weight: 700; }
+
+        /* Modales estilo SURA */
+        .modal { display: none; position: fixed; z-index: 2000; inset: 0; background: rgba(0, 0, 63, 0.7); backdrop-filter: blur(8px); overflow-y: auto; padding: 40px 20px; }
+        .modal-container { background: white; border-radius: 32px; max-width: 700px; margin: 0 auto; box-shadow: var(--elevation-dp5); overflow: hidden; animation: modalSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        body.dark-theme .modal-container { background: #001263; color: white; }
+        @keyframes modalSlide { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .modal-header { padding: 30px 40px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; background: var(--bg-gray); }
+        body.dark-theme .modal-header { background: #00003F; }
+        .modal-body { padding: 40px; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 30px; }
+        .field-group { display: flex; flex-direction: column; gap: 8px; }
+        .field-group label { font-size: 0.75em; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .input-sura { padding: 14px 18px; border: 1.5px solid var(--gray-200); border-radius: 14px; background: var(--bg-gray); font-size: 0.95em; transition: all 0.2s; outline: none; }
+        body.dark-theme .input-sura { background: #00003F; color: white; border-color: #26328C; }
+        .input-sura:focus { border-color: var(--sura-primary); background: white; box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1); }
+        
+        /* Color selection */
+        .color-palette { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .color-opt { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+        .color-opt:hover { transform: scale(1.2); }
+        .color-opt.active { border-color: var(--sura-primary); transform: scale(1.1); box-shadow: 0 0 0 2px white, 0 0 0 4px var(--sura-primary); }
+        .color-opt.disabled { opacity: 0.15; cursor: not-allowed; filter: grayscale(1) blur(1px); transform: scale(0.8); }
+        .color-opt.disabled:hover { transform: scale(0.8); }
+
+        .expert-consult-box { background: var(--bg-gray); border-radius: 20px; padding: 25px; border: 1px dashed var(--sura-primary); margin-top: 20px; position: relative; }
+        body.dark-theme .expert-consult-box { background: #00003F; }
+    </style>
+    <script src="{{ url_for('static', filename='sura-ui.js') }}"></script>
+</head>
+<body>
+    <div class="hero-banner">
+        <div class="hero-content">
+            <div>
+                <h1 style="margin:0; font-size: 2.2em; font-weight: 800;"><span class="ic ic-shield"></span> Diccionario Normativo</h1>
+                <p style="margin:5px 0 0 0; opacity: 0.8; font-size: 1.1em;">Estandarización legal y lógica de identificación para el equipo de Cumplimiento</p>
+            </div>
+            <div class="app-bar__actions">
+                <div class="theme-switch" id="theme-toggle" title="Cambiar tema">
+                    <div class="theme-switch__btn light active" id="theme-light"><span class="ic ic-sun"></span></div>
+                    <div class="theme-switch__btn dark" id="theme-dark"><span class="ic ic-moon"></span></div>
+                </div>
+                <a href="/" class="btn-back" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);"><span class="ic ic-arrow-left"></span> Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 1200px; padding: 0 20px 60px 20px;">
+        <!-- Panel de Especialistas -->
+        <div class="expert-panel">
+            <div class="section-header">
+                <h2><span class="ic ic-users"></span> Panel de Abogados Especialistas</h2>
+                <button class="btn-primary" onclick="openAddSpecialtyModal()"><span class="ic ic-plus-circle"></span> Nueva Especialidad</button>
+            </div>
+            <div class="expert-list" id="expert-list">
+                {% for spec in specialties %}
+                <div class="expert-pill">
+                    <span class="ic ic-user"></span> {{ spec }}
+                    <button class="btn-icon delete" onclick="deleteSpecialty('{{ spec }}')"><span class="ic ic-trash"></span></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2><span class="ic ic-tag"></span> Etiquetas y Definiciones Legales</h2>
+            <button class="btn-primary" style="background: var(--sura-accent); color: var(--sura-primary);" onclick="openNewTagModal()"><span class="ic ic-plus-circle"></span> Definir Nuevo Tag</button>
+        </div>
+
+        <div class="tag-grid">
+            {% for t in tags %}
+            <div class="tag-card">
+                <div class="tag-header">
+                    <div class="tag-identity">
+                        <div class="tag-icon-box" style="background: {{ t.color }};">
+                            <span class="ic {{ t.icon or 'ic-tag' }}"></span>
+                        </div>
+                        <div class="tag-title-area">
+                            <div class="tag-expert-label">{{ t.expert_source }}</div>
+                            <h3>{{ t.tag }}</h3>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn-icon" style="background: var(--bg-gray); color: var(--sura-primary);" onclick="editTag('{{ t.tag }}')"><span class="ic ic-edit"></span></button>
+                    </div>
+                </div>
+                <div class="tag-body">
+                    <div class="tag-desc">{{ t.description }}</div>
+                    <div class="logic-box">
+                        <strong>Lógica de Identificación</strong>
+                        {{ t.logic }}
+                    </div>
+                </div>
+                <div class="tag-footer">
+                    <div class="doc-pills">
+                        {% for dtype in t.document_types %}
+                        <span class="pill-sm">{{ dtype }}</span>
+                        {% endfor %}
+                    </div>
+                    <button class="btn-icon delete" onclick="deleteTag('{{ t.tag }}')"><span class="ic ic-trash"></span></button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Modal para Nueva/Editar Definición -->
+    <div id="tagModal" class="modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modal-title" style="margin:0; color: var(--sura-primary);">Definir Categoría</h2>
+                <button onclick="closeModal()" class="btn-icon delete" style="font-size: 1.5em;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-mode" value="false">
+                <div class="form-grid">
+                    <div class="field-group">
+                        <label>Nombre de la Etiqueta</label>
+                        <input type="text" id="tag-name" class="input-sura" placeholder="ej: Circular_Externa">
+                    </div>
+                    <div class="field-group">
+                        <label>Especialista Responsable</label>
+                        <select id="tag-expert" class="input-sura">
+                            {% for spec in specialties %}
+                            <option>{{ spec }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field-group" style="grid-column: span 2;">
+                        <label>Color de Diferenciación (Exclusivo para Obsidian)</label>
+                        <div class="color-palette" id="color-palette">
+                            <!-- Renderizado dinámico -->
+                        </div>
+                        <input type="hidden" id="tag-color-val" value="">
+                    </div>
+                    <div class="field-group" style="grid-column: span 2;">
+                        <label>Tipos de Documentos Asociados (separados por coma)</label>
+                        <input type="text" id="tag-docs" class="input-sura" placeholder="ej: Resolución, Circular, Auto">
+                    </div>
+                </div>
+
+                <div class="expert-consult-box">
+                    <button class="btn-expert" style="width:100%; justify-content: center; margin-bottom: 20px;" onclick="consultExperts()">
+                        <span class="ic ic-cpu"></span> Consultar Definición Técnica al Panel
+                    </button>
+                    <div id="expert-draft" style="display:none;">
+                        <div class="field-group" style="margin-bottom: 20px;">
+                            <label>Propuesta del Especialista (Naturaleza Jurídica)</label>
+                            <textarea id="tag-desc-input" class="input-sura" rows="3"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label>Guía de Identificación Física / Visual</label>
+                            <textarea id="tag-logic-input" class="input-sura" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:15px; justify-content: flex-end; margin-top: 40px;">
+                    <button class="btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button id="btn-save-tag" class="btn-primary" style="display:none;" onclick="saveTag()">Aprobar y Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Nueva Especialidad -->
+    <div id="specModal" class="modal">
+        <div class="modal-container" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2 style="margin:0; font-size: 1.2em; color: var(--sura-primary);">Nueva Especialidad</h2>
+            </div>
+            <div class="modal-body">
+                <div class="field-group" style="margin-bottom: 25px;">
+                    <label>Nombre de la Especialidad Jurídica</label>
+                    <input type="text" id="new-spec-name" class="input-sura" placeholder="ej: Derecho Ambiental">
+                </div>
+                <div style="display:flex; gap:12px; justify-content: flex-end;">
+                    <button class="btn-secondary" onclick="$('#specModal').hide()">Cancelar</button>
+                    <button class="btn-primary" onclick="confirmAddSpecialty()">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const allTags = {{ tags|tojson }};
+        const suraColors = [
+            '#0033A0', '#00A9E0', '#FFCD00', '#067014', '#D12D35', 
+            '#ED8B00', '#00AEC7', '#81B1FF', '#26328C', '#E0EAFF',
+            '#53565A', '#A1A1A1', '#BC204B', '#FF8200', '#78BE20',
+            '#9B51E0', '#BB6BD9', '#F2994A', '#27AE60', '#2F80ED'
+        ];
+
+        $(document).ready(function() {
+            // Lógica de temas
+            const themeToggle = document.getElementById('theme-toggle');
+            function setTheme(theme) {
+                if (theme === 'dark') { document.body.classList.add('dark-theme'); localStorage.setItem('theme', 'dark'); }
+                else { document.body.classList.remove('dark-theme'); localStorage.setItem('theme', 'light'); }
+            }
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) setTheme(savedTheme);
+            themeToggle.addEventListener('click', () => setTheme(document.body.classList.contains('dark-theme') ? 'light' : 'dark'));
+        });
+
+        function selectColor(color, el) {
+            if ($(el).hasClass('disabled')) return;
+            $('.color-opt').removeClass('active');
+            $(el).addClass('active');
+            $('#tag-color-val').val(color);
+        }
+
+        function renderPalette(currentTagColor = null) {
+            const palette = $('#color-palette');
+            palette.empty();
+            
+            // Colores ya usados por otros tags
+            const usedColors = allTags
+                .filter(t => t.color && t.color.toLowerCase() !== (currentTagColor || '').toLowerCase())
+                .map(t => t.color.toLowerCase());
+
+            suraColors.forEach(c => {
+                const isUsed = usedColors.includes(c.toLowerCase());
+                const isActive = currentTagColor && c.toLowerCase() === currentTagColor.toLowerCase();
+                
+                const opt = $(`<div class="color-opt ${isUsed ? 'disabled' : ''} ${isActive ? 'active' : ''}" 
+                                   style="background:${c}" 
+                                   title="${isUsed ? 'Color ya en uso' : 'Disponible'}"></div>`);
+                
+                if (!isUsed) {
+                    opt.on('click', function() { selectColor(c, this); });
+                }
+                palette.append(opt);
+            });
+        }
+
+        function openAddSpecialtyModal() { $('#specModal').show(); }
+        function confirmAddSpecialty() {
+            const name = $('#new-spec-name').val();
+            if (name) {
+                $.ajax({
+                    url: '/api/specialties/save',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ specialty: name }),
+                    success: function() { location.reload(); }
+                });
+            }
+        }
+
+        function deleteSpecialty(name) {
+            showConfirm('Eliminar Especialidad', `¿Eliminar especialidad '${name}'?`, () => {
+                $.ajax({
+                    url: '/api/specialties/delete',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ specialty: name }),
+                    success: function() { location.reload(); }
+                });
+            }, 'Eliminar');
+        }
+
+        function openNewTagModal() {
+            $('#modal-title').text("Definir Categoría");
+            $('#edit-mode').val("false");
+            $('#tag-name').prop('readonly', false).val('');
+            $('#tag-docs').val('');
+            $('#tag-desc-input').val('');
+            $('#tag-logic-input').val('');
+            $('#tag-color-val').val('');
+            $('#expert-draft').hide();
+            $('#btn-save-tag').hide();
+            renderPalette();
+            $('#tagModal').show();
+        }
+
+        function editTag(tagName) {
+            const tag = allTags.find(t => t.tag === tagName);
+            if (tag) {
+                $('#modal-title').text("Editar Definición Legal");
+                $('#edit-mode').val("true");
+                $('#tag-name').val(tag.tag).prop('readonly', true);
+                $('#tag-expert').val(tag.expert_source);
+                $('#tag-docs').val(tag.document_types ? tag.document_types.join(', ') : '');
+                $('#tag-desc-input').val(tag.description);
+                $('#tag-logic-input').val(tag.logic);
+                $('#tag-color-val').val(tag.color);
+                
+                renderPalette(tag.color);
+
+                $('#expert-draft').show();
+                $('#btn-save-tag').show();
+                $('#tagModal').show();
+            }
+        }
+
+        function closeModal() { $('.modal').hide(); }
+
+        function consultExperts() {
+            const tag = $('#tag-name').val();
+            const expert = $('#tag-expert').val();
+            if(!tag) { showToast("Ingresa el nombre del tag", "warning"); return; }
+            $('#tag-desc-input').val(`Naturaleza jurídica de ${tag} según el especialista en ${expert}...`);
+            $('#tag-logic-input').val(`REGLA: Identificar por sellos, firmas y mención explícita en el artículo 1.`);
+            $('#expert-draft').slideDown();
+            $('#btn-save-tag').show();
+        }
+
+        function saveTag() {
+            const color = $('#tag-color-val').val();
+            if (!color) { showToast("Por favor selecciona un color exclusivo para esta categoría.", "warning"); return; }
+
+            const data = {
+                tag: $('#tag-name').val(),
+                expert_source: $('#tag-expert').val(),
+                description: $('#tag-desc-input').val(),
+                logic: $('#tag-logic-input').val(),
+                document_types: $('#tag-docs').val().split(',').map(s => s.trim()),
+                color: color,
+                icon: 'ic-tag'
+            };
+            $.ajax({
+                url: '/api/tags/save',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function() { location.reload(); }
+            });
+        }
+
+        function deleteTag(name) {
+            showConfirm('Eliminar Etiqueta', `¿Eliminar definición de '${name}'?`, () => {
+                $.ajax({
+                    url: '/api/tags/delete',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ tag: name }),
+                    success: function() { location.reload(); }
+                });
+            }, 'Eliminar');
+        }
+    </script>
+</body>
+</html>

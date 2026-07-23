@@ -1,0 +1,34 @@
+---
+case_id: bc6f7d152c9f8f9c
+tipo: Resolución
+estado: consolidado
+entidad: [[SuperFinanciera]]
+linea_negocio: [[Transversal]]
+riesgo: [[Riesgo ]]
+impacto_ti: NO
+ejecutado: SÍ
+plazo: No especificado
+tema: [[Seguros]]
+sox: SÍ
+created: 2026-05-29
+published: 2026-04-09
+tags: [consolidado, sox, publicado, firmada]
+---
+
+
+
+
+
+
+
+## Detalles del Hallazgo
+- **Entidad Emisora:** [[SuperFinanciera]]
+- **Tipo de Norma:** Resolución
+- **Fecha de Expedición:** 2026-04-09
+- **Fecha de Detección:** 2026-05-29
+- **URL:** 
+- **Incidencia SURA:** SÍ
+- **Control SOX:** SÍ
+
+## Análisis
+Pendiente de análisis detallado.

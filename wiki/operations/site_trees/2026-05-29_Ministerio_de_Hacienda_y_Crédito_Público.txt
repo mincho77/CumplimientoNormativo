@@ -1,0 +1,190 @@
+ÁRBOL DE NAVEGACIÓN - Ministerio de Hacienda y Crédito Público
+
+📂 https://www.minhacienda.gov.co/decretos-2026
+   └── 🔗 https://www.minhacienda.gov.co/entidad/publicacion-hojas-de-vida-de-aspirantes
+   └── 🔗 https://www.minhacienda.gov.co/normativa
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-y-circulares
+   └── 🔗 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares
+   └── 🔗 https://www.minhacienda.gov.co/normativa/agenda-regulatoria
+   └── 🔗 https://www.minhacienda.gov.co/normativa/busqueda-proyectos-de-decreto
+   └── 🔗 https://www.minhacienda.gov.co/normativa/busqueda-de-proyectos-de-resolucion
+   └── 🔗 https://www.minhacienda.gov.co/normativa/normograma
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decreto-unico-reglamentario-sector-hacienda
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decreto-unico-reglamentario-en-materia-tributaria
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol
+   └── 🔗 https://www.minhacienda.gov.co/transparencia/normatividad
+   └── 🔗 https://www.minhacienda.gov.co/normativa
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2025
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2024
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decreto/2023
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2022
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2021
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2020
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2019
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2018
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2017
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decreto-unico-reglamentario-sector-hacienda
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decreto-unico-reglamentario-en-materia-tributaria
+   └── 🔗 https://www.minhacienda.gov.co/agenda-regulatoria-2026
+   └── 🔗 https://www.minhacienda.gov.co/normativa/agenda-regulatoria-2025
+   └── 🔗 https://www.minhacienda.gov.co/normativa/agenda-regulatoria/2024
+   └── 🔗 https://www.minhacienda.gov.co/normativa/agenda-regulatoria/2023
+   └── 🔗 https://www.minhacienda.gov.co/normativa/agenda-regulatoria/2022
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2026
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2025
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2024
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2023
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2022
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2021
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2020
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2026
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2025
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2024
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2023
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2022
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2021
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2020
+   └── 🔗 https://www.minhacienda.gov.co/normativa/busqueda-proyectos-de-decreto
+   └── 🔗 https://www.minhacienda.gov.co/normativa/busqueda-de-proyectos-de-resolucion
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2025
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2024
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decreto/2023
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2022
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2021
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2020
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2019
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2018
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos/2017
+   └── 🔗 https://www.minhacienda.gov.co/resoluciones-2026
+   └── 🔗 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2025
+   └── 🔗 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2024
+   └── 🔗 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2023
+   └── 🔗 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2022
+   └── 🔗 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2021
+   └── 🔗 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2020
+   └── 🔗 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2019
+   └── 🔗 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2018
+   └── 🔗 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2017
+   └── 🔗 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2016
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2025
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2024
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2023
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2022
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2021
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2020
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2019
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2018
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2017
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2016
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2015
+   └── 🔗 https://www.minhacienda.gov.co/nomativa/decretos-juriscol/2014
+   └── 🔗 https://www.minhacienda.gov.co/normativa/decretos-juriscol/2013
+   └── 🔗 https://www.minhacienda.gov.co/normativa/normograma
+   └── 🔗 https://www.minhacienda.gov.co/normativa/inversion-social
+   └── 🔗 https://www.minhacienda.gov.co/normativa/covid-19
+   └── 🔗 https://www.minhacienda.gov.co/normativa/leyes-suin-juriscol
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-legislativos
+   └── 🔗 https://www.minhacienda.gov.co/normativa/proyectos-legislativos/conceptos-radicados-en-el-congreso
+   └── 🔗 https://www.minhacienda.gov.co/normativa/directivas-indice-de-transparencia-y-acceso-a-la-informacion-ita
+
+📂 https://www.minhacienda.gov.co/entidad/publicacion-hojas-de-vida-de-aspirantes
+
+📂 https://www.minhacienda.gov.co/normativa
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos
+
+📂 https://www.minhacienda.gov.co/normativa/decretos
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-y-circulares
+
+📂 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares
+
+📂 https://www.minhacienda.gov.co/normativa/agenda-regulatoria
+
+📂 https://www.minhacienda.gov.co/normativa/busqueda-proyectos-de-decreto
+
+📂 https://www.minhacienda.gov.co/normativa/busqueda-de-proyectos-de-resolucion
+
+📂 https://www.minhacienda.gov.co/normativa/normograma
+
+📂 https://www.minhacienda.gov.co/normativa/decreto-unico-reglamentario-sector-hacienda
+
+📂 https://www.minhacienda.gov.co/normativa/decreto-unico-reglamentario-en-materia-tributaria
+
+📂 https://www.minhacienda.gov.co/normativa/decretos-juriscol
+
+📂 https://www.minhacienda.gov.co/transparencia/normatividad
+
+📂 https://www.minhacienda.gov.co/normativa/decretos/2025
+
+📂 https://www.minhacienda.gov.co/normativa/decretos/2024
+
+📂 https://www.minhacienda.gov.co/normativa/decreto/2023
+
+📂 https://www.minhacienda.gov.co/normativa/decretos/2022
+
+📂 https://www.minhacienda.gov.co/normativa/decretos/2021
+
+📂 https://www.minhacienda.gov.co/normativa/decretos/2020
+
+📂 https://www.minhacienda.gov.co/normativa/decretos/2019
+
+📂 https://www.minhacienda.gov.co/normativa/decretos/2018
+
+📂 https://www.minhacienda.gov.co/normativa/decretos/2017
+
+📂 https://www.minhacienda.gov.co/agenda-regulatoria-2026
+
+📂 https://www.minhacienda.gov.co/normativa/agenda-regulatoria-2025
+
+📂 https://www.minhacienda.gov.co/normativa/agenda-regulatoria/2024
+
+📂 https://www.minhacienda.gov.co/normativa/agenda-regulatoria/2023
+
+📂 https://www.minhacienda.gov.co/normativa/agenda-regulatoria/2022
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2026
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2025
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2024
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2023
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2022
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2021
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-decretos/2020
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2026
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2025
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2024
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2023
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2022
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2021
+
+📂 https://www.minhacienda.gov.co/normativa/proyectos-de-resolucion-circulares/2020
+
+📂 https://www.minhacienda.gov.co/resoluciones-2026
+
+📂 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2025
+
+📂 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2024
+
+📂 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2023
+
+📂 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2022
+
+📂 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2021
+
+📂 https://www.minhacienda.gov.co/normativa/resoluciones-y-circulares/2020
+

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliance Dashboard | SURA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <style>
+        .badge-divulgar { background: #ff3b30; color: white !important; font-weight: 800 !important; }
+        .badge-excel-ok { background: #5856d620; color: #5856d6; border: 1px solid #5856d640; }
+        .badge-no-excel { background: #f2f2f7; color: #86868b; border: 1px solid #d2d2d740; }
+        .badge-consolidado { background: #007aff20; color: #007aff; }
+        .badge-import { background: #5856d610; color: #5856d6; border: 1px dashed #5856d640; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>📋 Cuadro de Mando</h1>
+                <p class="subtitle">Cumplimiento Normativo SURA</p>
+            </div>
+            <div class="header-right">
+                <a href="/analytics" class="btn-primary">📊 Ver Analítica y Reportes</a>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="card danger">
+                <div class="card-label">🔴 ALERTA</div>
+                <div class="card-number" id="count-rojo">0</div>
+                <div class="card-desc">Acción inmediata</div>
+            </div>
+            <div class="card warning">
+                <div class="card-label">🟡 PENDIENTE</div>
+                <div class="card-number" id="count-amarillo">0</div>
+                <div class="card-desc">En validación</div>
+            </div>
+            <div class="card success">
+                <div class="card-label">🟢 CUMPLIDO</div>
+                <div class="card-number" id="count-verde">0</div>
+                <div class="card-desc">Sin acción req.</div>
+            </div>
+            <div class="card primary">
+                <div class="card-label">🔵 ARCHIVADO</div>
+                <div class="card-number" id="count-consolidado">0</div>
+                <div class="card-desc">En matriz final</div>
+            </div>
+            <div class="card card-tokens">
+                <div class="card-label">🪙 TOKENS IA</div>
+                <div class="card-number" id="count-tokens">0</div>
+                <div class="card-desc">Consumo acumulado</div>
+            </div>
+            <a href="/analytics_excel" style="text-decoration: none;">
+                <div class="card" style="background: var(--sura-blue-dark); color: white;">
+                    <div class="card-label" style="color: rgba(255,255,255,0.7);">📊 REPORTES EXCEL</div>
+                    <div class="card-number" style="color: white;">Ver KPIs</div>
+                    <div class="card-desc" style="color: rgba(255,255,255,0.8);">Estadísticas manuales</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <h2>Filtros Avanzados</h2>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Semáforo</label>
+                    <select id="filter-semaforo">
+                        <option value="">Todos los estados</option>
+                        <option value="ROJO">🔴 ROJO</option>
+                        <option value="AMARILLO">🟡 AMARILLO</option>
+                        <option value="VERDE">🟢 VERDE</option>
+                        <option value="CONSOLIDADO">✅ ARCHIVADO / MATRIZ FINAL</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Entidad Reguladora</label>
+                    <select id="filter-entidad">
+                        <option value="">Todas las entidades</option>
+                        {% for ent in entities %}
+                        <option value="{{ ent }}">{{ ent }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Búsqueda</label>
+                    <input type="text" id="filter-search" placeholder="Buscar por tema o nota...">
+                </div>
+
+                <div class="filter-group">
+                    <label>Fecha de Detección</label>
+                    <input type="date" id="filter-date">
+                    <div class="quick-dates">
+                        <button class="btn-small" onclick="setQuickDate('today')">Hoy</button>
+                        <button class="btn-small" onclick="setQuickDate('yesterday')">Ayer</button>
+                        <button class="btn-small" onclick="setQuickDate('')">Limpiar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 25px; display: flex; gap: 12px; justify-content: flex-end; align-items: center;">
+                <button id="btn-filter" class="btn-primary">Aplicar Filtros</button>
+                <button id="btn-refresh" onclick="loadCasos()" class="btn-secondary">
+                    <span id="refresh-icon">🔄</span> <span id="refresh-text">Refrescar</span>
+                </button>
+                <div style="width: 1px; height: 30px; background: #e5e5ea; margin: 0 10px;"></div>
+                <a href="/errores" class="btn-secondary">⚙️ Gestionar Errores</a>
+                <a href="/fuentes" class="btn-secondary">🔗 Gestionar Fuentes</a>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-section">
+            <div class="table-header-area">
+                <h2 style="margin:0; font-size: 1.2em;">Casos Identificados</h2>
+                <small style="color: var(--apple-gray); font-weight: 500;">Sincronizado hace: <span id="last-updated">--</span></small>
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="casos-table" class="display responsive">
+                    <thead>
+                        <tr>
+                            <th style="width: 150px;">Acciones</th>
+                            <th>Estado</th>
+                            <th>Título y Documentos</th>
+                            <th style="width: 100px;">Publicación</th>
+                            <th>Impacto</th>
+                            <th>SOX</th>
+                            <th style="width: 120px;">Seguimiento</th>
+                            <th>Link</th>
+                            <th>Detección</th>
+                        </tr>
+                    </thead>
+                    <tbody id="casos-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Edit Modal -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-entidad-name">Editar Análisis</h2>
+                    <span class="close" onclick="closeModal()">&times;</span>
+                </div>
+                <div id="modal-body-forms" style="max-height: 60vh; overflow-y: auto; padding-right: 10px;">
+                    <!-- Aquí se cargarán los formularios -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allCasos = [];
+
+        function setQuickDate(type) {
+            const dateInput = document.getElementById('filter-date');
+            const now = new Date();
+            if (type === 'today') dateInput.value = now.toISOString().split('T')[0];
+            else if (type === 'yesterday') {
+                const yesterday = new Date(now);
+                yesterday.setDate(now.getDate() - 1);
+                dateInput.value = yesterday.toISOString().split('T')[0];
+            } else dateInput.value = '';
+            loadCasos();
+        }
+
+        function formatSemaforo(value) {
+            const map = { 'ROJO': '🔴', 'AMARILLO': '🟡', 'VERDE': '🟢', 'CONSOLIDADO': '🔵' };
+            return map[value] || value;
+        }
+
+        function loadSummary() {
+            $.get('/api/summary', function(data) {
+                $('#count-rojo').text(data.ROJO);
+                $('#count-amarillo').text(data.AMARILLO);
+                $('#count-verde').text(data.VERDE);
+                $('#count-consolidado').text(data.CONSOLIDADO);
+                if(data.TOTAL_TOKENS) {
+                    $('#count-tokens').text(data.TOTAL_TOKENS.toLocaleString());
+                }
+            });
+        }
+
+        function loadCasos() {
+            const btn = $('#btn-refresh');
+            const icon = $('#refresh-icon');
+            const text = $('#refresh-text');
+            
+            btn.prop('disabled', true).css('opacity', '0.7');
+            icon.addClass('spin');
+            text.text('Cargando...');
+
+            loadSummary();
+            const params = new URLSearchParams();
+            ['semaforo', 'entidad', 'search', 'date'].forEach(id => {
+                const val = $(`#filter-${id}`).val();
+                if (val) params.append(id, val);
+            });
+
+            $.get('/api/casos?' + params.toString(), function(casos) {
+                allCasos = casos;
+                renderTable(casos);
+                
+                setTimeout(() => {
+                    btn.prop('disabled', false).css('opacity', '1');
+                    icon.removeClass('spin');
+                    text.text('Refrescar');
+                }, 500);
+            });
+        }
+
+        let globalHierarchy = {};
+
+        function renderTable(casos) {
+            const tbody = $('#casos-tbody');
+            tbody.empty();
+
+            globalHierarchy = { 'ROJO': {}, 'AMARILLO': {}, 'VERDE': {}, 'CONSOLIDADO': {}, 'N/A': {} };
+            
+            casos.forEach(c => {
+                const sem = (c.semaforo || 'N/A').toUpperCase();
+                const ent = c.entidad || 'Sin Entidad';
+                let src = c.fuente_url;
+                if (!src || src === '' || src === 'nan') {
+                    src = 'Sin Fuente';
+                }
+
+                if (!globalHierarchy[sem]) globalHierarchy[sem] = {};
+                if (!globalHierarchy[sem][ent]) globalHierarchy[sem][ent] = {};
+                if (!globalHierarchy[sem][ent][src]) {
+                    globalHierarchy[sem][ent][src] = {
+                        entidad: ent,
+                        fuente_url: src,
+                        semaforo: sem,
+                        Título: c.Título,
+                        motivo: c.motivo,
+                        'Incidencia SURA': c['Incidencia SURA'],
+                        'Control SOX': c['Control SOX'],
+                        status: c.status,
+                        link_status: c.link_status,
+                        detected_at: c.detected_at,
+                        'Fecha de publicación': c['Fecha de publicación'],
+                        'Resultado análisis': c['Resultado análisis'],
+                        documents: []
+                    };
+                }
+                globalHierarchy[sem][ent][src].documents.push(c);
+            });
+
+            const order = ['ROJO', 'AMARILLO', 'VERDE', 'CONSOLIDADO', 'N/A'];
+            order.forEach(sem => {
+                const entidades = globalHierarchy[sem];
+                if (!entidades) return;
+
+                const colorMap = {'ROJO': '#ff3b30', 'AMARILLO': '#ffcc00', 'VERDE': '#34c759', 'CONSOLIDADO': '#007aff'};
+                const color = colorMap[sem] || '#ccc';
+                
+                tbody.append(`<tr class="sem-header" style="background: ${color}15; color: ${color}; font-weight: 800; font-size: 0.8em; text-transform: uppercase;"><td colspan="10" style="padding: 15px 25px; border-left: 8px solid ${color};">${formatSemaforo(sem)} ${sem}</td></tr>`);
+
+                const entKeys = Object.keys(entidades).sort();
+                entKeys.forEach((ent, entIdx) => {
+                    const fuentes = entidades[ent];
+                    const srcKeys = Object.keys(fuentes);
+                    let totalDocs = 0;
+                    srcKeys.forEach(fKey => totalDocs += fuentes[fKey].documents.length);
+
+                    const safeEntId = `ent-${sem}-${entIdx}`.replace(/[^a-z0-9]/gi, '-');
+                    tbody.append(`<tr class="ent-header" onclick="toggleEntity('${safeEntId}')" style="background: white; font-weight: 700; cursor: pointer; border-bottom: 1px solid #f2f2f7;"><td colspan="10" style="padding: 18px 25px; color: #1d1d1f;"><span id="icon-${safeEntId}" style="margin-right: 12px; color: var(--apple-gray);">▼</span> 🏢 ${ent} <span style="font-weight: 500; color: var(--apple-gray); font-size: 0.9em; margin-left: 10px;">(${totalDocs} hallazgos)</span></td></tr>`);
+
+                    srcKeys.forEach(fKey => {
+                        const evt = fuentes[fKey];
+                        const docsHtml = `<div class="docs-scroll-area" style="width: auto; max-width: 250px; background: transparent; border: none; padding: 0;">${evt.documents.map((d, i) => `<a href="${d.document_url}" target="_blank" class="doc-tag" style="border-radius: 6px; background: ${color}10; color: ${color}; border: 1px solid ${color}30;">PDF ${i+1}</a>`).join('')}</div>`;
+                        const mapClass = evt.documents[0]?.has_map ? '' : 'disabled';
+                        const mapTitle = evt.documents[0]?.has_map ? 'Ver Mapa de Navegación' : 'No hay mapa disponible aún';
+                        
+                        const row = `
+                            <tr class="child-of-${safeEntId}" style="background: white;">
+                                <td style="text-align:center; padding: 12px 10px;">
+                                    <div style="display:flex; gap:6px; justify-content:center; align-items:center;">
+                                        <button onclick="openEditModal(this.getAttribute('data-sem'), this.getAttribute('data-ent'), this.getAttribute('data-src'))"
+                                                data-sem="${btoa(encodeURIComponent(sem))}"
+                                                data-ent="${btoa(encodeURIComponent(ent))}"
+                                                data-src="${btoa(encodeURIComponent(fKey))}"
+                                                class="btn-action" style="background: ${color}15; color: ${color};" title="Editar análisis">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                        </button>
+                                        <a href="/detalle?fuente=${encodeURIComponent(evt.fuente_url)}&entidad=${encodeURIComponent(evt.entidad)}" 
+                                           class="btn-action" style="background: #007aff15; color: #007aff;"
+                                           title="Ver Expediente">
+                                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                           Ver
+                                        </a>
+                                        <a href="/site_tree?entidad=${encodeURIComponent(evt.entidad)}" 
+                                           class="btn-action ${mapClass}" style="background: #5856d615; color: #5856d6;"
+                                           title="${mapTitle}">
+                                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+                                           Mapa
+                                        </a>
+                                    </div>
+                                </td>
+                                <td style="text-align:center;">${formatSemaforo(evt.semaforo)}</td>
+                                <td style="max-width: 450px;">
+                                    <div style="font-weight:600; color: #1d1d1f; margin-bottom: 4px; font-size: 0.9em; line-height: 1.2;">
+                                        ${evt['Resultado análisis'] === 'Divulgar' && evt.status !== 'consolidado' ? '<span class="badge badge-divulgar" style="font-size:0.7em; margin-right:6px; vertical-align:middle;">📢 DIVULGAR</span>' : ''}
+                                        ${evt.Título || evt.motivo || '-'}
+                                    </div>
+                                    ${docsHtml}
+                                </td>
+                                <td style="white-space: nowrap; font-family: monospace; font-size: 0.85em; font-weight: 700; color: #1d1d1f;">${evt['Fecha de publicación'] || '-'}</td>
+                                <td><span class="badge" style="background:${evt['Incidencia SURA']=='ALTA'?'#ff3b3020':'#f2f2f7'}; color:${evt['Incidencia SURA']=='ALTA'?'#ff3b30':'#1d1d1f'}; font-size: 0.7em;">${evt['Incidencia SURA'] || 'pend.'}</span></td>
+                                <td><span class="badge" style="background:${evt['Control SOX']=='SÍ'?'#007aff20':'#f2f2f7'}; color:${evt['Control SOX']=='SÍ'?'#007aff':'#86868b'}; font-size: 0.7em;">${evt['Control SOX'] || 'NO'}</span></td>
+                                <td>
+                                    <div style="display:flex; flex-direction:column; gap:6px;">
+                                        <span class="badge" style="font-size: 0.7em; background: ${
+                                            evt.status === 'consolidado' ? '#007aff20' : 
+                                            evt.status === 'importado_excel' ? '#5856d620' : 
+                                            evt.status === 'validado' ? '#34c75920' : 
+                                            '#f2f2f7'
+                                        }; color: ${
+                                            evt.status === 'consolidado' ? '#007aff' : 
+                                            evt.status === 'importado_excel' ? '#5856d6' : 
+                                            evt.status === 'validado' ? '#34c759' : 
+                                            '#86868b'
+                                        }; border: 1px solid ${
+                                            evt.status === 'importado_excel' ? '#5856d640' : 'transparent'
+                                        };">
+                                            ${evt.status === 'consolidado' ? '✅ Consolidado' : (evt.status || 'desc.')}
+                                        </span>
+                                        ${evt.documents[0]?.sincronizado_excel ? 
+                                            `<span class="badge badge-excel-ok" style="font-size: 0.65em; text-align: center;" title="Sincronizado con el Excel de seguimiento manual">🔗 MANUAL OK</span>` : 
+                                            `<span class="badge badge-no-excel" style="font-size: 0.65em; text-align: center;" title="Este caso es nuevo y no está en tu Excel manual">⏳ NO EN EXCEL</span>`
+                                        }
+                                    </div>
+                                </td>
+                                <td style="text-align:center;">
+                                    <a href="/errores?entidad=${encodeURIComponent(evt.entidad.trim())}&estado=todos" 
+                                       style="text-decoration: none; display: block;"
+                                       title="Ver estado de conexión/descarga">
+                                        <span class="badge" 
+                                              style="background: ${ (evt.link_status === 'ok' && evt.semaforo !== 'ROJO') ? '#34c75920' : '#ff3b3020'}; 
+                                                     color: ${ (evt.link_status === 'ok' && evt.semaforo !== 'ROJO') ? '#34c759' : '#ff3b30'}; 
+                                                     font-size: 0.75em; cursor: pointer; font-weight: 700; border: 1px solid ${ (evt.link_status === 'ok' && evt.semaforo !== 'ROJO') ? '#34c75940' : '#ff3b3040'}; display: block; text-align: center;">
+                                            ${ (evt.link_status === 'ok' && evt.semaforo !== 'ROJO') ? 'OK' : 'ERR'}
+                                        </span>
+                                    </a>
+                                </td>
+                                <td style="white-space: nowrap;"><small style="color: var(--apple-gray); font-weight: 600; font-size: 0.8em;">${evt.detected_at ? evt.detected_at.substring(0, 10) : '-'}</small></td>
+                            </tr>
+                        `;
+                        tbody.append(row);
+                    });
+                });
+            });
+
+            $('#last-updated').text(new Date().toLocaleTimeString());
+        }
+
+        function toggleEntity(id) {
+            $(`.child-of-${id}`).toggle();
+            const icon = $(`#icon-${id}`);
+            icon.text(icon.text() === '▼' ? '▶' : '▼');
+        }
+
+        function openEditModal(b64sem, b64ent, b64src) {
+            const sem = decodeURIComponent(atob(b64sem));
+            const ent = decodeURIComponent(atob(b64ent));
+            const src = decodeURIComponent(atob(b64src));
+            
+            const container = $('#modal-body-forms');
+            container.empty();
+
+            const evt = globalHierarchy[sem]?.[ent]?.[src];
+            if (!evt) {
+                console.error("No se encontró el evento para:", sem, ent, src);
+                return;
+            }
+
+            $('#modal-entidad-name').text(ent);
+
+            evt.documents.forEach(doc => {
+                const formHtml = `
+                    <div style="border: 1px solid #f2f2f7; padding: 20px; border-radius: 12px; margin-bottom: 20px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+                        <h4 style="margin-top:0; color: #1d1d1f; border-bottom: 1px solid #f2f2f7; padding-bottom: 10px; margin-bottom: 15px;">${doc.Título || 'Documento'}</h4>
+                        <div class="form-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label>Incidencia SURA</label>
+                                <select id="edit-incidencia-${doc.case_id}">
+                                    <option value="pendiente" ${doc['Incidencia SURA']=='pendiente'?'selected':''}>Pendiente</option>
+                                    <option value="ALTA" ${doc['Incidencia SURA']=='ALTA'?'selected':''}>ALTA</option>
+                                    <option value="MEDIA" ${doc['Incidencia SURA']=='MEDIA'?'selected':''}>MEDIA</option>
+                                    <option value="BAJA" ${doc['Incidencia SURA']=='BAJA'?'selected':''}>BAJA</option>
+                                    <option value="NO" ${doc['Incidencia SURA']=='NO'?'selected':''}>NO APLICA</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Control SOX</label>
+                                <select id="edit-sox-${doc.case_id}">
+                                    <option value="NO" ${doc['Control SOX']=='NO'?'selected':''}>NO</option>
+                                    <option value="SÍ" ${doc['Control SOX']=='SÍ'?'selected':''}>SÍ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top:20px;">
+                            <label>Obligaciones / Resumen</label>
+                            <textarea id="edit-obligaciones-${doc.case_id}" rows="4" style="width:100%; border: 1px solid #e5e5ea; border-radius: 12px; padding: 12px; background: #f2f2f7;">${doc.Obligaciones || doc.notes || ''}</textarea>
+                        </div>
+                        <button onclick="saveCase('${doc.case_id}')" class="btn-primary" style="margin-top:20px; width:100%; justify-content: center;">Guardar Cambios</button>
+                    </div>
+                `;
+                container.append(formHtml);
+            });
+
+            $('#editModal').show();
+        }
+
+        function closeModal() {
+            $('#editModal').hide();
+        }
+
+        function saveCase(id) {
+            const data = {
+                case_id: id,
+                'Incidencia SURA': $(`#edit-incidencia-${id}`).val(),
+                'Control SOX': $(`#edit-sox-${id}`).val(),
+                'Obligaciones': $(`#edit-obligaciones-${id}`).val(),
+                'status': 'validado'
+            };
+
+            $.ajax({
+                url: '/api/update_case',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function() {
+                    alert('Cambios guardados con éxito');
+                    closeModal();
+                    loadCasos();
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            loadCasos();
+            $('#btn-filter').click(loadCasos);
+            
+            window.onclick = function(event) {
+                if (event.target == document.getElementById('editModal')) {
+                    closeModal();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

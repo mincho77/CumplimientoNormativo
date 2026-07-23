@@ -1,0 +1,12 @@
+---
+type: entity
+tags: [entidad]
+updated: 2026-06-17
+---
+
+
+
+
+
+## Descripción
+Información sobre Banco de la República (Banca Central) - Circular Reglamentaria Externa DCIP-83.

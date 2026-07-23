@@ -1,0 +1,19 @@
+---
+case_id: fbc55c4bfe39c43f
+type: source
+status: detectado
+entidad: [[Auditoría General de la Nación]]
+created: 2026-05-27
+tags: [normativa, detectado, norma, no_sox, firmada]
+---
+
+
+## Detalles del Hallazgo
+- **Entidad Emisora:** [[Auditoría General de la Nación]]
+- **Tipo de Norma:** Norma
+- **URL:** https://www.auditoria.gov.co/documents/20123/133337/Resolucio%CC%81n+Ordinaria+No.+0857+Por+la+cual+se+prorroga+la+medida+de+suspension+de+terminos+y+la+atencion+administrativa+en+la+AGR.pdf/5128a63d-80c5-85f4-cd31-2d30d71b7f2d?version=1.0&amp;t=1730216846749&amp;documentThumbnail=1
+- **Incidencia SURA:** pendiente
+- **Control SOX:** NO
+
+## Análisis
+Error en descarga: [Errno 2] No such file or directory: '/Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/fbc55c4bfe39c43f.pdf/5128a63d-80c5-85f4-cd31-2d30d71b7f2d'

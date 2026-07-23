@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Termico de Riesgos | SURA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='sura-ui.js') }}"></script>
+    <style>
+        /* Anula regla global header{background:white} */
+        header.th-header {
+            background: transparent !important;
+            box-shadow: none !important;
+            border-top: none !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-bottom: 1px solid var(--color-border, #E5E9EA) !important;
+            padding: 24px 0 20px !important;
+            margin-bottom: 20px !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: flex-end !important;
+            gap: 32px !important;
+        }
+        .th-header-left { flex: 1; min-width: 0; }
+        .th-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #00AEC7; margin: 0 0 6px; }
+        .th-header h2 { margin: 0 0 6px; font-size: 22px; font-weight: 700; color: var(--color-primary, #2D6DF6); letter-spacing: -.02em; }
+        .th-header-desc { margin: 0; font-size: 13px; color: var(--color-text-muted, #888B8D); line-height: 1.5; }
+        .th-stats { display: flex; gap: 0; flex-shrink: 0; }
+        .th-stat { padding: 0 28px; text-align: right; border-left: 1px solid var(--color-border, #E5E9EA); }
+        .th-stat:first-child { border-left: none; }
+        .th-stat strong { display: block; font-size: 30px; font-weight: 700; line-height: 1; color: var(--color-primary, #2D6DF6); margin-bottom: 5px; }
+        .th-stat.stat-alert strong { color: #D12D35; }
+        .th-stat.stat-date strong { font-size: 13px; color: var(--color-text-muted); margin-top: 4px; }
+        .th-stat span { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted, #888B8D); }
+        .th-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 22px; }
+        .th-controls .fld label { display: block; font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted, #888B8D); margin-bottom: 5px; }
+        .th-controls .fld input[type=date] { height: 36px; padding: 0 14px; border: 1px solid var(--color-border, #E5E9EA); border-radius: 18px; font-family: var(--font-family); font-size: 13px; background: var(--color-background, #fff); color: var(--color-text, #0D0D0D); min-width: 145px; }
+        .th-controls .fld input[type=date]:focus { outline: 2px solid #2D6DF6; border-color: transparent; }
+        .th-btn { height: 36px; padding: 0 20px; background: #2D6DF6; color: white; border: none; border-radius: 18px; font-family: var(--font-family); font-size: 13px; font-weight: 700; cursor: pointer; transition: background .15s; display: inline-flex; align-items: center; gap: 7px; }
+        .th-btn:hover { background: #0033A0; }
+        .th-btn svg { width: 13px; height: 13px; stroke: white; fill: none; }
+        .th-content { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 20px; align-items: start; }
+        .th-board { overflow-x: auto; }
+        .th-grid { display: grid; grid-template-columns: 34px repeat(5, minmax(72px, 1fr)); grid-template-rows: repeat(5, 72px) 36px 24px; min-width: 440px; gap: 4px; }
+        .th-axis-v { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted, #888B8D); display: flex; align-items: center; justify-content: center; grid-column: 1; grid-row: 1 / 6; }
+        .th-axis-h { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted, #888B8D); display: flex; align-items: center; justify-content: center; grid-column: 2 / 7; grid-row: 7; }
+        .th-num-v, .th-num-h { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--color-text-muted, #888B8D); }
+        .th-cell { border-radius: 5px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; transition: filter .12s, transform .12s; position: relative; }
+        .th-cell:hover { filter: brightness(1.12) saturate(1.15); transform: scale(1.05); z-index: 4; }
+        .th-cell.active { outline: 2.5px solid #2D6DF6; outline-offset: -2px; z-index: 5; filter: brightness(1.08); box-shadow: 0 4px 16px rgba(45,109,246,.35); }
+        .th-cell-n { font-size: 16px; font-weight: 700; letter-spacing: -.01em; color: rgba(255,255,255,.95); text-shadow: 0 1px 3px rgba(0,0,0,.25); pointer-events: none; }
+        .th-cell-s { display: none; }
+        /* Guia explicativa */
+        .th-guide { margin-top: 20px; padding: 16px 18px; background: var(--color-surface,#fff); border: 1px solid var(--color-border,#E5E9EA); border-radius: 10px; }
+        .th-guide-title { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted,#888B8D); margin-bottom: 12px; }
+        .th-guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .th-guide-item { display: flex; gap: 10px; align-items: flex-start; font-size: 12px; line-height: 1.5; color: var(--color-text-muted,#888B8D); }
+        .th-guide-item strong { display: block; color: var(--color-text,#0D0D0D); font-size: 12px; margin-bottom: 2px; }
+        .th-guide-icon { width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: white; }
+        .th-legend { display: flex; gap: 16px; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border, #E5E9EA); }
+        .th-legend-label { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted, #888B8D); }
+        .th-legend-bar { flex: 1; height: 8px; border-radius: 4px; background: linear-gradient(to right, hsl(220,65%,48%), hsl(148,62%,40%), hsl(42,88%,50%), hsl(22,85%,48%), hsl(0,68%,44%)); }
+        .th-legend-ends { display: flex; justify-content: space-between; font-size: 9px; color: var(--color-text-muted); margin-top: 3px; font-weight: 600; letter-spacing: .05em; }
+        .th-panel { border-radius: 12px; overflow: hidden; position: sticky; top: 14px; background: var(--color-surface, #fff); border: 1px solid var(--color-border, #E5E9EA); }
+        .th-panel-header { padding: 16px 18px; border-bottom: 1px solid var(--color-border, #E5E9EA); background: linear-gradient(135deg, #0033A0, #2D6DF6); }
+        .th-panel-header h3 { margin: 0 0 3px; font-size: 14px; font-weight: 700; color: #fff; }
+        .th-panel-header p { margin: 0; font-size: 11px; color: rgba(255,255,255,.70); }
+        .th-panel-body { padding: 8px 14px; max-height: 520px; overflow-y: auto; }
+        .th-panel-body::-webkit-scrollbar { width: 3px; }
+        .th-panel-body::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+        .th-case { padding: 11px 0; border-bottom: 1px solid var(--color-border, #E5E9EA); }
+        .th-case:last-child { border-bottom: none; }
+        .th-case a { display: block; font-size: 12px; font-weight: 700; color: var(--color-primary, #2D6DF6); text-decoration: none; line-height: 1.45; margin-bottom: 6px; }
+        .th-case a:hover { text-decoration: underline; }
+        .th-case-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+        .th-chip { padding: 2px 8px; border-radius: 999px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+        .th-chip-rojo { background: #FFF4F3; color: #D12D35; border: 1px solid rgba(209,45,53,.2); }
+        .th-chip-amarillo { background: #FFF5EC; color: #ED8B00; border: 1px solid rgba(237,139,0,.2); }
+        .th-chip-verde { background: #DEF6DE; color: #067014; border: 1px solid rgba(6,112,20,.2); }
+        .th-chip-default { background: #DFEAFF; color: #0033A0; border: 1px solid rgba(0,51,160,.2); }
+        .th-chip-entity { background: var(--color-border, #E5E9EA); color: var(--color-text-muted); }
+        .th-chip-date { background: transparent; color: var(--color-text-muted); font-weight: 500; }
+        .th-empty { font-size: 12px; color: var(--color-text-muted); padding: 18px 0; text-align: center; }
+        @media (max-width: 900px) {
+            .th-content { display: block; }
+            .th-panel { position: static; margin-top: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-bar">
+            <div class="app-bar__brand">
+                <img src="{{ url_for('static', filename='sura-logo.svg') }}" alt="SURA" class="brand-logo">
+                <div class="app-bar__divider"></div>
+                <div class="app-bar__titles">
+                    <h1><span class="ic ic-clipboard" style="color:var(--color-primary);"></span> Mapa Termico de Riesgos</h1>
+                    <p class="subtitle">Cumplimiento Normativo SURA</p>
+                </div>
+            </div>
+            <div class="app-bar__actions">
+                <div class="theme-switch" id="theme-toggle" title="Cambiar tema">
+                    <div class="theme-switch__btn light active" id="theme-light"><span class="ic ic-sun"></span></div>
+                    <div class="theme-switch__btn dark" id="theme-dark"><span class="ic ic-moon"></span></div>
+                </div>
+                <a href="/" class="btn-secondary" style="margin-right:8px;"><span class="ic ic-clipboard"></span> Dashboard</a>
+                <a href="/grafo-relaciones" class="btn-secondary" style="margin-right:8px;"><span class="ic ic-link"></span> Grafo</a>
+                <a href="/gobierno" class="btn-primary"><span class="ic ic-shield"></span> Gobierno</a>
+            </div>
+        </div>
+        <header class="th-header">
+            <div class="th-header-left">
+                <p class="th-eyebrow">Riesgos normativos - Colombia</p>
+                <h2>Mapa Termico de Riesgos</h2>
+                <p class="th-header-desc">Matriz impacto x probabilidad - semaforo, incidencia SURA, SOX, estado y plazos.</p>
+            </div>
+            <div class="th-stats">
+                <div class="th-stat"><strong id="kpi-total">--</strong><span>Casos evaluados</span></div>
+                <div class="th-stat stat-alert"><strong id="kpi-critical">--</strong><span>Zona critica (mayor a 16)</span></div>
+                <div class="th-stat stat-date"><strong id="kpi-range">--</strong><span>Rango</span></div>
+            </div>
+        </header>
+        <div class="th-controls">
+            <div class="fld"><label for="start-date">Fecha inicio</label><input type="date" id="start-date"></div>
+            <div class="fld"><label for="end-date">Fecha fin</label><input type="date" id="end-date"></div>
+            <button id="refresh-map" class="th-btn">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Actualizar
+            </button>
+        </div>
+        <div class="th-content">
+            <div class="th-board">
+                <div class="th-grid" id="thermal-grid"></div>
+                <div class="th-legend">
+                    <span class="th-legend-label">Bajo</span>
+                    <div style="flex:1;"><div class="th-legend-bar"></div><div class="th-legend-ends"><span>1</span><span>25</span></div></div>
+                    <span class="th-legend-label">Alto</span>
+                </div>
+                <div class="th-guide">
+                    <div class="th-guide-title">Como leer este mapa</div>
+                    <div class="th-guide-grid">
+                        <div class="th-guide-item">
+                            <div class="th-guide-icon" style="background:#2D6DF6;">I</div>
+                            <div><strong>Eje vertical - Impacto</strong><br>Que tan grave seria para SURA si no se cumple la norma. 1 = bajo impacto, 5 = impacto critico.</div>
+                        </div>
+                        <div class="th-guide-item">
+                            <div class="th-guide-icon" style="background:#00AEC7;">P</div>
+                            <div><strong>Eje horizontal - Probabilidad</strong><br>Que tan urgente o probable es que la norma exija accion inmediata. 1 = baja urgencia, 5 = accion inmediata.</div>
+                        </div>
+                        <div class="th-guide-item">
+                            <div class="th-guide-icon" style="background:#ED8B00;">N</div>
+                            <div><strong>Numero en cada celda</strong><br>Cantidad de documentos normativos detectados en ese nivel de riesgo. Si dice 0, la zona existe pero no tiene casos en el rango de fecha.</div>
+                        </div>
+                        <div class="th-guide-item">
+                            <div class="th-guide-icon" style="background:#D12D35;">!</div>
+                            <div><strong>Color de la celda</strong><br>El color indica el nivel de riesgo inherente de esa combinacion: azul = riesgo bajo, rojo = riesgo critico. El color no cambia aunque no haya casos.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="th-panel">
+                <div class="th-panel-header">
+                    <h3 id="panel-title">Seleccione una celda</h3>
+                    <p id="panel-summary">Haz clic para ver los casos.</p>
+                </div>
+                <div class="th-panel-body" id="panel-cases"><p class="th-empty">Ninguna celda seleccionada.</p></div>
+            </aside>
+        </div>
+        <div style="height:40px;"></div>
+    </div>
+    <script>
+        var today = new Date().toISOString().slice(0, 10);
+        document.getElementById('start-date').value = today;
+        document.getElementById('end-date').value = today;
+
+        function scoreZone(score) {
+            if (score >= 20) return 'ZONA CRITICA';
+            if (score >= 15) return 'Zona Alta';
+            if (score >= 10) return 'Zona Media';
+            if (score >= 5)  return 'Zona de Seguimiento';
+            return 'Zona Baja';
+        }
+
+        function scoreToStyle(score, count) {
+            if (score <= 0) return {bg:'rgba(0,0,0,0.05)', color:'rgba(0,0,0,0.15)'};
+            var t = Math.min((score - 1) / 24, 1);
+            var keys = [
+                {h:220, s:65, l:48},
+                {h:148, s:62, l:38},
+                {h:42,  s:88, l:48},
+                {h:22,  s:85, l:46},
+                {h:0,   s:68, l:44}
+            ];
+            var seg = Math.min(Math.floor(t * (keys.length - 1)), keys.length - 2);
+            var lt = (t * (keys.length - 1)) - seg;
+            var a = keys[seg], b = keys[seg + 1];
+            var h = Math.round(a.h + (b.h - a.h) * lt);
+            var s = Math.round(a.s + (b.s - a.s) * lt);
+            var l = Math.round(a.l + (b.l - a.l) * lt);
+            var textColor = count > 0 ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.50)';
+            return {bg: 'hsl(' + h + ',' + s + '%,' + l + '%)', color: textColor};
+        }
+
+        function chipClass(semaforo) {
+            var s = (semaforo || '').toUpperCase();
+            if (s === 'ROJO')     return 'th-chip-rojo';
+            if (s === 'AMARILLO') return 'th-chip-amarillo';
+            if (s === 'VERDE')    return 'th-chip-verde';
+            return 'th-chip-default';
+        }
+
+        function trunc(text, max) {
+            return text && text.length > max ? text.slice(0, max) + '...' : (text || 'Sin titulo');
+        }
+
+        function renderPanel(cell) {
+            document.getElementById('panel-title').textContent = 'Impacto ' + cell.impact + ' - Probabilidad ' + cell.probability;
+            document.getElementById('panel-summary').textContent = 'Puntaje ' + cell.score + ' - ' + cell.count + ' caso' + (cell.count !== 1 ? 's' : '');
+            var cases = cell.cases || [];
+            if (!cases.length) {
+                document.getElementById('panel-cases').innerHTML = '<p class="th-empty">No hay casos en esta celda.</p>';
+                return;
+            }
+            document.getElementById('panel-cases').innerHTML = cases.map(function(item) {
+                return '<article class="th-case">' +
+                    '<a href="' + (item.document_url || '#') + '" target="_blank" rel="noopener">' + trunc(item.title, 88) + '</a>' +
+                    '<div class="th-case-chips">' +
+                    '<span class="th-chip ' + chipClass(item.semaforo) + '">' + (item.semaforo || '?') + '</span>' +
+                    '<span class="th-chip th-chip-entity">' + trunc(item.entidad, 30) + '</span>' +
+                    '<span class="th-chip th-chip-date">' + (item.detected_at || '') + '</span>' +
+                    '</div></article>';
+            }).join('');
+        }
+
+        function renderGrid(data) {
+            var byKey = {};
+            data.cells.forEach(function(c) { byKey[c.impact + '-' + c.probability] = c; });
+            var grid = document.getElementById('thermal-grid');
+            var html = '<div class="th-axis-v">Impacto</div>';
+            for (var impact = 5; impact >= 1; impact--) {
+                var row = 6 - impact;
+                html += '<div class="th-num-v" style="grid-column:1;grid-row:' + row + ';">' + impact + '</div>';
+                for (var prob = 1; prob <= 5; prob++) {
+                    var cell = byKey[impact + '-' + prob];
+                    var sty = scoreToStyle(cell.score, cell.count);
+                    var numText = cell.count > 0 ? cell.count : '0';
+                    var zoneLabel = scoreZone(cell.score);
+                    var tipText = zoneLabel + ': ' + cell.count + ' caso' + (cell.count !== 1 ? 's' : '') + ' detectado' + (cell.count !== 1 ? 's' : '') + ' en este rango';
+                    html += '<button class="th-cell" data-key="' + impact + '-' + prob + '"' +
+                        ' style="grid-column:' + (prob + 1) + ';grid-row:' + row + ';background:' + sty.bg + ';"' +
+                        ' title="' + tipText + '">' +
+                        '<span class="th-cell-n" style="color:' + sty.color + ';">' + numText + '</span>' +
+                        '<span class="th-cell-s"></span></button>';
+                }
+            }
+            for (var p = 1; p <= 5; p++) {
+                html += '<div class="th-num-h" style="grid-column:' + (p + 1) + ';grid-row:6;">' + p + '</div>';
+            }
+            html += '<div class="th-axis-h">Probabilidad / Urgencia</div>';
+            grid.innerHTML = html;
+            grid.querySelectorAll('.th-cell').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    grid.querySelectorAll('.th-cell').forEach(function(b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    renderPanel(byKey[btn.dataset.key]);
+                });
+            });
+            var hot = null;
+            data.hottest.forEach(function(c) { if (!hot && c.count > 0) hot = c; });
+            if (hot) {
+                var hotBtn = grid.querySelector('[data-key="' + hot.impact + '-' + hot.probability + '"]');
+                if (hotBtn) { hotBtn.classList.add('active'); renderPanel(hot); }
+            }
+        }
+
+        function loadThermalMap() {
+            var btn = document.getElementById('refresh-map');
+            btn.disabled = true; btn.textContent = 'Cargando...';
+            var p = new URLSearchParams();
+            var s = document.getElementById('start-date').value;
+            var e = document.getElementById('end-date').value;
+            if (s) p.append('start_date', s);
+            if (e) p.append('end_date', e);
+            fetch('/api/mapa-riesgos-termico?' + p.toString())
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    document.getElementById('kpi-total').textContent = data.total_cases.toLocaleString('es-CO');
+                    document.getElementById('kpi-critical').textContent = data.critical_cases.toLocaleString('es-CO');
+                    document.getElementById('kpi-range').textContent = data.start_date + ' - ' + data.end_date;
+                    renderGrid(data);
+                })
+                .finally(function() {
+                    btn.disabled = false;
+                    btn.textContent = 'Actualizar';
+                });
+        }
+
+        document.getElementById('refresh-map').addEventListener('click', loadThermalMap);
+        loadThermalMap();
+    </script>
+</body>
+</html>

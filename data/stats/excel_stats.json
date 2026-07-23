@@ -1,0 +1,484 @@
+{
+    "por_tipo": [
+        {
+            "label": "Norma",
+            "value": 2766
+        },
+        {
+            "label": "Proyecto normativo",
+            "value": 607
+        }
+    ],
+    "por_emisor": [
+        {
+            "label": "MinSalud",
+            "value": 544
+        },
+        {
+            "label": "MinMinas",
+            "value": 230
+        },
+        {
+            "label": "DIAN",
+            "value": 218
+        },
+        {
+            "label": "MinHacienda",
+            "value": 218
+        },
+        {
+            "label": "MinTransporte",
+            "value": 180
+        },
+        {
+            "label": "MinCIT",
+            "value": 172
+        },
+        {
+            "label": "MinTrabajo",
+            "value": 151
+        },
+        {
+            "label": "SuperFinanciera",
+            "value": 126
+        },
+        {
+            "label": "MinExterior",
+            "value": 126
+        },
+        {
+            "label": "MinInterior",
+            "value": 126
+        },
+        {
+            "label": "Banco de la República",
+            "value": 92
+        },
+        {
+            "label": "Presidencia",
+            "value": 90
+        },
+        {
+            "label": "Congreso",
+            "value": 87
+        },
+        {
+            "label": "SuperSalud",
+            "value": 84
+        },
+        {
+            "label": "BVC",
+            "value": 72
+        },
+        {
+            "label": "CONPES",
+            "value": 64
+        },
+        {
+            "label": "SIC",
+            "value": 61
+        },
+        {
+            "label": "DAFP",
+            "value": 52
+        },
+        {
+            "label": "SuperSociedades",
+            "value": 44
+        },
+        {
+            "label": "MinAgricultura",
+            "value": 41
+        },
+        {
+            "label": "ADRES",
+            "value": 37
+        },
+        {
+            "label": "MinTIC",
+            "value": 34
+        },
+        {
+            "label": "DNP",
+            "value": 33
+        },
+        {
+            "label": "Finagro",
+            "value": 33
+        },
+        {
+            "label": "MinJusticia",
+            "value": 32
+        },
+        {
+            "label": "MinCiencias",
+            "value": 29
+        },
+        {
+            "label": "MinAmbiente",
+            "value": 26
+        },
+        {
+            "label": "DAPRE",
+            "value": 26
+        },
+        {
+            "label": "Contraloría",
+            "value": 22
+        },
+        {
+            "label": "MinVivienda",
+            "value": 21
+        },
+        {
+            "label": "Contaduría",
+            "value": 21
+        },
+        {
+            "label": "MinDefensa",
+            "value": 18
+        },
+        {
+            "label": "SuperVigilancia",
+            "value": 13
+        },
+        {
+            "label": "Procuraduría General de la República",
+            "value": 12
+        },
+        {
+            "label": "Procuraduría",
+            "value": 11
+        },
+        {
+            "label": "BVC - Bolsa de Valores de Colombia",
+            "value": 11
+        },
+        {
+            "label": "Ministerio de Salud",
+            "value": 11
+        },
+        {
+            "label": "Ministerio de Minas y Energia",
+            "value": 11
+        },
+        {
+            "label": "UGPP",
+            "value": 10
+        },
+        {
+            "label": "Auditoría General de la Nación",
+            "value": 9
+        },
+        {
+            "label": "AMV",
+            "value": 8
+        },
+        {
+            "label": "MinEducación",
+            "value": 8
+        },
+        {
+            "label": "MinCultura",
+            "value": 8
+        },
+        {
+            "label": "Otro",
+            "value": 8
+        },
+        {
+            "label": "SuperNotariado",
+            "value": 7
+        },
+        {
+            "label": "URF",
+            "value": 7
+        },
+        {
+            "label": "DANE",
+            "value": 7
+        },
+        {
+            "label": "Min Transporte",
+            "value": 7
+        },
+        {
+            "label": "Ministerio de Trabajo",
+            "value": 7
+        },
+        {
+            "label": "Colombia Compra Eficiente",
+            "value": 5
+        },
+        {
+            "label": "SuperSolidaria",
+            "value": 5
+        },
+        {
+            "label": "INS",
+            "value": 5
+        },
+        {
+            "label": "Fogafin",
+            "value": 4
+        },
+        {
+            "label": "SuperSubsidioFamiliar",
+            "value": 4
+        },
+        {
+            "label": "DAPS",
+            "value": 4
+        },
+        {
+            "label": "CTCP",
+            "value": 4
+        },
+        {
+            "label": "SuperTransporte",
+            "value": 4
+        },
+        {
+            "label": "UPME",
+            "value": 4
+        },
+        {
+            "label": "CRC",
+            "value": 3
+        },
+        {
+            "label": "ANSV",
+            "value": 3
+        },
+        {
+            "label": "MinDeporte",
+            "value": 3
+        },
+        {
+            "label": "ANE",
+            "value": 3
+        },
+        {
+            "label": "Contaduría General de la Nación",
+            "value": 3
+        },
+        {
+            "label": "SuperEconomíaSolidaria",
+            "value": 3
+        },
+        {
+            "label": "Colpensiones",
+            "value": 3
+        },
+        {
+            "label": "Consejo Superior de la Judicatura",
+            "value": 3
+        },
+        {
+            "label": "ANM",
+            "value": 3
+        },
+        {
+            "label": "Ministerio de Vivienda",
+            "value": 3
+        },
+        {
+            "label": "Ministerio de Hacienda",
+            "value": 3
+        },
+        {
+            "label": "Alcaldía",
+            "value": 3
+        },
+        {
+            "label": "SuperPuertos y Transporte",
+            "value": 2
+        },
+        {
+            "label": "CRC - Comisión de Regulación de Comunicaciones",
+            "value": 2
+        },
+        {
+            "label": "CREG - Comisión de Regulación de Energía y Gas",
+            "value": 2
+        },
+        {
+            "label": "SuperServicios",
+            "value": 2
+        },
+        {
+            "label": "CCE",
+            "value": 2
+        },
+        {
+            "label": "ANH",
+            "value": 2
+        },
+        {
+            "label": "DNP - Departamento Nacional de Planeación",
+            "value": 2
+        },
+        {
+            "label": "FNG",
+            "value": 2
+        },
+        {
+            "label": "ADR",
+            "value": 2
+        },
+        {
+            "label": "ANLA",
+            "value": 1
+        },
+        {
+            "label": "ANDJE",
+            "value": 1
+        },
+        {
+            "label": "AMV - Autorregulador del Mercado de Valores",
+            "value": 1
+        },
+        {
+            "label": "Gobernación",
+            "value": 1
+        },
+        {
+            "label": "Registraduría Nacional del Estado Civil",
+            "value": 1
+        },
+        {
+            "label": "ICA",
+            "value": 1
+        },
+        {
+            "label": "Ministerio de Comercio",
+            "value": 1
+        },
+        {
+            "label": "CNPMDM",
+            "value": 1
+        },
+        {
+            "label": "Congreso de la República",
+            "value": 1
+        },
+        {
+            "label": "MinSalud, INS",
+            "value": 1
+        },
+        {
+            "label": "ANT",
+            "value": 1
+        },
+        {
+            "label": "ANI",
+            "value": 1
+        },
+        {
+            "label": "CNPM",
+            "value": 1
+        },
+        {
+            "label": "JCC",
+            "value": 1
+        },
+        {
+            "label": "INVIMA",
+            "value": 1
+        }
+    ],
+    "por_norma": [
+        {
+            "label": "Resolución",
+            "value": 1589
+        },
+        {
+            "label": "Decreto",
+            "value": 886
+        },
+        {
+            "label": "Circular",
+            "value": 213
+        },
+        {
+            "label": "Circular Externa",
+            "value": 173
+        },
+        {
+            "label": "Boletín",
+            "value": 112
+        },
+        {
+            "label": "Ley",
+            "value": 90
+        },
+        {
+            "label": "CONPES",
+            "value": 59
+        },
+        {
+            "label": "Carta Circular",
+            "value": 59
+        },
+        {
+            "label": "Concepto",
+            "value": 46
+        },
+        {
+            "label": "Agenda Regulatoria",
+            "value": 30
+        },
+        {
+            "label": "Documento Técnico",
+            "value": 21
+        },
+        {
+            "label": "Circular Conjunta",
+            "value": 13
+        },
+        {
+            "label": "Memorando",
+            "value": 12
+        },
+        {
+            "label": "Directiva",
+            "value": 12
+        },
+        {
+            "label": "Otro",
+            "value": 10
+        },
+        {
+            "label": "Acuerdo",
+            "value": 6
+        },
+        {
+            "label": "Comunicado",
+            "value": 6
+        },
+        {
+            "label": "Lineamientos",
+            "value": 5
+        },
+        {
+            "label": "Estudio",
+            "value": 3
+        },
+        {
+            "label": "Acto Legislativo",
+            "value": 2
+        },
+        {
+            "label": "Reglamento",
+            "value": 1
+        },
+        {
+            "label": "Documento CONPES 4031 de 201",
+            "value": 1
+        },
+        {
+            "label": "Instructivo",
+            "value": 1
+        }
+    ]
+}

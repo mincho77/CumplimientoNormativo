@@ -1,0 +1,12 @@
+---
+type: entity
+tags: [entidad]
+updated: 2026-06-17
+---
+
+
+
+
+
+## Descripción
+Información sobre Ministerio de Ambiente y Desarrollo Sostenible (Guía/Documento complementario a PIGCC Territoriales).

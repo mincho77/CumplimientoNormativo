@@ -1,0 +1,12 @@
+---
+type: entity
+tags: [entidad]
+updated: 2026-06-17
+---
+
+
+
+
+
+## Descripción
+Información sobre Departamento Nacional de Planeación (DNP) / Presidencia de la República (Decreto).

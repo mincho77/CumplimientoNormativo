@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafo de Relaciones Normativas | SURA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='sura-ui.js') }}"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .rel-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 360px;
+            gap: 18px;
+            align-items: start;
+        }
+        .rel-stage-wrap {
+            position: relative;
+        }
+        .rel-card {
+            background: var(--color-surface, #fff);
+            border: 1px solid var(--color-border, #E5E9EA);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .rel-head {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--color-border, #E5E9EA);
+            background: linear-gradient(130deg, #0033A0, #2D6DF6);
+        }
+        .rel-head h2 {
+            margin: 0;
+            font-size: 16px;
+            color: #fff;
+            letter-spacing: -0.01em;
+        }
+        .rel-head p {
+            margin: 3px 0 0;
+            color: rgba(255,255,255,.80);
+            font-size: 11px;
+            line-height: 1.45;
+        }
+        .rel-quick {
+            padding: 10px 20px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--color-border, #E5E9EA);
+            background: linear-gradient(180deg, rgba(223,234,255,.40), rgba(255,255,255,.96));
+        }
+        .rel-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 999px;
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #204A8E;
+            background: #EAF2FF;
+            border: 1px solid rgba(0,51,160,.10);
+        }
+        .rel-controls {
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--color-border, #E5E9EA);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: end;
+        }
+        .rel-fld label {
+            display: block;
+            font-size: 10px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--color-text-muted, #888B8D);
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+        .rel-fld input,
+        .rel-fld select {
+            height: 32px;
+            border: 1px solid var(--color-border, #E5E9EA);
+            border-radius: 10px;
+            padding: 0 12px;
+            font-size: 11px;
+            font-family: var(--font-family);
+            min-width: 112px;
+        }
+        .rel-btn {
+            height: 32px;
+            border-radius: 10px;
+            border: none;
+            padding: 0 12px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+            background: #2D6DF6;
+            color: white;
+            transition: transform .15s ease, background .15s ease;
+        }
+        .rel-btn:hover { background: #0033A0; }
+        .rel-btn:active { transform: translateY(1px); }
+        .rel-btn.alt {
+            background: #DFEAFF;
+            color: #0033A0;
+            border: 1px solid rgba(0,51,160,.16);
+        }
+        .rel-btn.alt:hover { background: #CFE0FF; }
+        .rel-btn.alt.is-active {
+            background: #0033A0;
+            color: #fff;
+            border-color: #0033A0;
+        }
+        .rel-stage {
+            position: relative;
+            min-height: 580px;
+            background: radial-gradient(circle at 50% 40%, rgba(45,109,246,0.11), transparent 32%), radial-gradient(circle at 20% 20%, rgba(0,174,199,0.08), transparent 55%), radial-gradient(circle at 85% 80%, rgba(237,139,0,0.06), transparent 45%);
+        }
+        .rel-canvas {
+            width: 100%;
+            height: 580px;
+            display: block;
+            cursor: grab;
+            touch-action: none;
+        }
+        .rel-canvas:active {
+            cursor: grabbing;
+        }
+        .rel-zoom-bar {
+            position: absolute;
+            right: 14px;
+            top: 14px;
+            z-index: 3;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .rel-zoom-btn {
+            height: 32px;
+            min-width: 32px;
+            padding: 0 11px;
+            border-radius: 999px;
+            border: 1px solid rgba(0,51,160,.14);
+            background: rgba(255,255,255,.90);
+            color: #0033A0;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0,51,160,.10);
+        }
+        .rel-zoom-btn:hover { background: #fff; }
+        .rel-zoom-btn:disabled { opacity: .5; cursor: not-allowed; }
+        .rel-zoom-label {
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            padding: 0 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.88);
+            border: 1px solid rgba(0,51,160,.10);
+            color: var(--color-text-muted, #888B8D);
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .rel-empty {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 13px;
+            color: var(--color-text-muted, #888B8D);
+            padding: 24px;
+        }
+        .rel-tooltip {
+            position: absolute;
+            z-index: 5;
+            max-width: 320px;
+            pointer-events: none;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            line-height: 1.35;
+            color: #1F2D3D;
+            background: rgba(255,255,255,.96);
+            border: 1px solid rgba(0,51,160,.16);
+            box-shadow: 0 10px 28px rgba(0,51,160,.16);
+            display: none;
+        }
+        .rel-theme-toggle {
+            margin-left: auto;
+        }
+        .rel-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(3, 9, 26, .58);
+            backdrop-filter: blur(4px);
+            padding: 16px;
+        }
+        .rel-modal.is-open { display: flex; }
+        .rel-modal-card {
+            width: min(1080px, 96vw);
+            max-height: 90vh;
+            overflow: hidden;
+            border-radius: 14px;
+            border: 1px solid var(--color-border, #E5E9EA);
+            background: var(--color-surface, #fff);
+            box-shadow: 0 30px 80px rgba(3, 9, 26, .28);
+        }
+        .rel-modal-head {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--color-border, #E5E9EA);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        .rel-modal-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--color-primary, #2D6DF6);
+            line-height: 1.3;
+        }
+        .rel-modal-sub {
+            margin-top: 3px;
+            font-size: 11px;
+            color: var(--color-text-muted, #888B8D);
+        }
+        .rel-modal-close {
+            border: 1px solid var(--color-border, #E5E9EA);
+            background: #fff;
+            border-radius: 10px;
+            height: 32px;
+            padding: 0 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #0033A0;
+        }
+        .rel-modal-body {
+            padding: 10px 14px 14px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 320px;
+            gap: 12px;
+        }
+        .rel-modal-canvas {
+            width: 100%;
+            height: 520px;
+            border: 1px solid var(--color-border, #E5E9EA);
+            border-radius: 12px;
+            background: radial-gradient(circle at 50% 42%, rgba(45,109,246,.10), transparent 38%), radial-gradient(circle at 22% 17%, rgba(0,174,199,.06), transparent 55%), #fff;
+        }
+        .rel-modal-side {
+            border: 1px solid var(--color-border, #E5E9EA);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--color-surface, #fff);
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
+        }
+        .rel-modal-side h4 {
+            margin: 0;
+            padding: 10px 12px;
+            font-size: 11px;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--color-text-muted, #888B8D);
+            border-bottom: 1px solid var(--color-border, #E5E9EA);
+        }
+        .rel-modal-list {
+            padding: 8px 10px 10px;
+            overflow-y: auto;
+            max-height: 470px;
+        }
+        .rel-diff-item {
+            border: 1px solid var(--color-border, #E5E9EA);
+            border-radius: 10px;
+            padding: 8px;
+            margin-bottom: 8px;
+            background: rgba(223,234,255,.18);
+        }
+        .rel-diff-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #23456C;
+            line-height: 1.35;
+            margin-bottom: 4px;
+        }
+        .rel-diff-meta {
+            font-size: 10px;
+            color: #5D708D;
+            margin-bottom: 6px;
+        }
+        .rel-diff-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .rel-diff-tag {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .03em;
+            border-radius: 999px;
+            padding: 2px 6px;
+            border: 1px solid rgba(0,51,160,.12);
+            background: #fff;
+            color: #315079;
+        }
+        .rel-modal-empty {
+            padding: 18px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--color-text-muted, #888B8D);
+        }
+        .rel-node-menu {
+            position: fixed;
+            z-index: 70;
+            min-width: 196px;
+            border-radius: 10px;
+            border: 1px solid rgba(0,51,160,.16);
+            background: #fff;
+            box-shadow: 0 18px 42px rgba(4,12,35,.22);
+            padding: 6px;
+            display: none;
+        }
+        .rel-node-menu.is-open { display: block; }
+        .rel-node-menu button {
+            width: 100%;
+            text-align: left;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #24374F;
+            cursor: pointer;
+        }
+        .rel-node-menu button:hover {
+            background: #DFEAFF;
+            color: #0033A0;
+        }
+        .rel-side {
+            position: sticky;
+            top: 12px;
+        }
+        .rel-kpis {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .rel-kpi {
+            border: 1px solid var(--color-border, #E5E9EA);
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: var(--color-surface, #fff);
+        }
+        .rel-kpi b {
+            display: block;
+            font-size: 22px;
+            color: var(--color-primary, #2D6DF6);
+            line-height: 1.1;
+        }
+        .rel-kpi span {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--color-text-muted, #888B8D);
+            font-weight: 700;
+        }
+        .rel-panel {
+            border: 1px solid var(--color-border, #E5E9EA);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--color-surface, #fff);
+            margin-bottom: 12px;
+        }
+        .rel-panel h3 {
+            margin: 0;
+            padding: 12px 14px;
+            font-size: 12px;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--color-text-muted, #888B8D);
+            border-bottom: 1px solid var(--color-border, #E5E9EA);
+        }
+        .rel-panel-body {
+            padding: 12px 14px;
+            max-height: 286px;
+            overflow-y: auto;
+        }
+        .rel-panel-body.tight {
+            max-height: 190px;
+        }
+        .rel-panel-body.mindmap {
+            max-height: 290px;
+        }
+        .rel-node-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .03em;
+            color: #2D6DF6;
+        }
+        .rel-node-sub {
+            font-size: 10px;
+            color: var(--color-text-muted, #888B8D);
+            margin-top: 2px;
+        }
+        .rel-node-chip {
+            display: inline-block;
+            margin-top: 4px;
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            background: #DFEAFF;
+            color: #0033A0;
+        }
+        .rel-node-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--color-primary, #2D6DF6);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .rel-pill {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .rel-pill-blue { background: #DFEAFF; color: #0033A0; }
+        .rel-pill-red { background: #FFF4F3; color: #D12D35; }
+        .rel-pill-yellow { background: #FFF5EC; color: #ED8B00; }
+        .rel-pill-green { background: #DEF6DE; color: #067014; }
+        .rel-list-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--color-border, #E5E9EA);
+        }
+        .rel-list-item:last-child { border-bottom: none; }
+        .rel-score {
+            font-size: 11px;
+            font-weight: 700;
+            color: #0033A0;
+            margin-bottom: 5px;
+        }
+        .rel-legal-tag {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        .rel-legal-tag.high { background: #FFF4F3; color: #D12D35; }
+        .rel-legal-tag.mid { background: #FFF5EC; color: #9E6100; }
+        .rel-legal-tag.low { background: #DEF6DE; color: #0B7A2A; }
+        .rel-small {
+            font-size: 11px;
+            color: var(--color-text-muted, #888B8D);
+            line-height: 1.4;
+        }
+        body[data-rel-theme='dark'] .rel-card,
+        body[data-rel-theme='dark'] .rel-panel,
+        body[data-rel-theme='dark'] .rel-kpi {
+            background: #07143A;
+            border-color: rgba(205,220,255,.18);
+        }
+        body[data-rel-theme='dark'] .rel-quick {
+            background: linear-gradient(180deg, rgba(31,62,123,.46), rgba(7,20,58,.96));
+            border-bottom-color: rgba(205,220,255,.18);
+        }
+        body[data-rel-theme='dark'] .rel-chip {
+            background: rgba(45,109,246,.18);
+            border-color: rgba(189,209,255,.24);
+            color: #D8E6FF;
+        }
+        body[data-rel-theme='dark'] .rel-fld label,
+        body[data-rel-theme='dark'] .rel-small,
+        body[data-rel-theme='dark'] .rel-panel h3,
+        body[data-rel-theme='dark'] .rel-node-sub,
+        body[data-rel-theme='dark'] .rel-kpi span,
+        body[data-rel-theme='dark'] .rel-zoom-label {
+            color: #BFD0F0;
+        }
+        body[data-rel-theme='dark'] .rel-fld input,
+        body[data-rel-theme='dark'] .rel-fld select,
+        body[data-rel-theme='dark'] .rel-zoom-btn,
+        body[data-rel-theme='dark'] .rel-zoom-label {
+            background: rgba(9,24,69,.95);
+            color: #E4EDFF;
+            border-color: rgba(205,220,255,.22);
+        }
+        body[data-rel-theme='dark'] .rel-stage {
+            background: radial-gradient(circle at 50% 40%, rgba(45,109,246,0.20), transparent 34%), radial-gradient(circle at 20% 20%, rgba(0,174,199,0.12), transparent 55%), radial-gradient(circle at 85% 80%, rgba(237,139,0,0.12), transparent 45%), #00003F;
+        }
+        body[data-rel-theme='dark'] .rel-modal-card,
+        body[data-rel-theme='dark'] .rel-modal-canvas {
+            background: #07143A;
+            border-color: rgba(205,220,255,.18);
+        }
+        body[data-rel-theme='dark'] .rel-modal-side,
+        body[data-rel-theme='dark'] .rel-diff-item {
+            background: rgba(9,24,69,.82);
+            border-color: rgba(205,220,255,.22);
+        }
+        body[data-rel-theme='dark'] .rel-modal-close {
+            background: rgba(9,24,69,.95);
+            border-color: rgba(205,220,255,.22);
+            color: #D8E6FF;
+        }
+        body[data-rel-theme='dark'] .rel-modal-sub,
+        body[data-rel-theme='dark'] .rel-modal-empty {
+            color: #BFD0F0;
+        }
+        body[data-rel-theme='dark'] .rel-modal-side h4,
+        body[data-rel-theme='dark'] .rel-diff-meta {
+            color: #9FB4DE;
+            border-bottom-color: rgba(205,220,255,.2);
+        }
+        body[data-rel-theme='dark'] .rel-diff-title,
+        body[data-rel-theme='dark'] .rel-diff-tag {
+            color: #D8E6FF;
+        }
+        body[data-rel-theme='dark'] .rel-diff-tag {
+            background: rgba(45,109,246,.14);
+            border-color: rgba(189,209,255,.25);
+        }
+        body[data-rel-theme='dark'] .rel-node-menu {
+            background: #07143A;
+            border-color: rgba(205,220,255,.22);
+            box-shadow: 0 18px 42px rgba(2,7,27,.65);
+        }
+        body[data-rel-theme='dark'] .rel-node-menu button {
+            color: #D8E6FF;
+        }
+        body[data-rel-theme='dark'] .rel-node-menu button:hover {
+            background: rgba(45,109,246,.2);
+            color: #fff;
+        }
+        body[data-rel-theme='dark'] .rel-tooltip {
+            color: #E7EDFF;
+            background: rgba(8,18,52,.96);
+            border-color: rgba(154,183,248,.4);
+            box-shadow: 0 10px 28px rgba(2,7,27,.55);
+        }
+        @media (max-width: 1024px) {
+            .rel-layout { grid-template-columns: 1fr; }
+            .rel-side { position: static; }
+            .rel-theme-toggle { margin-left: 0; }
+            .rel-modal-body { grid-template-columns: 1fr; }
+            .rel-modal-side { min-height: 260px; }
+            .rel-modal-list { max-height: 220px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-bar">
+            <div class="app-bar__brand">
+                <img src="{{ url_for('static', filename='sura-logo.svg') }}" alt="SURA" class="brand-logo">
+                <div class="app-bar__divider"></div>
+                <div class="app-bar__titles">
+                    <h1><span class="ic ic-link" style="color:var(--color-primary);"></span> Grafo de Relaciones</h1>
+                    <p class="subtitle">Conexiones entre documentos normativos</p>
+                </div>
+            </div>
+            <div class="app-bar__actions">
+                <a href="/mapa-riesgos-termico" class="btn-secondary" style="margin-right:8px;"><span class="ic ic-alert"></span> Mapa Termico</a>
+                <a href="/gobierno" class="btn-primary"><span class="ic ic-shield"></span> Gobierno</a>
+            </div>
+        </div>
+
+        <div class="rel-layout">
+            <section class="rel-card">
+                <div class="rel-head">
+                    <h2>Mapa de relaciones normativas</h2>
+                    <p>Haz clic en un nodo para ver contexto y antecedentes</p>
+                </div>
+                <div class="rel-quick">
+                    <span class="rel-chip">Arrastra nodos para ordenar</span>
+                    <span class="rel-chip">Zoom para ver nombres completos</span>
+                    <span class="rel-chip">Clic en documento: antecedentes</span>
+                </div>
+                <div class="rel-controls">
+                    <div class="rel-fld"><label for="f-start">Fecha inicio</label><input type="date" id="f-start"></div>
+                    <div class="rel-fld"><label for="f-end">Fecha fin</label><input type="date" id="f-end"></div>
+                    <div class="rel-fld"><label for="f-semaforo">Semaforo</label>
+                        <select id="f-semaforo">
+                            <option value="">Todos</option>
+                            <option value="ROJO">ROJO</option>
+                            <option value="AMARILLO">AMARILLO</option>
+                            <option value="CONSOLIDADO">CONSOLIDADO</option>
+                            <option value="VERDE">VERDE</option>
+                        </select>
+                    </div>
+                    <div class="rel-fld"><label for="f-entidad">Entidad contiene</label><input id="f-entidad" placeholder="Ej: ANM, ANH, DIAN"></div>
+                    <div class="rel-fld"><label for="f-minscore">Fuerza minima</label><input type="number" id="f-minscore" min="10" max="100" value="35"></div>
+                    <div class="rel-fld"><label for="f-maxnodes">Nodos max</label><input type="number" id="f-maxnodes" min="30" max="240" value="80"></div>
+                    <div class="rel-fld"><label for="f-profile">Perfil legal</label>
+                        <select id="f-profile">
+                            <option value="ejecutivo" selected>Ejecutivo jurídico</option>
+                            <option value="investigacion">Investigación jurídica</option>
+                        </select>
+                    </div>
+                    <div class="rel-fld"><label for="f-viewmode">Vista</label>
+                        <select id="f-viewmode">
+                            <option value="entities" selected>Solo entes (recomendada)</option>
+                            <option value="detailed">Entes + documentos</option>
+                        </select>
+                    </div>
+                    <button class="rel-btn" id="btn-refresh">Actualizar grafo</button>
+                    <button class="rel-btn alt" id="btn-toggle-groups" title="Expandir o colapsar documentos por ente">Docs: OFF</button>
+                    <button class="rel-btn alt" id="btn-export-brief" title="Descargar resumen para comité">Preparar comité</button>
+                    <button class="rel-btn alt rel-theme-toggle" id="btn-theme">Tema: Claro</button>
+                </div>
+                <div class="rel-stage">
+                    <div class="rel-zoom-bar">
+                        <button class="rel-zoom-btn" id="zoom-in" title="Acercar">+</button>
+                        <button class="rel-zoom-btn" id="zoom-out" title="Alejar">−</button>
+                        <button class="rel-zoom-btn" id="pan-left" title="Mover izquierda">←</button>
+                        <button class="rel-zoom-btn" id="pan-right" title="Mover derecha">→</button>
+                        <button class="rel-zoom-btn" id="pan-up" title="Mover arriba">↑</button>
+                        <button class="rel-zoom-btn" id="pan-down" title="Mover abajo">↓</button>
+                        <button class="rel-zoom-btn" id="zoom-reset" title="Resetear vista">Reset</button>
+                        <div class="rel-zoom-label" id="zoom-level">100%</div>
+                    </div>
+                    <svg class="rel-canvas" id="rel-svg"></svg>
+                    <div class="rel-tooltip" id="rel-tooltip"></div>
+                    <div class="rel-empty" id="rel-empty" style="display:none;">No hay conexiones para el filtro seleccionado.<br>Ajusta fechas, entidad o reduce fuerza minima.</div>
+                </div>
+            </section>
+
+            <aside class="rel-side">
+                <div class="rel-kpis">
+                    <div class="rel-kpi"><b id="kpi-docs">0</b><span>Documentos filtrados</span></div>
+                    <div class="rel-kpi"><b id="kpi-links">0</b><span>Relaciones pintadas</span></div>
+                </div>
+
+                        <div class="rel-kpi" style="margin-bottom:12px;">
+                            <b id="kpi-entities">0</b>
+                            <span>Relaciones entre entes</span>
+                        </div>
+
+                <div class="rel-panel">
+                    <h3>Detalle de seleccion</h3>
+                    <div class="rel-panel-body" id="detail-box">
+                        <div class="rel-small">Haz clic en un nodo o en una linea para ver por que estan relacionados.</div>
+                    </div>
+                </div>
+
+                <div class="rel-panel">
+                    <h3>Relaciones mas fuertes</h3>
+                    <div class="rel-panel-body tight" id="top-edges"></div>
+                </div>
+
+                <div class="rel-panel">
+                    <h3>Entes conectados</h3>
+                    <div class="rel-panel-body mindmap" id="top-entity-edges"></div>
+                </div>
+            </aside>
+        </div>
+        <div style="height:28px"></div>
+    </div>
+
+    <div class="rel-modal" id="doc-rel-modal" aria-hidden="true">
+        <div class="rel-modal-card">
+            <div class="rel-modal-head">
+                <div>
+                    <div class="rel-modal-title" id="doc-rel-modal-title">Unión gráfica de documentos</div>
+                    <div class="rel-modal-sub" id="doc-rel-modal-sub">Cargando relaciones...</div>
+                </div>
+                <button class="rel-modal-close" id="doc-rel-modal-close">Cerrar</button>
+            </div>
+            <div class="rel-modal-body">
+                <svg class="rel-modal-canvas" id="doc-rel-modal-canvas"></svg>
+                <div class="rel-modal-side">
+                    <h4>Diferencias clave</h4>
+                    <div class="rel-modal-list" id="doc-rel-diff-list"></div>
+                </div>
+                <div class="rel-modal-empty" id="doc-rel-modal-empty" style="display:none;">No hay documentos asociados para mostrar.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rel-node-menu" id="rel-node-menu" aria-hidden="true"></div>
+
+    <script>
+        var graphState = {
+            lastPayload: null,
+            expandedEntities: new Set(),
+            allEntities: [],
+            viewMode: 'entities',
+            historyRequestSeq: 0,
+            theme: localStorage.getItem('grafoTheme') || 'light',
+            modalRequestSeq: 0,
+            selectedDocNode: null,
+            contextNode: null
+        };
+
+        function applyTheme(theme) {
+            var t = theme === 'dark' ? 'dark' : 'light';
+            graphState.theme = t;
+            document.body.setAttribute('data-rel-theme', t);
+            localStorage.setItem('grafoTheme', t);
+            var btn = document.getElementById('btn-theme');
+            if (btn) btn.textContent = t === 'dark' ? 'Tema: Oscuro' : 'Tema: Claro';
+        }
+
+        function toggleTheme() {
+            applyTheme(graphState.theme === 'dark' ? 'light' : 'dark');
+        }
+
+        var today = new Date().toISOString().slice(0, 10);
+        document.getElementById('f-start').value = today;
+        document.getElementById('f-end').value = today;
+
+        function semClass(value) {
+            var s = (value || '').toUpperCase();
+            if (s === 'ROJO') return 'rel-pill-red';
+            if (s === 'AMARILLO') return 'rel-pill-yellow';
+            if (s === 'VERDE') return 'rel-pill-green';
+            return 'rel-pill-blue';
+        }
+
+        function safe(v) {
+            return (v || '').toString().replace(/[<>&"']/g, function(c) {
+                return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];
+            });
+        }
+
+        function prettyText(v) {
+            var txt = (v || '').toString();
+            try {
+                return decodeURIComponent(txt);
+            } catch (e) {
+                return txt;
+            }
+        }
+
+        function cleanDocumentName(v) {
+            var txt = prettyText(v || '').trim();
+            if (!txt) return 'Documento sin nombre';
+
+            if (txt.indexOf('|') >= 0) {
+                var chunks = txt.split('|').map(function(s) { return s.trim(); }).filter(Boolean);
+                if (chunks.length >= 2) {
+                    txt = chunks[chunks.length - 1];
+                }
+            }
+
+            txt = txt.replace(/^\"|\"$/g, '').replace(/^\s+|\s+$/g, '');
+            var lower = txt.toLowerCase();
+            if (txt.indexOf('/') !== -1 || txt.indexOf('?') !== -1 || txt.indexOf('%') !== -1 || lower.endsWith('.pdf') || lower.endsWith('.doc') || lower.endsWith('.docx')) {
+                var base = txt.split('/').pop() || txt;
+                base = base.split('?')[0].split('#')[0];
+                base = base.replace(/\.[a-z0-9]{2,5}$/i, '');
+                return base.replace(/[-_]+/g, ' ').replace(/\s{2,}/g, ' ').trim() || 'Documento';
+            }
+            return txt.replace(/\s{2,}/g, ' ').trim();
+        }
+
+        function shortText(v, maxLen) {
+            var txt = (v || '').toString().trim();
+            if (!txt) return '';
+            return txt.length > maxLen ? txt.slice(0, maxLen - 1) + '…' : txt;
+        }
+
+        function legalActionBySemaforo(semaforo) {
+            var s = (semaforo || '').toUpperCase();
+            if (s === 'ROJO') {
+                return {
+                    risk: 'Alerta alta',
+                    cls: 'high',
+                    action: 'Revisión legal inmediata: validar obligación, impacto contractual y plan de cumplimiento con responsable y fecha.'
+                };
+            }
+            if (s === 'AMARILLO') {
+                return {
+                    risk: 'Alerta media',
+                    cls: 'mid',
+                    action: 'Seguimiento jurídico semanal: confirmar aplicabilidad, plazos y evidencias para evitar escalamiento.'
+                };
+            }
+            return {
+                risk: 'Monitoreo',
+                cls: 'low',
+                action: 'Mantener monitoreo documental y dejar trazabilidad del criterio de no urgencia.'
+            };
+        }
+
+        function relationLegalRead(reasons) {
+            var txt = (reasons || []).join(' ').toLowerCase();
+            if (txt.indexOf('referencia normativa') >= 0) {
+                return 'Posible cadena normativa (acto base y acto complementario). Revisar jerarquía y vigencia.';
+            }
+            if (txt.indexOf('mismo tema') >= 0) {
+                return 'Riesgo de doble impacto temático sobre un mismo frente de cumplimiento.';
+            }
+            if (txt.indexOf('misma entidad') >= 0) {
+                return 'Concentración regulatoria en un ente: útil para estrategia de seguimiento por regulador.';
+            }
+            return 'Relación útil para contraste jurídico y consolidación de evidencia normativa.';
+        }
+
+        function applyProfilePreset() {
+            var profile = document.getElementById('f-profile').value || 'ejecutivo';
+            if (profile === 'ejecutivo') {
+                document.getElementById('f-viewmode').value = 'entities';
+                document.getElementById('f-minscore').value = '45';
+                document.getElementById('f-maxnodes').value = '60';
+                graphState.expandedEntities.clear();
+                return;
+            }
+            document.getElementById('f-viewmode').value = 'detailed';
+            document.getElementById('f-minscore').value = '30';
+            document.getElementById('f-maxnodes').value = '120';
+            graphState.expandedEntities.clear();
+        }
+
+        function updateGroupToggleLabel() {
+            var btn = document.getElementById('btn-toggle-groups');
+            if (!btn) return;
+            if (graphState.viewMode !== 'detailed') {
+                btn.classList.remove('is-active');
+                btn.textContent = 'Activar docs';
+                return;
+            }
+            var active = graphState.expandedEntities.size > 0;
+            btn.classList.toggle('is-active', active);
+            btn.textContent = active ? 'Docs: ON' : 'Docs: OFF';
+        }
+
+        function toggleAllGroups() {
+            if (graphState.viewMode !== 'detailed') {
+                document.getElementById('f-viewmode').value = 'detailed';
+                graphState.viewMode = 'detailed';
+                graphState.allEntities.forEach(function(ent) { graphState.expandedEntities.add(ent); });
+                updateGroupToggleLabel();
+                if (graphState.lastPayload) drawGraph(graphState.lastPayload);
+                return;
+            }
+            if (graphState.expandedEntities.size > 0) {
+                graphState.expandedEntities.clear();
+            } else {
+                graphState.allEntities.forEach(function(ent) { graphState.expandedEntities.add(ent); });
+            }
+            updateGroupToggleLabel();
+            if (graphState.lastPayload) drawGraph(graphState.lastPayload);
+        }
+
+        function exportCommitteeBrief() {
+            if (!graphState.lastPayload) return;
+            var data = graphState.lastPayload;
+            var lines = [];
+            lines.push('Resumen para Comite Juridico');
+            lines.push('Fecha: ' + new Date().toLocaleString('es-CO'));
+            lines.push('');
+            lines.push('Top 10 relaciones entre entes');
+            (data.top_entity_edges || []).slice(0, 10).forEach(function(e, i) {
+                lines.push((i + 1) + '. ' + (e.source_entity || '-') + ' <-> ' + (e.target_entity || '-') + ' | Fuerza ' + e.score + ' | Vinculos ' + e.count);
+            });
+            lines.push('');
+            lines.push('Top 10 relaciones documentales');
+            (data.top_edges || []).slice(0, 10).forEach(function(e, i) {
+                lines.push((i + 1) + '. Fuerza ' + e.score + ' | Motivos: ' + (e.reasons || []).join(' | '));
+            });
+            lines.push('');
+            lines.push('Sugerencia legal: priorizar fuerza alta y semaforo ROJO/AMARILLO para plan de accion.');
+
+            var blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'resumen_comite_juridico_' + new Date().toISOString().slice(0,10) + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+        }
+
+        function loadHistoricalRelationsForNode(node) {
+            var box = document.getElementById('doc-history-box');
+            if (!box) return;
+
+            var docId = node.original_id || (node.id || '').replace('doc::', '');
+            if (!docId) {
+                box.innerHTML = '<div class="rel-small">No fue posible identificar el documento.</div>';
+                return;
+            }
+
+            var reqSeq = ++graphState.historyRequestSeq;
+            box.innerHTML = '<div class="rel-small">Buscando antecedentes relacionados...</div>';
+
+            var p = new URLSearchParams();
+            p.append('doc_id', docId);
+            p.append('before_only', '1');
+            p.append('max_related', '8');
+            p.append('min_score', '20');
+
+            fetch('/api/grafo-relaciones-historico?' + p.toString())
+                .then(function(r) {
+                    if (!r.ok) throw new Error('http ' + r.status);
+                    return r.json();
+                })
+                .then(function(data) {
+                    if (reqSeq !== graphState.historyRequestSeq) return;
+                    var rel = data.related || [];
+                    if (!rel.length) {
+                        box.innerHTML = '<div class="rel-small">No se encontraron antecedentes con fuerza suficiente para este documento.</div>';
+                        return;
+                    }
+
+                    box.innerHTML = rel.map(function(item) {
+                        var when = item.detected_at || '-';
+                        var ago = (typeof item.days_older === 'number' && item.days_older >= 0) ? (' · hace ' + item.days_older + ' dias') : '';
+                        var reason = (item.reasons || []).slice(0, 3).join(' | ');
+                        return '<div class="rel-list-item">' +
+                            '<div class="rel-score">Fuerza ' + safe(item.score) + (item.cross_entity ? ' · cruce entre entes' : '') + '</div>' +
+                            '<div class="rel-small"><strong>' + safe(prettyText(item.title || '-')) + '</strong></div>' +
+                            '<div class="rel-small">Entidad: ' + safe(item.entidad || '-') + '</div>' +
+                            '<div class="rel-small">Fecha: ' + safe(when) + safe(ago) + '</div>' +
+                            '<div class="rel-small" style="margin-top:6px;">' + safe(reason) + '</div>' +
+                            '<div style="margin-top:8px;"><a class="btn-secondary" target="_blank" rel="noopener" href="' + safe(item.document_url || '#') + '">Abrir antecedente</a></div>' +
+                            '</div>';
+                    }).join('');
+                })
+                .catch(function() {
+                    if (reqSeq !== graphState.historyRequestSeq) return;
+                    box.innerHTML = '<div class="rel-small">No se pudo consultar antecedentes en este momento.</div>';
+                });
+        }
+
+        function closeDocRelationsModal() {
+            var modal = document.getElementById('doc-rel-modal');
+            if (!modal) return;
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        function closeNodeMenu() {
+            var menu = document.getElementById('rel-node-menu');
+            if (!menu) return;
+            menu.classList.remove('is-open');
+            menu.setAttribute('aria-hidden', 'true');
+            menu.innerHTML = '';
+            graphState.contextNode = null;
+        }
+
+        function openNodeMenu(event, node) {
+            var menu = document.getElementById('rel-node-menu');
+            if (!menu || !node) return;
+
+            graphState.contextNode = node;
+            var items = [];
+
+            if (node.node_type === 'document') {
+                items.push({ label: 'Ver grafico', action: function() { openDocRelationsModal(node); } });
+                items.push({ label: 'Ver detalle', action: function() { renderNodeDetail(node); } });
+                items.push({ label: 'Abrir documento fuente', action: function() {
+                    if (node.document_url) window.open(node.document_url, '_blank', 'noopener');
+                } });
+            } else {
+                items.push({ label: 'Ver detalle del ente', action: function() { renderNodeDetail(node); } });
+                if (graphState.viewMode === 'detailed') {
+                    items.push({ label: graphState.expandedEntities.has(node.entidad) ? 'Colapsar documentos del ente' : 'Expandir documentos del ente', action: function() {
+                        if (graphState.expandedEntities.has(node.entidad)) graphState.expandedEntities.delete(node.entidad);
+                        else graphState.expandedEntities.add(node.entidad);
+                        updateGroupToggleLabel();
+                        if (graphState.lastPayload) drawGraph(graphState.lastPayload);
+                    } });
+                }
+            }
+
+            menu.innerHTML = items.map(function(item, idx) {
+                return '<button data-menu-idx="' + idx + '">' + safe(item.label) + '</button>';
+            }).join('');
+
+            menu.querySelectorAll('button').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var idx = Number(btn.getAttribute('data-menu-idx'));
+                    closeNodeMenu();
+                    if (items[idx] && typeof items[idx].action === 'function') items[idx].action();
+                });
+            });
+
+            var x = event.clientX;
+            var y = event.clientY;
+            menu.style.left = x + 'px';
+            menu.style.top = y + 'px';
+            menu.classList.add('is-open');
+            menu.setAttribute('aria-hidden', 'false');
+
+            var rect = menu.getBoundingClientRect();
+            var maxX = window.innerWidth - rect.width - 8;
+            var maxY = window.innerHeight - rect.height - 8;
+            if (x > maxX) menu.style.left = Math.max(8, maxX) + 'px';
+            if (y > maxY) menu.style.top = Math.max(8, maxY) + 'px';
+        }
+
+        function drawDocRelationsTemporalGraph(seedNode, related) {
+            var svg = d3.select('#doc-rel-modal-canvas');
+            svg.selectAll('*').remove();
+
+            var empty = document.getElementById('doc-rel-modal-empty');
+            var diffList = document.getElementById('doc-rel-diff-list');
+            if (!related.length) {
+                if (empty) empty.style.display = 'block';
+                if (diffList) diffList.innerHTML = '<div class="rel-small">Sin diferencias para mostrar.</div>';
+                return;
+            }
+            if (empty) empty.style.display = 'none';
+
+            var width = document.getElementById('doc-rel-modal-canvas').clientWidth || 980;
+            var height = 520;
+            svg.attr('viewBox', '0 0 ' + width + ' ' + height);
+
+            var margin = { top: 28, right: 20, bottom: 60, left: 56 };
+            var plotWidth = width - margin.left - margin.right;
+            var plotHeight = height - margin.top - margin.bottom;
+            var root = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+            var allNodes = related.map(function(r, idx) {
+                return {
+                    id: r.id,
+                    title: r.title || '-',
+                    entidad: r.entidad || '-',
+                    date: r.detected_at || '',
+                    score: r.score || 0,
+                    cross: !!r.cross_entity,
+                    isSeed: false,
+                    seq: idx + 1
+                };
+            });
+
+            allNodes.push({
+                id: seedNode.original_id || seedNode.id,
+                title: seedNode.title || seedNode.label || 'Documento base',
+                entidad: seedNode.entidad || '-',
+                date: seedNode.detected_at || '',
+                score: d3.max(allNodes, function(n) { return n.score; }) || 20,
+                cross: false,
+                isSeed: true,
+                seq: 0
+            });
+
+            var validDates = allNodes
+                .map(function(n) { return n.date ? new Date(n.date + 'T00:00:00') : null; })
+                .filter(function(d) { return d && !isNaN(d.getTime()); });
+
+            var minDate = d3.min(validDates);
+            var maxDate = d3.max(validDates);
+            if (!minDate || !maxDate || minDate.getTime() === maxDate.getTime()) {
+                minDate = minDate || new Date();
+                maxDate = new Date(minDate.getTime() + (1000 * 60 * 60 * 24 * 5));
+            }
+
+            var x = d3.scaleTime().domain([minDate, maxDate]).range([0, plotWidth]);
+            var centerY = Math.round(plotHeight * 0.54);
+
+            root.append('line')
+                .attr('x1', 0)
+                .attr('y1', centerY)
+                .attr('x2', plotWidth)
+                .attr('y2', centerY)
+                .attr('stroke', graphState.theme === 'dark' ? 'rgba(205,220,255,.28)' : 'rgba(0,51,160,.25)')
+                .attr('stroke-width', 1.4)
+                .attr('stroke-linecap', 'round');
+
+            root.append('g')
+                .attr('transform', 'translate(0,' + plotHeight + ')')
+                .call(d3.axisBottom(x).ticks(6).tickFormat(d3.timeFormat('%d/%m')))
+                .selectAll('text')
+                .attr('fill', graphState.theme === 'dark' ? '#BDD0F2' : '#5D708D')
+                .attr('font-size', 10);
+
+            root.selectAll('.domain, .tick line')
+                .attr('stroke', graphState.theme === 'dark' ? 'rgba(205,220,255,.22)' : 'rgba(0,51,160,.18)');
+
+            var seed = allNodes.find(function(n) { return n.isSeed; });
+            var seedDate = seed && seed.date ? new Date(seed.date + 'T00:00:00') : minDate;
+            var seedX = x(seedDate);
+            var seedY = centerY;
+
+            var groupedByDate = {};
+            allNodes.forEach(function(n) {
+                var key = n.date || 'sin_fecha';
+                if (!groupedByDate[key]) groupedByDate[key] = [];
+                groupedByDate[key].push(n);
+            });
+
+            Object.keys(groupedByDate).forEach(function(key) {
+                var group = groupedByDate[key];
+                group.sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
+                group.forEach(function(n, idx) {
+                    if (n.isSeed) {
+                        n.y = centerY;
+                        n.xOffset = 0;
+                        n.showLabel = true;
+                        return;
+                    }
+                    var lane = idx % 10;
+                    var sign = (lane % 2 === 0) ? -1 : 1;
+                    var step = Math.floor(lane / 2) + 1;
+                    n.y = centerY + (sign * step * 24);
+                    n.xOffset = Math.floor(idx / 10) * 16;
+                    n.showLabel = idx < 3;
+                });
+            });
+
+            root.selectAll('.rel-link-seed')
+                .data(allNodes.filter(function(n) { return !n.isSeed; }))
+                .enter()
+                .append('line')
+                .attr('x1', seedX)
+                .attr('y1', seedY)
+                .attr('x2', function(d) {
+                    var dt = d.date ? new Date(d.date + 'T00:00:00') : minDate;
+                    return x(dt) + (d.xOffset || 0);
+                })
+                .attr('y2', function(d) { return d.y || centerY; })
+                .attr('stroke', function(d) { return d.cross ? '#ED8B00' : '#2D6DF6'; })
+                .attr('stroke-opacity', 0.45)
+                .attr('stroke-width', 1.6)
+                .attr('stroke-linecap', 'round');
+
+            var point = root.selectAll('.rel-time-point')
+                .data(allNodes)
+                .enter()
+                .append('g')
+                .attr('transform', function(d) {
+                    var dt = d.date ? new Date(d.date + 'T00:00:00') : minDate;
+                    return 'translate(' + (x(dt) + (d.xOffset || 0)) + ',' + (d.y || centerY) + ')';
+                });
+
+            point.append('circle')
+                .attr('r', function(d) { return d.isSeed ? 7 : 5; })
+                .attr('fill', function(d) {
+                    if (d.isSeed) return '#00AEC7';
+                    return d.cross ? '#ED8B00' : '#2D6DF6';
+                })
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 1.6);
+
+            point.append('text')
+                .text(function(d) {
+                    if (d.isSeed) return 'BASE';
+                    return d.showLabel ? ('#' + d.seq) : '';
+                })
+                .attr('x', 8)
+                .attr('y', function(d) { return d.isSeed ? -12 : -10; })
+                .attr('fill', graphState.theme === 'dark' ? '#D8E6FF' : '#233852')
+                .attr('font-size', 10)
+                .attr('font-weight', function(d) { return d.isSeed ? 700 : 600; });
+
+            point.append('text')
+                .text(function(d) {
+                    if (d.isSeed) return (d.date || '-') + ' · F' + d.score;
+                    return d.showLabel ? ('F' + d.score) : '';
+                })
+                .attr('x', 8)
+                .attr('y', 5)
+                .attr('fill', graphState.theme === 'dark' ? '#9FB4DE' : '#6A7D96')
+                .attr('font-size', 9);
+
+            if (diffList) {
+                var seedSem = (seedNode.semaforo || '').toUpperCase();
+                var seedEnt = (seedNode.entidad || '').trim().toLowerCase();
+                diffList.innerHTML = related.slice(0, 22).map(function(item, idx) {
+                    var tags = [];
+                    var ent = (item.entidad || '').trim().toLowerCase();
+                    var sem = (item.semaforo || '').toUpperCase();
+                    var marker = '#' + (idx + 1);
+                    tags.push(ent === seedEnt ? 'Misma entidad' : 'Entidad distinta');
+                    tags.push(sem && sem === seedSem ? 'Mismo semáforo' : 'Semáforo diferente');
+                    if (item.cross_entity) tags.push('Cruce entre entes');
+                    (item.reasons || []).slice(0, 2).forEach(function(r) { tags.push(r); });
+
+                    return '<div class="rel-diff-item">' +
+                        '<div class="rel-diff-title">' + safe(marker + ' · ' + shortText(cleanDocumentName(item.title || '-'), 58)) + '</div>' +
+                        '<div class="rel-diff-meta">' + safe(item.detected_at || '-') + ' · Fuerza ' + safe(item.score) + '</div>' +
+                        '<div class="rel-diff-tags">' + tags.map(function(t) { return '<span class="rel-diff-tag">' + safe(t) + '</span>'; }).join('') + '</div>' +
+                        '</div>';
+                }).join('');
+            }
+        }
+
+        function openDocRelationsModal(node) {
+            if (!node) return;
+            closeNodeMenu();
+            graphState.selectedDocNode = node;
+
+            var modal = document.getElementById('doc-rel-modal');
+            var title = document.getElementById('doc-rel-modal-title');
+            var sub = document.getElementById('doc-rel-modal-sub');
+            var empty = document.getElementById('doc-rel-modal-empty');
+
+            if (empty) empty.style.display = 'none';
+            if (title) title.textContent = 'Unión gráfica: ' + cleanDocumentName(node.title || node.label || 'Documento');
+            if (sub) sub.textContent = 'Construyendo red temporal de documentos asociados...';
+            if (modal) {
+                modal.classList.add('is-open');
+                modal.setAttribute('aria-hidden', 'false');
+            }
+
+            var reqSeq = ++graphState.modalRequestSeq;
+            var docId = node.original_id || (node.id || '').replace('doc::', '');
+            var p = new URLSearchParams();
+            p.append('doc_id', docId);
+            p.append('before_only', '0');
+            p.append('max_related', '40');
+            p.append('min_score', '20');
+
+            fetch('/api/grafo-relaciones-historico?' + p.toString())
+                .then(function(r) {
+                    if (!r.ok) throw new Error('http ' + r.status);
+                    return r.json();
+                })
+                .then(function(data) {
+                    if (reqSeq !== graphState.modalRequestSeq) return;
+                    var related = data.related || [];
+                    if (sub) sub.textContent = 'Puntos por fecha y fuerza de relación. Azul: misma entidad, Naranja: cruce entre entes.';
+                    drawDocRelationsTemporalGraph(node, related);
+                })
+                .catch(function() {
+                    if (reqSeq !== graphState.modalRequestSeq) return;
+                    if (sub) sub.textContent = 'No se pudo cargar la red temporal para este documento.';
+                    drawDocRelationsTemporalGraph(node, []);
+                });
+        }
+
+        function renderTopEdges(edges, nodesById) {
+            var box = document.getElementById('top-edges');
+            if (!edges || !edges.length) {
+                box.innerHTML = '<div class="rel-small">Sin relaciones visibles.</div>';
+                return;
+            }
+            box.innerHTML = edges.slice(0, 8).map(function(e) {
+                var a = nodesById[e.source] || {};
+                var b = nodesById[e.target] || {};
+                var reason = (e.reasons || []).slice(0, 2).join(' | ');
+                return '<div class="rel-list-item">' +
+                    '<div class="rel-score">Fuerza ' + e.score + '</div>' +
+                    '<div class="rel-small"><strong>' + safe(prettyText(a.entidad || '')) + '</strong><br><span class="rel-node-sub">' + safe(prettyText(a.title || a.label || '')) + '</span><br>con <strong>' + safe(prettyText(b.entidad || '')) + '</strong><br><span class="rel-node-sub">' + safe(prettyText(b.title || b.label || '')) + '</span></div>' +
+                    '<div class="rel-small" style="margin-top:6px;">' + safe(reason) + '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function renderEntityEdges(edges) {
+            var box = document.getElementById('top-entity-edges');
+            if (!edges || !edges.length) {
+                box.innerHTML = '<div class="rel-small">Sin conexiones entre entes visibles.</div>';
+                return;
+            }
+            box.innerHTML = edges.slice(0, 8).map(function(e) {
+                return '<div class="rel-list-item">' +
+                    '<div class="rel-score">Fuerza ' + e.score + ' · ' + e.count + ' vínculos</div>' +
+                    '<div class="rel-small"><strong>' + safe(e.source_entity || '-') + '</strong><br>con <strong>' + safe(e.target_entity || '-') + '</strong></div>' +
+                    '<div class="rel-small" style="margin-top:6px;">' + safe((e.reasons || []).join(' | ')) + '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function renderNodeDetail(node) {
+            var d = document.getElementById('detail-box');
+            if (node.node_type === 'entity') {
+                graphState.historyRequestSeq += 1;
+                d.innerHTML =
+                    '<div class="rel-node-title">Ficha jurídica del ente: ' + safe(node.entidad || node.label || '') + '</div>' +
+                    '<span class="rel-pill rel-pill-blue">Ente regulador</span>' +
+                    '<span class="rel-pill rel-pill-blue">Documentos: ' + safe(node.doc_count || 0) + '</span>' +
+                    '<span class="rel-pill rel-pill-blue">Conexiones: ' + safe(node.degree || 0) + '</span>' +
+                    '<div class="rel-small" style="margin-top:10px;"><strong>Lectura legal:</strong> use este ente como carpeta principal de priorización y baje a documentos solo cuando requiera sustento probatorio.</div>';
+                return;
+            }
+            var legal = legalActionBySemaforo(node.semaforo);
+            d.innerHTML =
+                '<div class="rel-node-title">Ficha jurídica del documento</div>' +
+                '<div class="rel-small" style="margin-bottom:8px;"><strong>' + safe(prettyText(node.title || node.label || '')) + '</strong></div>' +
+                '<span class="rel-legal-tag ' + legal.cls + '">' + legal.risk + '</span>' +
+                '<span class="rel-pill ' + semClass(node.semaforo) + '">' + safe(node.semaforo || 'SIN') + '</span>' +
+                '<span class="rel-pill rel-pill-blue">Entidad: ' + safe(node.entidad || 'N/A') + '</span>' +
+                '<span class="rel-pill rel-pill-blue">Tema: ' + safe(node.tema || 'N/A') + '</span>' +
+                '<span class="rel-pill rel-pill-blue">Conexiones: ' + safe(node.degree || 0) + '</span>' +
+                '<div class="rel-small" style="margin-top:10px;"><strong>Acción recomendada:</strong> ' + safe(legal.action) + '</div>' +
+                '<div class="rel-small" style="margin-top:10px;">Fecha: ' + safe(node.detected_at || '-') + '</div>' +
+                '<div class="rel-small" style="margin-top:4px;">Tipo norma: ' + safe(node.tipo_norma || '-') + '</div>' +
+                '<div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">' +
+                '<a class="btn-secondary" target="_blank" rel="noopener" href="' + safe(node.document_url || '#') + '">Abrir documento</a>' +
+                '<button class="rel-btn alt" id="btn-doc-rel-map" style="height:30px;">Ver unión gráfica</button>' +
+                '</div>' +
+                '<div style="margin-top:12px;"><strong>Antecedentes relacionados</strong></div>' +
+                '<div id="doc-history-box" style="margin-top:8px;"><div class="rel-small">Buscando antecedentes relacionados...</div></div>';
+
+            loadHistoricalRelationsForNode(node);
+            var relBtn = document.getElementById('btn-doc-rel-map');
+            if (relBtn) {
+                relBtn.addEventListener('click', function() {
+                    openDocRelationsModal(node);
+                });
+            }
+        }
+
+        function renderEdgeDetail(edge, nodesById) {
+            var a = nodesById[edge.source] || {};
+            var b = nodesById[edge.target] || {};
+            var d = document.getElementById('detail-box');
+            if (edge.link_type === 'membership') {
+                d.innerHTML =
+                    '<div class="rel-node-title">Vinculo ente-documento</div>' +
+                    '<div class="rel-small"><strong>Ente:</strong> ' + safe(a.entidad || a.label || b.entidad || b.label || '-') + '</div>' +
+                    '<div class="rel-small" style="margin-top:6px;"><strong>Documento:</strong> ' + safe(prettyText(a.title || b.title || a.label || b.label || '-')) + '</div>';
+                return;
+            }
+            d.innerHTML =
+                '<div class="rel-node-title">Relacion detectada (fuerza ' + safe(edge.score) + ')</div>' +
+                '<div class="rel-small"><strong>A:</strong> ' + safe(a.title || a.label || '-') + '</div>' +
+                '<div class="rel-small" style="margin-top:6px;"><strong>B:</strong> ' + safe(b.title || b.label || '-') + '</div>' +
+                '<div class="rel-small" style="margin-top:8px;"><strong>Lectura jurídica:</strong> ' + safe(relationLegalRead(edge.reasons || [])) + '</div>' +
+                '<div class="rel-small" style="margin-top:10px;"><strong>Motivos:</strong><br>' + safe((edge.reasons || []).join(' | ')) + '</div>';
+        }
+
+        function nodeColor(node) {
+            return node.node_type === 'entity' ? '#2D6DF6' : '#ED8B00';
+        }
+
+        function drawGraph(payload) {
+            var svg = d3.select('#rel-svg');
+            svg.selectAll('*').remove();
+            graphState.lastPayload = payload;
+
+            var docs = payload.nodes || [];
+            var docLinks = payload.edges || [];
+            var entityLinks = payload.entity_edges || [];
+            var viewMode = document.getElementById('f-viewmode').value || 'entities';
+            graphState.viewMode = viewMode;
+
+            document.getElementById('kpi-docs').textContent = (payload.total_filtered_docs || 0).toLocaleString('es-CO');
+            document.getElementById('kpi-links').textContent = (payload.total_edges || 0).toLocaleString('es-CO');
+            document.getElementById('kpi-entities').textContent = (payload.total_entity_edges || 0).toLocaleString('es-CO');
+
+            var empty = document.getElementById('rel-empty');
+            if (!docs.length) {
+                empty.style.display = 'flex';
+                document.getElementById('top-edges').innerHTML = '<div class="rel-small">Sin relaciones visibles.</div>';
+                return;
+            }
+            empty.style.display = 'none';
+
+            var width = document.getElementById('rel-svg').clientWidth || 900;
+            var height = 580;
+            svg.attr('viewBox', '0 0 ' + width + ' ' + height);
+            svg.style('touch-action', 'none');
+
+            var entityNodesMap = {};
+            var docNodes = docs.map(function(d) {
+                var ent = d.entidad || 'Sin entidad';
+                var entId = 'ent::' + ent;
+                if (!entityNodesMap[entId]) {
+                    entityNodesMap[entId] = {
+                        id: entId,
+                        node_type: 'entity',
+                        entidad: ent,
+                        label: ent,
+                        title: ent,
+                        doc_count: 0,
+                        degree: 0,
+                    };
+                }
+                entityNodesMap[entId].doc_count += 1;
+
+                return {
+                    id: 'doc::' + d.id,
+                    original_id: d.id,
+                    node_type: 'document',
+                    label: d.label,
+                    title: cleanDocumentName(d.title || d.label || d.document_url || ''),
+                    entidad: ent,
+                    tema: d.tema,
+                    tipo_norma: d.tipo_norma,
+                    semaforo: d.semaforo,
+                    detected_at: d.detected_at,
+                    document_url: d.document_url,
+                    urgency: d.urgency,
+                    degree: d.degree || 0,
+                };
+            });
+
+            var entityNodes = Object.keys(entityNodesMap).map(function(k) { return entityNodesMap[k]; });
+            graphState.allEntities = entityNodes.map(function(n) { return n.entidad; });
+            updateGroupToggleLabel();
+
+            // Si no hay cruces entre entes, evitamos una vista vacia mostrando respaldo documental.
+            var fallbackEntityView = (viewMode === 'entities' && (!entityLinks || !entityLinks.length) && docLinks.length > 0);
+
+            if (viewMode === 'detailed' && graphState.expandedEntities.size === 0) {
+                var topEntities = entityNodes
+                    .slice()
+                    .sort(function(a, b) { return (b.doc_count || 0) - (a.doc_count || 0); })
+                    .slice(0, 6);
+                topEntities.forEach(function(n) { graphState.expandedEntities.add(n.entidad); });
+                updateGroupToggleLabel();
+            }
+
+            var links = [];
+            var nodes = [];
+
+            if (viewMode === 'entities' && !fallbackEntityView) {
+                nodes = entityNodes;
+                entityLinks.forEach(function(e) {
+                    links.push({
+                        source: 'ent::' + e.source_entity,
+                        target: 'ent::' + e.target_entity,
+                        score: e.score,
+                        width: Math.max(1.4, Math.min(6.5, e.score / 120)),
+                        reasons: e.reasons || [],
+                        cross_entity: true,
+                        link_type: 'entity_relation',
+                    });
+                });
+            } else {
+                var expanded = fallbackEntityView ? new Set(entityNodes.map(function(n) { return n.entidad; })) : graphState.expandedEntities;
+                var visibleDocNodes = docNodes.filter(function(d) { return expanded.has(d.entidad); });
+                var visibleDocIds = new Set(visibleDocNodes.map(function(d) { return d.id; }));
+
+                docLinks.forEach(function(e) {
+                    if (!visibleDocIds.has('doc::' + e.source) || !visibleDocIds.has('doc::' + e.target)) {
+                        return;
+                    }
+                    links.push({
+                        source: 'doc::' + e.source,
+                        target: 'doc::' + e.target,
+                        score: e.score,
+                        width: e.width,
+                        reasons: e.reasons,
+                        cross_entity: !!e.cross_entity,
+                        link_type: 'relation',
+                    });
+                });
+
+                docNodes.forEach(function(d) {
+                    if (!visibleDocIds.has(d.id)) return;
+                    var entId = 'ent::' + (d.entidad || 'Sin entidad');
+                    links.push({
+                        source: entId,
+                        target: d.id,
+                        score: 0,
+                        width: 1.2,
+                        reasons: ['Pertenece al ente'],
+                        cross_entity: false,
+                        link_type: 'membership',
+                    });
+                });
+
+                entityLinks.forEach(function(e) {
+                    links.push({
+                        source: 'ent::' + e.source_entity,
+                        target: 'ent::' + e.target_entity,
+                        score: e.score,
+                        width: Math.max(1.2, Math.min(4.6, e.score / 160)),
+                        reasons: e.reasons || [],
+                        cross_entity: true,
+                        link_type: 'entity_relation',
+                    });
+                });
+
+                nodes = entityNodes.concat(visibleDocNodes);
+            }
+
+            var root = svg.append('g').attr('class', 'rel-viewport');
+            root.append('rect')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('width', width)
+                .attr('height', height)
+                .attr('fill', 'transparent')
+                .on('click', function() {
+                    var t = document.getElementById('rel-tooltip');
+                    if (t) t.style.display = 'none';
+                })
+                .style('pointer-events', 'all');
+
+            var graphLayer = root.append('g').attr('class', 'rel-graph-layer');
+
+            var zoomState = d3.zoomIdentity;
+            var zoomBehavior = d3.zoom()
+                .scaleExtent([0.35, 2.8])
+                .on('zoom', function(event) {
+                    zoomState = event.transform;
+                    graphLayer.attr('transform', zoomState);
+                    document.getElementById('zoom-level').textContent = Math.round(zoomState.k * 100) + '%';
+                });
+
+            svg.call(zoomBehavior);
+
+            function setZoom(transform) {
+                svg.call(zoomBehavior.transform, transform);
+            }
+
+            function panBy(dx, dy) {
+                setZoom(d3.zoomIdentity.translate(zoomState.x + dx, zoomState.y + dy).scale(zoomState.k));
+            }
+
+            document.getElementById('zoom-in').onclick = function() {
+                svg.call(zoomBehavior.scaleBy, 1.2);
+            };
+            document.getElementById('zoom-out').onclick = function() {
+                svg.call(zoomBehavior.scaleBy, 0.8333333333);
+            };
+            document.getElementById('pan-left').onclick = function() { panBy(60, 0); };
+            document.getElementById('pan-right').onclick = function() { panBy(-60, 0); };
+            document.getElementById('pan-up').onclick = function() { panBy(0, 60); };
+            document.getElementById('pan-down').onclick = function() { panBy(0, -60); };
+            document.getElementById('zoom-reset').onclick = function() {
+                setZoom(d3.zoomIdentity);
+            };
+
+            var nodesById = {};
+            docs.forEach(function(n) { nodesById[n.id] = n; });
+            var graphNodesById = {};
+            nodes.forEach(function(n) { graphNodesById[n.id] = n; });
+            renderTopEdges(payload.top_edges || docLinks, nodesById);
+            renderEntityEdges(payload.top_entity_edges || entityLinks);
+
+            if (fallbackEntityView) {
+                document.getElementById('top-entity-edges').innerHTML = '<div class="rel-small">No se detectaron cruces entre entes para este filtro. Mostrando respaldo documental para evitar vista vacia.</div>';
+                document.getElementById('top-edges').innerHTML = '<div class="rel-small">Vista de respaldo: conexiones documento-documento + pertenencia por ente.</div>';
+            } else if (viewMode === 'entities') {
+                document.getElementById('top-edges').innerHTML = '<div class="rel-small">En vista de entes se prioriza el panel "Entes conectados".</div>';
+            } else if (!docLinks.length) {
+                document.getElementById('top-edges').innerHTML = '<div class="rel-small">No hay líneas documento-documento con este filtro, pero sí puedes explorar documentos por ente.</div>';
+            } else if (graphState.expandedEntities.size === 0) {
+                document.getElementById('top-edges').innerHTML = '<div class="rel-small">Haz clic en un ente (azul) para expandir sus documentos.</div>';
+            }
+
+            var simulation = d3.forceSimulation(nodes)
+                .force('link', d3.forceLink(links).id(function(d) { return d.id; }).distance(function(d) {
+                    if (d.link_type === 'entity_relation') return 250;
+                    if (d.link_type === 'membership') return 78;
+                    return Math.max(110, 250 - (d.score * 1.15));
+                }).strength(0.19))
+                .force('charge', d3.forceManyBody().strength(viewMode === 'entities' ? -780 : -420))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collision', d3.forceCollide().radius(function(d) {
+                    if (d.node_type === 'entity') return viewMode === 'entities' ? 54 : 30;
+                    return 9 + Math.min(11, d.degree || 0);
+                }));
+
+            var link = graphLayer.append('g')
+                .attr('stroke', '#9AAFC9')
+                .attr('stroke-opacity', 0.45)
+                .selectAll('line')
+                .data(links)
+                .enter()
+                .append('line')
+                .attr('stroke-width', function(d) { return d.link_type === 'membership' ? 1.4 : (d.width || 2); })
+                .attr('stroke-dasharray', function(d) {
+                    if (d.link_type === 'membership') return '2 4';
+                    if (d.link_type === 'entity_relation') return '4 4';
+                    return d.cross_entity ? '6 4' : '0';
+                })
+                .attr('stroke-opacity', function(d) { return d.link_type === 'membership' ? 0.28 : 0.52; })
+                .attr('stroke-linecap', 'round')
+                .attr('stroke', function(d) {
+                    if (d.link_type === 'membership') return '#8FA7C8';
+                    if (d.link_type === 'entity_relation') return '#2D6DF6';
+                    return d.cross_entity ? '#ED8B00' : '#9AAFC9';
+                })
+                .on('click', function(event, d) {
+                    event.stopPropagation();
+                    renderEdgeDetail(d, graphNodesById);
+                });
+
+            var node = graphLayer.append('g')
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 1.5)
+                .selectAll('circle')
+                .data(nodes)
+                .enter()
+                .append('circle')
+                .attr('r', function(d) {
+                    if (d.node_type === 'entity') return viewMode === 'entities' ? 16 : 11;
+                    return 6 + Math.min(7, d.degree || 0);
+                })
+                .attr('fill', function(d) { return nodeColor(d); })
+                .style('cursor', 'pointer');
+
+            node.append('title')
+                .text(function(d) {
+                    if (d.node_type === 'entity') return d.entidad || d.label || '';
+                    return (d.entidad || '') + ' | ' + (d.title || d.label || '');
+                });
+
+            node
+                .on('click', function(event, d) {
+                    event.stopPropagation();
+                    closeNodeMenu();
+                    if (d.node_type === 'entity' && graphState.viewMode === 'detailed') {
+                        if (graphState.expandedEntities.has(d.entidad)) graphState.expandedEntities.delete(d.entidad);
+                        else graphState.expandedEntities.add(d.entidad);
+                        updateGroupToggleLabel();
+                        drawGraph(graphState.lastPayload);
+                        return;
+                    }
+                    renderNodeDetail(d);
+                })
+                .on('contextmenu', function(event, d) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    openNodeMenu(event, d);
+                })
+                .on('mousemove', function(event, d) {
+                    var t = document.getElementById('rel-tooltip');
+                    if (!t) return;
+                    var stage = document.querySelector('.rel-stage');
+                    var rect = stage ? stage.getBoundingClientRect() : null;
+                    if (d.node_type === 'entity') {
+                        t.textContent = (d.entidad || '-') + ' | Documentos: ' + (d.doc_count || 0);
+                    } else {
+                        t.textContent = prettyText(d.title || d.label || '-');
+                    }
+                    t.style.display = 'block';
+                    if (rect) {
+                        t.style.left = (event.clientX - rect.left + 16) + 'px';
+                        t.style.top = (event.clientY - rect.top + 16) + 'px';
+                    } else {
+                        t.style.left = (event.offsetX + 16) + 'px';
+                        t.style.top = (event.offsetY + 16) + 'px';
+                    }
+                })
+                .on('mouseleave', function() {
+                    var t = document.getElementById('rel-tooltip');
+                    if (t) t.style.display = 'none';
+                })
+                .call(d3.drag()
+                    .on('start', function(event, d) {
+                        event.sourceEvent.stopPropagation();
+                        if (!event.active) simulation.alphaTarget(0.42).restart();
+                        d.fx = d.x;
+                        d.fy = d.y;
+                    })
+                    .on('drag', function(event, d) {
+                        d.fx = event.x;
+                        d.fy = event.y;
+                    })
+                    .on('end', function(event, d) {
+                        if (!event.active) simulation.alphaTarget(0.05);
+                        d.fx = null;
+                        d.fy = null;
+                    })
+                );
+
+            var label = graphLayer.append('g')
+                .selectAll('text')
+                .data(nodes)
+                .enter()
+                .append('text')
+                .text(function(d) {
+                    if (d.node_type === 'entity') return d.entidad || '';
+                    return shortText(cleanDocumentName(d.title || d.label || ''), 28);
+                })
+                .attr('font-size', function(d) { return d.node_type === 'entity' ? 11 : 10; })
+                .attr('font-weight', 700)
+                .attr('fill', function(d) {
+                    if (d.node_type === 'entity') return graphState.theme === 'dark' ? '#C6DCFF' : '#2D6DF6';
+                    return graphState.theme === 'dark' ? '#FFD699' : '#8A4D00';
+                })
+                .attr('pointer-events', 'none');
+
+            var subLabel = graphLayer.append('g')
+                .selectAll('text')
+                .data(nodes)
+                .enter()
+                .append('text')
+                .text(function(d) {
+                    if (d.node_type === 'entity') return 'Ente regulador';
+                    return shortText(d.entidad || '', 34);
+                })
+                .attr('font-size', 9)
+                .attr('fill', function() { return graphState.theme === 'dark' ? '#9FB4DE' : '#888B8D'; })
+                .attr('pointer-events', 'none');
+
+            function refreshDocLabelVisibility() {
+                var k = zoomState.k || 1;
+                label.style('display', function(d) {
+                    if (d.node_type === 'entity') return null;
+                    return (viewMode === 'entities' || k < 1.35) ? 'none' : null;
+                });
+                subLabel.style('display', function(d) {
+                    if (d.node_type === 'entity') return viewMode === 'entities' ? 'none' : null;
+                    return (viewMode === 'entities' || k < 1.6) ? 'none' : null;
+                });
+            }
+
+            simulation.on('tick', function() {
+                link
+                    .attr('x1', function(d) { return d.source.x; })
+                    .attr('y1', function(d) { return d.source.y; })
+                    .attr('x2', function(d) { return d.target.x; })
+                    .attr('y2', function(d) { return d.target.y; });
+
+                node
+                    .attr('cx', function(d) { return d.x; })
+                    .attr('cy', function(d) { return d.y; });
+
+                label
+                    .attr('x', function(d) { return d.x + (d.node_type === 'entity' ? 13 : 10); })
+                    .attr('y', function(d) { return d.y + 2; });
+
+                subLabel
+                    .attr('x', function(d) { return d.x + (d.node_type === 'entity' ? 13 : 10); })
+                    .attr('y', function(d) { return d.y + 16; });
+
+                refreshDocLabelVisibility();
+            });
+        }
+
+        function loadGraph() {
+            var btn = document.getElementById('btn-refresh');
+            btn.disabled = true;
+            btn.textContent = 'Cargando...';
+
+            var p = new URLSearchParams();
+            var start = document.getElementById('f-start').value;
+            var end = document.getElementById('f-end').value;
+            var sem = document.getElementById('f-semaforo').value;
+            var ent = document.getElementById('f-entidad').value;
+            var minScore = document.getElementById('f-minscore').value;
+            var maxNodes = document.getElementById('f-maxnodes').value;
+
+            if (start) p.append('start_date', start);
+            if (end) p.append('end_date', end);
+            if (sem) p.append('semaforo', sem);
+            if (ent) p.append('entidad', ent);
+            if (minScore) p.append('min_score', minScore);
+            if (maxNodes) p.append('max_nodes', maxNodes);
+            else p.append('max_nodes', '80');
+
+            fetch('/api/grafo-relaciones?' + p.toString())
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    drawGraph(data);
+                })
+                .catch(function() {
+                    document.getElementById('rel-empty').style.display = 'flex';
+                })
+                .finally(function() {
+                    btn.disabled = false;
+                    btn.textContent = 'Actualizar grafo';
+                });
+        }
+
+        document.getElementById('btn-refresh').addEventListener('click', loadGraph);
+        document.getElementById('btn-toggle-groups').addEventListener('click', toggleAllGroups);
+        document.getElementById('btn-export-brief').addEventListener('click', exportCommitteeBrief);
+        document.getElementById('btn-theme').addEventListener('click', toggleTheme);
+        document.getElementById('doc-rel-modal-close').addEventListener('click', closeDocRelationsModal);
+        document.getElementById('doc-rel-modal').addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'doc-rel-modal') closeDocRelationsModal();
+        });
+        document.addEventListener('click', function() {
+            closeNodeMenu();
+        });
+        document.getElementById('rel-svg').addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            closeNodeMenu();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDocRelationsModal();
+                closeNodeMenu();
+            }
+        });
+        document.getElementById('f-viewmode').addEventListener('change', loadGraph);
+        document.getElementById('f-profile').addEventListener('change', function() {
+            applyProfilePreset();
+            loadGraph();
+        });
+        applyTheme(graphState.theme);
+        applyProfilePreset();
+        loadGraph();
+    </script>
+</body>
+</html>

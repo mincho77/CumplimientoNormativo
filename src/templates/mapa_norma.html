@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mapa Mental – Obligaciones Normativas | SURA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- Export Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:       #0A0E1A;
+      --surface:  #111827;
+      --border:   #1E2D45;
+      --text:     #E8EDF5;
+      --muted:    #6B7A99;
+      --sura:     #0033A0;
+      --sura-l:   #2D6DF6;
+    }
+    body.light-theme {
+      --bg:       #F8F9FA;
+      --surface:  #FFFFFF;
+      --border:   #D0D5E5;
+      --text:     #0E1E38;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      z-index: 10;
+    }
+    .topbar .logo { height: 32px; filter: brightness(0) invert(1); }
+    body.light-theme .topbar .logo { filter: none; }
+    .topbar .norma-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      flex: 1;
+    }
+    .topbar .meta-chip {
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .topbar .btn-action {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+      text-decoration: none;
+    }
+    .btn-back  { background: var(--border); color: var(--text); }
+    .btn-back:hover { background: #2A3A54; }
+    .btn-pdf   { background: var(--sura); color: #FFF; }
+    .btn-pdf:hover { background: var(--sura-l); }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 20px;
+      background: #0D1526;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    body.light-theme .legend {
+      background: #E9EDF5;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--muted);
+      white-space: nowrap;
+      cursor: pointer;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      transition: all .2s;
+    }
+    .legend-item:hover, .legend-item.active {
+      border-color: var(--border);
+      color: var(--text);
+      background: rgba(255,255,255,.05);
+    }
+    body.light-theme .legend-item:hover, body.light-theme .legend-item.active {
+      background: rgba(0,0,0,.05);
+    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── Canvas ── */
+    #canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+    }
+    #canvas:active { cursor: grabbing; }
+    #svg-layer {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    /* ── Nodes ── */
+    .node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      cursor: pointer;
+      transition: transform .25s, filter .25s;
+    }
+    .node:hover { transform: translate(-50%,-50%) scale(1.08); z-index: 100; }
+
+    .node-center {
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0033A0 0%, #2D6DF6 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 8px rgba(0,51,160,.25), 0 0 40px rgba(45,109,246,.4);
+      padding: 12px;
+    }
+    .node-center .cn-label {
+      font-size: 9px;
+      color: rgba(255,255,255,.7);
+      font-weight: 500;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .node-center .cn-title {
+      font-size: 10px;
+      color: #FFF;
+      font-weight: 700;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .node-tipo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .tipo-bubble {
+      width: 68px; height: 68px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.5);
+      transition: box-shadow .2s;
+    }
+    .tipo-bubble:hover { box-shadow: 0 6px 28px rgba(0,0,0,.7); }
+    .tipo-bubble .tipo-icon { font-size: 18px; }
+    .tipo-bubble .tipo-count {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,.9);
+    }
+    .tipo-label {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      max-width: 80px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .node-ob {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ob-bubble {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      color: #FFF;
+      border: 2px solid rgba(255,255,255,.2);
+      transition: all .2s;
+    }
+    .ob-bubble:hover {
+      width: 42px; height: 42px;
+      border-color: rgba(255,255,255,.6);
+    }
+
+    /* ── Detail panel ── */
+    #detail-panel {
+      position: fixed;
+      right: -440px;
+      top: 0; bottom: 0;
+      width: 420px;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      padding: 24px;
+      overflow-y: auto;
+      transition: right .3s cubic-bezier(.4,0,.2,1);
+      z-index: 200;
+    }
+    #detail-panel.open { right: 0; }
+    #detail-panel .dp-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: var(--border);
+      border: none;
+      color: var(--text);
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #detail-panel .dp-tipo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    #detail-panel .dp-art {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    #detail-panel .dp-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 18px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dp-field-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .dp-field-value {
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .dp-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+
+    /* ── Zoom controls ── */
+    .zoom-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 50;
+    }
+    .zoom-btn {
+      width: 36px; height: 36px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .zoom-btn:hover { background: var(--border); }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 50;
+    }
+    .stat-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 11px;
+      text-align: center;
+    }
+    .stat-chip .val { font-size: 18px; font-weight: 700; color: var(--sura-l); }
+    .stat-chip .lbl { color: var(--muted); font-size: 9px; margin-top: 1px; }
+
+    /* Spinner Loader Overlay */
+    .sura-loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 63, 0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      color: white;
+      font-family: inherit;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .sura-loader-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .sura-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #81B1FF;
+      border-radius: 50%;
+      animation: sura-spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes sura-spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Datos del servidor -->
+<script>
+  const RESULTADO = {{ resultado | tojson | safe }};
+  const DG = RESULTADO.datos_generales || {};
+  const OBS = RESULTADO.obligaciones || [];
+</script>
+
+<!-- Top bar -->
+<div class="topbar">
+  <img class="logo" src="/static/sura-logo-azul.png" onerror="this.style.display='none'" alt="SURA"/>
+  <div class="norma-title" id="norma-title">Mapa Mental de Obligaciones</div>
+  <span class="meta-chip" id="meta-emisor"></span>
+  <span class="meta-chip" id="meta-fecha"></span>
+  <a href="javascript:void(0);" onclick="if(document.referrer) { window.close(); } else { window.location.href='/'; }" class="btn-action btn-back"><img src="/static/assets/icons/flecha-arriba-linea.svg" style="width:14px;height:14px;transform:rotate(180deg);" alt="atrás" /> Volver</a>
+  <button class="btn-action btn-pdf" style="background:#0033A0;" onclick="exportPDF()"><img src="/static/assets/icons/documento.svg" style="width:14px;height:14px;filter:brightness(0) invert(1);" alt="PDF" /> Exportar PDF</button>
+  <button class="btn-action btn-pdf" style="background:#00875A;" onclick="exportPNG()"><img src="/static/assets/icons/descarga.svg" style="width:14px;height:14px;" alt="descargar" /> Exportar PNG</button>
+  <button class="btn-action btn-pdf" style="background:#ED8B00;" onclick="exportSVG()"><img src="/static/assets/icons/engranes.svg" style="width:14px;height:14px;filter:brightness(0) invert(1);" alt="SVG" /> Exportar SVG</button>
+  <button class="btn-action btn-back" id="theme-btn" onclick="toggleTheme()"><span id="theme-btn-text">☀️ Modo Claro</span></button>
+</div>
+
+<!-- Legend -->
+<div class="legend" id="legend"></div>
+
+<!-- Canvas -->
+<div id="canvas">
+  <svg id="svg-layer"></svg>
+</div>
+
+<!-- Detail panel -->
+<div id="detail-panel">
+  <button class="dp-close" onclick="closePanel()"><img src="/static/assets/icons/equis.svg" style="width:16px;height:16px;" alt="cerrar" /></button>
+  <div id="dp-content"></div>
+</div>
+
+<!-- Zoom -->
+<div class="zoom-controls">
+  <button class="zoom-btn" onclick="zoom(1.2)">+</button>
+  <button class="zoom-btn" onclick="zoom(0.8)">−</button>
+  <button class="zoom-btn" title="Reset" onclick="resetView()"><img src="/static/assets/icons/casa.svg" style="width:18px;height:18px;" alt="reset" /></button>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat-chip">
+    <div class="val" id="stat-total">0</div>
+    <div class="lbl">Obligaciones</div>
+  </div>
+  <div class="stat-chip">
+    <div class="val" id="stat-tipos">0</div>
+    <div class="lbl">Tipos</div>
+  </div>
+</div>
+
+<script>
+// ── Configuración ──────────────────────────────────────────────────────────
+const TIPO_CONFIG = {
+  "Reportar":    { bg: "#0033A0", icon: "flecha-salida-derecha" },
+  "Pagar":       { bg: "#067014", icon: "dinero-alt" },
+  "Implementar": { bg: "#7B2D8B", icon: "engranes" },
+  "Controlar":   { bg: "#ED8B00", icon: "buscar" },
+  "Documentar":  { bg: "#795548", icon: "carpeta" },
+  "Autorizar":   { bg: "#3F51B5", icon: "check-circulo" },
+  "Capacitar":   { bg: "#00838F", icon: "educacion" },
+  "Prohibición": { bg: "#D12D35", icon: "prohibido" },
+  "Divulgar":    { bg: "#C47A00", icon: "megafono" },
+  "Garantizar":  { bg: "#2E7D32", icon: "escudo-seguro" },
+  "Actualizar":  { bg: "#546E7A", icon: "redo" },
+  "General":     { bg: "#888B8D", icon: "documento" },
+};
+
+// ── Estado ─────────────────────────────────────────────────────────────────
+let scale = 1, tx = 0, ty = 0;
+let dragging = false, lastX = 0, lastY = 0;
+let activeFilter = null;
+const ICON_CACHE = {};
+const NODES = {}; // key: id, value: { id, x, y, parentId, color, w, element, tipo }
+
+function loadSVGIcon(name) {
+  if (ICON_CACHE[name]) return ICON_CACHE[name];
+  const svgPath = `/static/assets/icons/${name}.svg`;
+  const span = document.createElement('span');
+  span.innerHTML = `<img src="${svgPath}" style="width:18px;height:18px;object-fit:contain;" alt="${name}" />`;
+  ICON_CACHE[name] = span.innerHTML;
+  return span.innerHTML;
+}
+
+// ── Inicializar ─────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Load saved theme
+  const savedTheme = localStorage.getItem('mapa-theme');
+  if (savedTheme === 'light') {
+    document.body.classList.add('light-theme');
+    document.getElementById('theme-btn-text').textContent = '🌙 Modo Oscuro';
+  }
+
+  // Metadata
+  document.getElementById('norma-title').textContent =
+    DG.norma || 'Mapa Mental de Obligaciones';
+  document.getElementById('meta-emisor').textContent = DG.emisor || '';
+  document.getElementById('meta-fecha').textContent  = DG.fecha_publicacion || '';
+
+  // Agrupar por tipo
+  const grupos = {};
+  OBS.forEach(o => {
+    const t = o.tipo_obligacion || 'General';
+    if (!grupos[t]) grupos[t] = [];
+    grupos[t].push(o);
+  });
+
+  const tipos = Object.keys(grupos);
+  document.getElementById('stat-total').textContent = OBS.length;
+  document.getElementById('stat-tipos').textContent  = tipos.length;
+
+  buildLegend(tipos, grupos);
+  buildMap(tipos, grupos);
+  initDrag();
+  resetView();
+});
+
+// ── Legend ─────────────────────────────────────────────────────────────────
+function buildLegend(tipos, grupos) {
+  const leg = document.getElementById('legend');
+  tipos.forEach(t => {
+    const cfg = TIPO_CONFIG[t] || TIPO_CONFIG['General'];
+    const el = document.createElement('div');
+    el.className = 'legend-item';
+    el.dataset.tipo = t;
+    el.innerHTML = `<span class="legend-dot" style="background:${cfg.bg}"></span>${loadSVGIcon(cfg.icon)} ${t} (${grupos[t].length})`;
+    el.onclick = () => filterByTipo(t, el);
+    leg.appendChild(el);
+  });
+}
+
+function filterByTipo(tipo, el) {
+  const items = document.querySelectorAll('.legend-item');
+  if (activeFilter === tipo) {
+    activeFilter = null;
+    items.forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.node').forEach(n => n.style.opacity = '1');
+  } else {
+    activeFilter = tipo;
+    items.forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.node').forEach(n => {
+      if (n.classList.contains('node-tipo') || n.classList.contains('node-ob')) {
+        n.style.opacity = n.dataset.tipo === tipo ? '1' : '0.15';
+      } else {
+        n.style.opacity = '1';
+      }
+    });
+  }
+  redrawEdges();
+}
+
+// ── Build Map ───────────────────────────────────────────────────────────────
+function buildMap(tipos, grupos) {
+  const canvas = document.getElementById('canvas');
+  const W = canvas.clientWidth, H = canvas.clientHeight;
+  const cx = W / 2, cy = H / 2;
+
+  // Central Node
+  const centerEl = createCenterNode(cx, cy);
+  NODES['center'] = { id: 'center', parentId: null, x: cx, y: cy, color: null, w: 0, element: centerEl, tipo: 'center' };
+  makeNodeDraggable(centerEl, 'center');
+
+  const R1 = 180; // reduced slightly to prevent overlapping and look tighter
+  const R2 = 320; 
+
+  tipos.forEach((tipo, ti) => {
+    const cfg = TIPO_CONFIG[tipo] || TIPO_CONFIG['General'];
+    const angleT = (2 * Math.PI / tipos.length) * ti - Math.PI / 2;
+    const tx_ = cx + R1 * Math.cos(angleT);
+    const ty_ = cy + R1 * Math.sin(angleT);
+
+    // Tipo Node
+    const tipoEl = createTipoNode(tx_, ty_, tipo, grupos[tipo].length, cfg);
+    const tipoId = 'tipo-' + tipo;
+    NODES[tipoId] = { id: tipoId, parentId: 'center', x: tx_, y: ty_, color: cfg.bg, w: 2.5, element: tipoEl, tipo: tipo };
+    makeNodeDraggable(tipoEl, tipoId);
+
+    // Obligations
+    const obs = grupos[tipo];
+    const spread = Math.min(Math.PI * 0.8, obs.length * 0.4);
+    const startA = angleT - spread / 2;
+    obs.forEach((ob, oi) => {
+      const a = obs.length === 1 ? angleT : startA + (spread / (obs.length - 1)) * oi;
+      const ox = cx + R2 * Math.cos(a);
+      const oy = cy + R2 * Math.sin(a);
+
+      // Ob Node
+      const obId = `ob-${tipo}-${oi}`;
+      const obEl = createObNode(ox, oy, ob, tipo, cfg, oi + 1, obId);
+      NODES[obId] = { id: obId, parentId: tipoId, x: ox, y: oy, color: cfg.bg, w: 1, element: obEl, tipo: tipo };
+      makeNodeDraggable(obEl, obId);
+    });
+  });
+
+  redrawEdges();
+}
+
+function createCenterNode(x, y) {
+  const div = document.createElement('div');
+  div.id = 'center';
+  div.className = 'node';
+  div.style.left = x + 'px';
+  div.style.top  = y + 'px';
+  div.innerHTML = `
+    <div class="node-center">
+      <div class="cn-label">Norma</div>
+      <div class="cn-title">${DG.norma || 'Análisis'}</div>
+    </div>`;
+  document.getElementById('canvas').appendChild(div);
+  return div;
+}
+
+function createTipoNode(x, y, tipo, count, cfg) {
+  const div = document.createElement('div');
+  div.id = 'tipo-' + tipo;
+  div.className = 'node node-tipo';
+  div.dataset.tipo = tipo;
+  div.style.left = x + 'px';
+  div.style.top  = y + 'px';
+  div.innerHTML = `
+    <div class="tipo-bubble" style="background:${cfg.bg};">
+      <span class="tipo-icon">${loadSVGIcon(cfg.icon)}</span>
+      <span class="tipo-count">${count}</span>
+    </div>
+    <div class="tipo-label">${tipo}</div>`;
+  document.getElementById('canvas').appendChild(div);
+  return div;
+}
+
+function createObNode(x, y, ob, tipo, cfg, idx, obId) {
+  const div = document.createElement('div');
+  div.id = obId;
+  div.className = 'node node-ob';
+  div.dataset.tipo = tipo;
+  div.style.left = x + 'px';
+  div.style.top  = y + 'px';
+  div.title = ob.numeral_articulo || '';
+  div.innerHTML = `
+    <div class="ob-bubble" style="background:${cfg.bg}80;border-color:${cfg.bg};">
+      ${ob.numeral_articulo ? ob.numeral_articulo.replace(/art[ií]culo\s*/i,'').substring(0,6) : idx}
+    </div>`;
+  div.onclick = (e) => { e.stopPropagation(); openDetail(ob, tipo, cfg); };
+  document.getElementById('canvas').appendChild(div);
+  return div;
+}
+
+function drawEdge(svg, x1, y1, x2, y2, color, w, tipo, opacity = '0.5') {
+  const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+  line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+  line.setAttribute('stroke', color);
+  line.setAttribute('stroke-width', w);
+  line.setAttribute('stroke-opacity', opacity);
+  line.classList.add('edge');
+  line.dataset.tipo = tipo;
+  svg.appendChild(line);
+}
+
+function redrawEdges() {
+  const svg = document.getElementById('svg-layer');
+  svg.innerHTML = '';
+  
+  for (const id in NODES) {
+    const node = NODES[id];
+    if (node.parentId && NODES[node.parentId]) {
+      const parent = NODES[node.parentId];
+      let opacity = '0.5';
+      if (activeFilter) {
+        if (node.tipo !== activeFilter && parent.tipo !== activeFilter) {
+          opacity = '0.1';
+        }
+      }
+      drawEdge(svg, parent.x, parent.y, node.x, node.y, node.color, node.w, node.tipo, opacity);
+    }
+  }
+}
+
+// ── Detail panel ────────────────────────────────────────────────────────────
+function openDetail(ob, tipo, cfg) {
+  const freq = ob.frecuencia || 'Permanente';
+  const desde = ob.vigencia_desde && ob.vigencia_desde !== 'No especificado'
+    ? ob.vigencia_desde : (DG.fecha_publicacion || '—');
+
+  document.getElementById('dp-content').innerHTML = `
+    <div class="dp-tipo-badge" style="background:${cfg.bg}20;color:${cfg.bg};border:1px solid ${cfg.bg}40;">
+      ${loadSVGIcon(cfg.icon)} ${tipo}
+    </div>
+    <div class="dp-art">${ob.numeral_articulo || 'Artículo'}</div>
+    <div class="dp-text">${ob.texto_obligacion || '—'}</div>
+
+    <div class="dp-field-label">Plazo / Frecuencia</div>
+    <div class="dp-field-value">${freq}</div>
+
+    <div class="dp-field-label">Vigente desde</div>
+    <div class="dp-field-value">${desde}</div>
+
+    <div class="dp-field-label">Entregable</div>
+    <div class="dp-field-value">${ob.entregable || 'No especificado'}</div>
+
+    <div class="dp-field-label">Proceso Responsable</div>
+    <div class="dp-field-value">
+      ${ob.macroproceso ? `<span class="dp-badge" style="background:#0033A020;color:#0033A0;border:1px solid #0033A040;">${ob.macroproceso}</span>` : ''}
+      <br/>${ob.proceso || '—'}
+      ${ob.lider_proceso ? `<br/><small style="color:#6B7A99;"><img src="/static/assets/icons/usuario.svg" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;" alt="usuario" /> ${ob.lider_proceso}</small>` : ''}
+    </div>
+
+    ${ob.normas_relacionadas ? `
+    <div class="dp-field-label">Normas Relacionadas</div>
+    <div class="dp-field-value">${typeof ob.normas_relacionadas === 'string'
+      ? ob.normas_relacionadas
+      : JSON.stringify(ob.normas_relacionadas)}</div>` : ''}
+  `;
+  document.getElementById('detail-panel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('detail-panel').classList.remove('open');
+}
+
+document.getElementById('canvas').onclick = closePanel;
+
+// ── Drag & Zoom ──────────────────────────────────────────────────────────────
+function initDrag() {
+  const canvas = document.getElementById('canvas');
+
+  canvas.addEventListener('mousedown', e => {
+    if (e.target.closest('.node')) return;
+    dragging = true; lastX = e.clientX; lastY = e.clientY;
+  });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    tx += e.clientX - lastX; ty += e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY;
+    applyTransform();
+  });
+  window.addEventListener('mouseup', () => dragging = false);
+
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.min(3, Math.max(0.3, scale * delta));
+    applyTransform();
+  }, { passive: false });
+}
+
+function makeNodeDraggable(element, nodeId) {
+  let isDraggingNode = false;
+  let startX, startY;
+
+  element.addEventListener('mousedown', (e) => {
+    e.stopPropagation();
+    isDraggingNode = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    element.style.cursor = 'grabbing';
+    element.style.zIndex = 1000;
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDraggingNode) return;
+    
+    const dx = (e.clientX - startX) / scale;
+    const dy = (e.clientY - startY) / scale;
+    
+    NODES[nodeId].x += dx;
+    NODES[nodeId].y += dy;
+    
+    element.style.left = NODES[nodeId].x + 'px';
+    element.style.top = NODES[nodeId].y + 'px';
+    
+    startX = e.clientX;
+    startY = e.clientY;
+    
+    applyTransform();
+    redrawEdges();
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (isDraggingNode) {
+      isDraggingNode = false;
+      element.style.cursor = 'pointer';
+      element.style.zIndex = '';
+    }
+  });
+}
+
+function zoom(f) { scale = Math.min(3, Math.max(0.3, scale * f)); applyTransform(); }
+
+function resetView() {
+  scale = 1; tx = 0; ty = 0; applyTransform();
+}
+
+function applyTransform() {
+  const nodes = document.querySelectorAll('#canvas .node');
+  const svg   = document.getElementById('svg-layer');
+  nodes.forEach(n => {
+    const id = n.id;
+    if (NODES[id]) {
+      const ox = NODES[id].x;
+      const oy = NODES[id].y;
+      n.style.transform = `translate(calc(-50% + ${tx + (ox * scale - ox)}px), calc(-50% + ${ty + (oy * scale - oy)}px)) scale(${scale})`;
+    }
+  });
+  svg.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
+  svg.style.transformOrigin = '0 0';
+}
+
+// ── Theme Switcher ───────────────────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  localStorage.setItem('mapa-theme', isLight ? 'light' : 'dark');
+  document.getElementById('theme-btn-text').textContent = isLight ? '🌙 Modo Oscuro' : '☀️ Modo Claro';
+}
+
+// ── Exporting Functions ──────────────────────────────────────────────────────
+function showLoader(text) {
+  const overlay = document.getElementById('loader-overlay');
+  const textEl = document.getElementById('loader-text');
+  if (text) textEl.textContent = text;
+  overlay.classList.add('active');
+}
+
+function hideLoader() {
+  const overlay = document.getElementById('loader-overlay');
+  overlay.classList.remove('active');
+}
+
+function exportPNG() {
+  closePanel();
+  showLoader('Generando imagen PNG...');
+  
+  setTimeout(() => {
+    const container = document.getElementById('canvas');
+    const oldScale = scale;
+    const oldTx = tx;
+    const oldTy = ty;
+    resetView();
+    
+    const bgColor = document.body.classList.contains('light-theme') ? '#F8F9FA' : '#0A0E1A';
+    
+    htmlToImage.toPng(container, {
+      backgroundColor: bgColor,
+      style: {
+        transform: 'scale(1)',
+        transformOrigin: 'top left'
+      }
+    })
+    .then(function(dataUrl) {
+      const link = document.createElement('a');
+      link.download = `Mapa_Mental_SURA_${new Date().toISOString().slice(0,10)}.png`;
+      link.href = dataUrl;
+      link.click();
+      
+      scale = oldScale; tx = oldTx; ty = oldTy; applyTransform();
+      hideLoader();
+    })
+    .catch(function(error) {
+      hideLoader();
+      alert('Error al exportar PNG: ' + error);
+    });
+  }, 100);
+}
+
+function exportPDF() {
+  closePanel();
+  showLoader('Generando documento PDF...');
+  
+  setTimeout(() => {
+    const container = document.getElementById('canvas');
+    const oldScale = scale;
+    const oldTx = tx;
+    const oldTy = ty;
+    resetView();
+    
+    const bgColor = document.body.classList.contains('light-theme') ? '#F8F9FA' : '#0A0E1A';
+    
+    htmlToImage.toPng(container, {
+      backgroundColor: bgColor
+    })
+    .then(function(dataUrl) {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('l', 'mm', 'a4');
+      const img = new Image();
+      img.src = dataUrl;
+      img.onload = function() {
+        const pw = pdf.internal.pageSize.getWidth();
+        const ph = pdf.internal.pageSize.getHeight();
+        pdf.addImage(dataUrl, 'PNG', 10, 10, pw - 20, ph - 20);
+        pdf.save(`Mapa_Mental_SURA_${new Date().toISOString().slice(0,10)}.pdf`);
+        
+        scale = oldScale; tx = oldTx; ty = oldTy; applyTransform();
+        hideLoader();
+      };
+    })
+    .catch(function(error) {
+      hideLoader();
+      alert('Error al exportar PDF: ' + error);
+    });
+  }, 100);
+}
+
+function exportSVG() {
+  closePanel();
+  showLoader('Generando vector SVG...');
+  
+  setTimeout(() => {
+    const container = document.getElementById('canvas');
+    const oldScale = scale;
+    const oldTx = tx;
+    const oldTy = ty;
+    resetView();
+    
+    const bgColor = document.body.classList.contains('light-theme') ? '#F8F9FA' : '#0A0E1A';
+    
+    htmlToImage.toSvg(container, {
+      backgroundColor: bgColor
+    })
+    .then(function(dataUrl) {
+      const link = document.createElement('a');
+      link.download = `Mapa_Mental_SURA_${new Date().toISOString().slice(0,10)}.svg`;
+      link.href = dataUrl;
+      link.click();
+      
+      scale = oldScale; tx = oldTx; ty = oldTy; applyTransform();
+      hideLoader();
+    })
+    .catch(function(error) {
+      hideLoader();
+      alert('Error al exportar SVG: ' + error);
+    });
+  }, 100);
+}
+</script>
+<div id="loader-overlay" class="sura-loader-overlay">
+  <div class="sura-spinner"></div>
+  <div id="loader-text" style="font-size: 1.1em; font-weight: 500; letter-spacing: 0.5px;">Procesando mapa mental...</div>
+</div>
+</body>
+</html>

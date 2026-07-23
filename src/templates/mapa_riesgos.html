@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Mental de Riesgos Normativos Colombia</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- CDNs de Exportación (SURA Brand Compliant) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span class="ic ic-search" style="color:var(--color-primary);"></span> Dashboard Cumplimiento Normativo Colombia</h1>
+            <p class="subtitle">Monitoreo de normativa y obligaciones regulatorias</p>
+        </header>
+
+        <!-- Pestañas de Navegación -->
+        <nav class="nav-tabs">
+            <a href="/" class="nav-tab"><span class="ic ic-clipboard"></span> Listado de Casos</a>
+            <a href="/mapa-riesgos" class="nav-tab active"><span class="ic ic-brain"></span> Mapa de Riesgos</a>
+            <a href="/mapa-riesgos-termico" class="nav-tab"><span class="ic ic-alert"></span> Mapa Termico</a>
+        </nav>
+
+        <!-- Controls for date range and presentation -->
+        <div class="map-controls-row">
+            <div class="map-controls-group">
+                <div class="filter-group">
+                    <label for="map-start-date">Fecha Inicio:</label>
+                    <input type="date" id="map-start-date" value="2026-04-20">
+                </div>
+                <div class="filter-group">
+                    <label for="map-end-date">Fecha Fin:</label>
+                    <input type="date" id="map-end-date" value="2026-06-19">
+                </div>
+                <button id="btn-update-map" class="btn-primary">Generar Mapa de Riesgos</button>
+            </div>
+            
+            <div class="map-actions-group">
+                <button id="btn-presentation" class="btn-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    Presentación
+                </button>
+                <button id="btn-export-png" class="btn-secondary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    PNG
+                </button>
+                <button id="btn-export-pdf" class="btn-secondary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Mind Map Visual Wrapper -->
+        <div id="mindmap-container" class="mindmap-wrapper">
+            <!-- Presentation Mode Info Overlay -->
+            <div class="presentation-hint">
+                <span>Use flechas ← → para navegar entre nodos · ESC para salir</span>
+                <button id="btn-exit-presentation" class="btn-presentation-exit">Salir</button>
+            </div>
+            
+            <div id="canvas" class="mindmap-canvas">
+                <!-- SVG lines container -->
+                <svg id="svg-connections" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></svg>
+
+                <!-- Central Node -->
+                <div class="mindmap-center-node">
+                    <div class="mindmap-center-content">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 5px;"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+                        <h3>Mapa de Riesgos</h3>
+                        <p id="central-node-dates">Rango de Fechas</p>
+                    </div>
+                </div>
+
+                <!-- Radial Nodes (Generated Dynamically) -->
+                <div id="radial-nodes-container"></div>
+                
+                <!-- Floating detail cards (Generated Dynamically) -->
+                <div id="detail-cards-container"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Monitoreo legal interactivo para SURA · Actualizado: <span id="last-updated">--</span></p>
+        </footer>
+    </div>
+
+    <!-- SVGs de Iconos Oficiales SURA -->
+    <script>
+        const SURA_ICONS = {
+            moneda: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`,
+            brujula: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>`,
+            avantDerecha: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`,
+            senal: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
+            bandera: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>`,
+            alertaCirculo: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
+        };
+
+        let mapData = null;
+        let activeNodeIndex = -1;
+        let isPresentationMode = false;
+
+        function loadMapData() {
+            const startDate = $('#map-start-date').val();
+            const endDate = $('#map-end-date').val();
+
+            const params = new URLSearchParams();
+            if (startDate) params.append('start_date', startDate);
+            if (endDate) params.append('end_date', endDate);
+
+            $.get('/api/mapa-riesgos?' + params.toString(), function(data) {
+                mapData = data;
+                renderMindMap();
+            });
+        }
+
+        function renderMindMap() {
+            if (!mapData) return;
+
+            const radialContainer = $('#radial-nodes-container');
+            const detailsContainer = $('#detail-cards-container');
+            const svgContainer = $('#svg-connections');
+            
+            radialContainer.empty();
+            detailsContainer.empty();
+            svgContainer.empty();
+
+            $('#central-node-dates').html(`Casos: ${mapData.total_cases}<br><span style="font-size:0.8em;">${mapData.start_date} / ${mapData.end_date}</span>`);
+
+            const centerX = $('#canvas').width() / 2;
+            const centerY = $('#canvas').height() / 2;
+            const radius = 220; // Radio de órbita
+
+            mapData.nodes.forEach((node, idx) => {
+                const angleRad = (node.angle * Math.PI) / 180;
+                const nodeX = centerX + radius * Math.cos(angleRad);
+                const nodeY = centerY + radius * Math.sin(angleRad);
+
+                // 1. Draw SVG line connection
+                const lineHtml = `
+                    <line x1="${centerX}" y1="${centerY}" x2="${nodeX}" y2="${nodeY}" 
+                          stroke="${node.color}" stroke-width="2" stroke-dasharray="6 4" 
+                          id="line-${node.id}" style="transition: stroke-width 0.2s ease, stroke 0.2s ease;" />
+                    <circle cx="${nodeX}" cy="${nodeY}" r="6" fill="${node.color}" />
+                `;
+                svgContainer.append(lineHtml);
+
+                // 2. Draw Category Node Button
+                const btnIcon = SURA_ICONS[node.icon] || '';
+                const nodeHtml = `
+                    <div class="mindmap-radial-node" style="left: ${nodeX}px; top: ${nodeY}px;">
+                        <button class="mindmap-radial-btn" id="btn-${node.id}" data-id="${node.id}" data-index="${idx}"
+                                style="background: ${node.bgColor}; border: 2px solid ${node.borderColor}; color: ${node.color};">
+                            <span style="display:inline-flex; align-items:center;">${btnIcon}</span>
+                            <span>${node.label}</span>
+                            <span class="mindmap-chevron">▼</span>
+                        </button>
+                    </div>
+                `;
+                radialContainer.append(nodeHtml);
+
+                // 3. Draw Detail Floating Card
+                // Calculate optimal floating coordinates for details card to prevent collision
+                let cardLeft = nodeX;
+                let cardTop = nodeY + 35;
+                if (nodeX < centerX) {
+                    cardLeft = nodeX - 320;
+                }
+                if (nodeY > centerY) {
+                    cardTop = nodeY - 330;
+                }
+
+                let childRowsHtml = '';
+                if (node.children && node.children.length > 0) {
+                    node.children.forEach(c => {
+                        const badgeColor = c.priority === 'ALTA' ? 'badge-error' : 'badge-detectado';
+                        childRowsHtml += `
+                            <div class="mindmap-case-item">
+                                <div class="mindmap-case-item-title">
+                                    <a href="${c.document_url}" target="_blank" class="link-doc">${c.text.substring(0,45)}${c.text.length > 45 ? '...' : ''}</a>
+                                </div>
+                                <div class="mindmap-case-item-desc">${c.particular_risk}</div>
+                                <div class="mindmap-case-item-meta">
+                                    <span class="badge ${badgeColor}" style="padding: 2px 8px; font-size: 0.75em;">${c.priority}</span>
+                                    <span style="color:#888B8D; font-size:0.75em; font-weight:700;">${c.detected_at}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    childRowsHtml = '<p style="color:#888B8D; font-style:italic; font-size:0.8em; margin:10px 0;">No hay obligaciones para este rango.</p>';
+                }
+
+                const cardHtml = `
+                    <div class="mindmap-detail-card" id="card-${node.id}" style="left: ${cardLeft}px; top: ${cardTop}px; border-top: 4px solid ${node.color};">
+                        <div class="mindmap-detail-header" style="color: ${node.color};">${node.label}</div>
+                        <div class="mindmap-detail-section">
+                            <h4>Relación Jurídica</h4>
+                            <p class="mindmap-detail-section-relation">${node.relation}</p>
+                        </div>
+                        <div class="mindmap-detail-section">
+                            <h4>Evaluación de Riesgo a la Compañía</h4>
+                            <p class="mindmap-detail-section-risk">${node.riskAssessment}</p>
+                        </div>
+                        <div class="mindmap-detail-section">
+                            <h4>Archivos y Leyes Vinculadas (${node.children.length})</h4>
+                            <div class="mindmap-cases-list">
+                                ${childRowsHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                detailsContainer.append(cardHtml);
+            });
+
+            // Set up click handlers
+            $('.mindmap-radial-btn').on('click', function(e) {
+                e.stopPropagation();
+                const nodeId = $(this).data('id');
+                const idx = $(this).data('index');
+                toggleNodeExpansion(nodeId, idx);
+            });
+
+            // Close cards when clicking canvas
+            $('#canvas').on('click', function() {
+                closeAllCards();
+            });
+        }
+
+        function toggleNodeExpansion(nodeId, index) {
+            const btn = $(`#btn-${nodeId}`);
+            const card = $(`#card-${nodeId}`);
+            const line = $(`#line-${nodeId}`);
+            
+            const isExpanded = btn.hasClass('expanded');
+
+            closeAllCards();
+
+            if (!isExpanded) {
+                btn.addClass('expanded active');
+                card.show();
+                line.attr('stroke-width', '4').attr('stroke-dasharray', '0');
+                activeNodeIndex = index;
+            } else {
+                activeNodeIndex = -1;
+            }
+        }
+
+        function closeAllCards() {
+            $('.mindmap-radial-btn').removeClass('expanded active');
+            $('.mindmap-detail-card').hide();
+            
+            if (mapData) {
+                mapData.nodes.forEach(node => {
+                    $(`#line-${node.id}`).attr('stroke-width', '2').attr('stroke-dasharray', '6 4');
+                });
+            }
+        }
+
+        // Presentation Mode Navigation
+        function navigatePresentation(direction) {
+            if (!mapData || mapData.nodes.length === 0) return;
+            
+            let nextIndex = activeNodeIndex;
+            if (direction === 'next') {
+                nextIndex = (activeNodeIndex + 1) % mapData.nodes.length;
+            } else if (direction === 'prev') {
+                nextIndex = (activeNodeIndex - 1 + mapData.nodes.length) % mapData.nodes.length;
+            }
+            
+            if (nextIndex >= 0) {
+                const node = mapData.nodes[nextIndex];
+                toggleNodeExpansion(node.id, nextIndex);
+            }
+        }
+
+        function enterPresentationMode() {
+            isPresentationMode = true;
+            $('#mindmap-container').addClass('presentation-mode');
+            
+            // Auto expand first node
+            if (mapData && mapData.nodes.length > 0) {
+                const firstNode = mapData.nodes[0];
+                toggleNodeExpansion(firstNode.id, 0);
+            }
+        }
+
+        function exitPresentationMode() {
+            isPresentationMode = false;
+            $('#mindmap-container').removeClass('presentation-mode');
+            closeAllCards();
+            activeNodeIndex = -1;
+        }
+
+        // Image Export PNG
+        function exportPNG() {
+            const container = document.getElementById('canvas');
+            closeAllCards(); // Close open cards before capture or capture with current open one?
+            // Usually, user wants to see the full diagram. Let's capture as is, or we can expand one card if active.
+            
+            htmlToImage.toPng(container, {
+                backgroundColor: '#F8F8F8',
+                style: {
+                    transform: 'scale(1)',
+                    transformOrigin: 'top left'
+                }
+            })
+            .then(function(dataUrl) {
+                const link = document.createElement('a');
+                link.download = `Mapa_Riesgos_SURA_${new Date().toISOString().slice(0,10)}.png`;
+                link.href = dataUrl;
+                link.click();
+            })
+            .catch(function(error) {
+                alert('Error al exportar PNG: ' + error);
+            });
+        }
+
+        // PDF Export
+        function exportPDF() {
+            const container = document.getElementById('canvas');
+            closeAllCards();
+            
+            htmlToImage.toPng(container, {
+                backgroundColor: '#F8F8F8'
+            })
+            .then(function(dataUrl) {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('l', 'mm', 'a4');
+                const img = new Image();
+                img.src = dataUrl;
+                img.onload = function() {
+                    const pw = pdf.internal.pageSize.getWidth();
+                    const ph = pdf.internal.pageSize.getHeight();
+                    pdf.addImage(dataUrl, 'PNG', 10, 10, pw - 20, ph - 20);
+                    pdf.save(`Mapa_Riesgos_SURA_${new Date().toISOString().slice(0,10)}.pdf`);
+                };
+            })
+            .catch(function(error) {
+                alert('Error al exportar PDF: ' + error);
+            });
+        }
+
+        $(document).ready(function() {
+            $('#last-updated').text(new Date().toLocaleString());
+            loadMapData();
+
+            $('#btn-update-map').click(function() {
+                loadMapData();
+            });
+
+            $('#btn-presentation').click(function() {
+                enterPresentationMode();
+            });
+
+            $('#btn-exit-presentation').click(function() {
+                exitPresentationMode();
+            });
+
+            $('#btn-export-png').click(function() {
+                exportPNG();
+            });
+
+            $('#btn-export-pdf').click(function() {
+                exportPDF();
+            });
+
+            // Keydown listeners for presentation and Escape
+            $(document).on('keydown', function(e) {
+                if (isPresentationMode) {
+                    if (e.key === 'Escape') {
+                        exitPresentationMode();
+                    } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                        navigatePresentation('next');
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        navigatePresentation('prev');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

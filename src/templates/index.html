@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliance Dashboard | SURA</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='sura-logo.svg') }}" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.0.2">
+    <!-- DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <style>
+        .badge-divulgar { background: #D12D35; color: white !important; font-weight: 800 !important; }
+        .badge-excel-ok { background: #0033A020; color: #0033A0; border: 1px solid #0033A040; }
+        .badge-no-excel { background: #F4F4F4; color: #3F3F41; border: 1px solid #E7E7E740; }
+        .badge-consolidado { background: #2D6DF620; color: #2D6DF6; }
+        .badge-import { background: #0033A010; color: #0033A0; border: 1px dashed #0033A040; }
+    </style>
+    <script src="{{ url_for('static', filename='sura-ui.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="app-bar">
+            <div class="app-bar__brand">
+                <img src="{{ url_for('static', filename='sura-logo.svg') }}" alt="SURA" class="brand-logo">
+                <div class="app-bar__divider"></div>
+                <div class="app-bar__titles">
+                    <h1><span class="ic ic-clipboard"></span> Cuadro de Mando</h1>
+                    <p class="subtitle">Cumplimiento Normativo SURA</p>
+                </div>
+            </div>
+            <div class="app-bar__actions">
+                <div class="theme-switch" id="theme-toggle" title="Cambiar tema">
+                    <div class="theme-switch__btn light active" id="theme-light">
+                        <span class="ic ic-sun"></span>
+                    </div>
+                    <div class="theme-switch__btn dark" id="theme-dark">
+                        <span class="ic ic-moon"></span>
+                    </div>
+                </div>
+                <a href="/mapa-riesgos-termico" class="btn-secondary" style="margin-right: 8px;"><span class="ic ic-alert"></span> Mapa Termico</a>
+                <a href="/gobierno" class="btn-primary" style="margin-right: 8px;"><span class="ic ic-shield"></span> Gobierno y Consulta</a>
+                <a href="/analizar" class="btn-secondary" style="background: linear-gradient(135deg,#0033A0,#2D6DF6); color:white; border:none;"><span class="ic ic-balanza"></span> Analizar Norma</a>
+                <a href="/analytics" class="btn-primary"><span class="ic ic-bar-chart"></span> Ver Analítica y Reportes</a>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="card danger" onclick="applySemaforoFilter('ROJO')">
+                <div class="card-label"><span class="sem-dot rojo"></span> ALERTA</div>
+                <div class="card-number" id="count-rojo">0</div>
+                <div class="card-desc">Acción inmediata</div>
+            </div>
+            <div class="card warning" onclick="applySemaforoFilter('AMARILLO')">
+                <div class="card-label"><span class="sem-dot amarillo"></span> PENDIENTE</div>
+                <div class="card-number" id="count-amarillo">0</div>
+                <div class="card-desc">En validación</div>
+            </div>
+            <div class="card" onclick="applySemaforoFilter('NUEVOS_HOY')" style="background-color: var(--color-accent-aqua); color: var(--color-on-primary);">
+                <div class="card-label" style="color: rgba(255,255,255,0.9);"><span class="ic ic-plus-circle"></span> NUEVOS HOY</div>
+                <div class="card-number" id="count-nuevos-hoy" style="color: white;">0</div>
+                <div class="card-desc" style="color: rgba(255,255,255,0.8);">Última corrida</div>
+            </div>
+            <div class="card success" onclick="applySemaforoFilter('VERDE')">
+                <div class="card-label"><span class="sem-dot verde"></span> CUMPLIDO</div>
+                <div class="card-number" id="count-verde">0</div>
+                <div class="card-desc">Sin acción req.</div>
+            </div>
+            <div class="card primary" onclick="applySemaforoFilter('CONSOLIDADO')">
+                <div class="card-label"><span class="sem-dot consolidado"></span> ARCHIVADO</div>
+                <div class="card-number" id="count-consolidado">0</div>
+                <div class="card-desc">En matriz final</div>
+            </div>
+            <a href="/analytics_tokens" style="text-decoration: none; color: inherit;">
+                <div class="card card-tokens">
+                    <div class="card-label"><span class="ic ic-cpu"></span> TOKENS IA</div>
+                    <div class="card-number" id="count-tokens">0</div>
+                    <div class="card-desc">Consumo acumulado</div>
+                </div>
+            </a>
+            <a href="/analytics_excel" style="text-decoration: none; display: none;">
+                <div class="card" style="background: var(--sura-blue-dark); color: white;">
+                    <div class="card-label" style="color: rgba(255,255,255,0.7);"><span class="ic ic-bar-chart"></span> REPORTES EXCEL</div>
+                    <div class="card-number" style="color: white;">Ver KPIs</div>
+                    <div class="card-desc" style="color: rgba(255,255,255,0.8);">Estadísticas manuales</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <h2>Filtros Avanzados</h2>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Semáforo</label>
+                    <select id="filter-semaforo">
+                        <option value="">Todos los estados</option>
+                        <option value="ROJO">ROJO</option>
+                        <option value="AMARILLO">AMARILLO</option>
+                        <option value="VERDE">VERDE</option>
+                        <option value="CONSOLIDADO">ARCHIVADO / MATRIZ FINAL</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Entidad Reguladora</label>
+                    <select id="filter-entidad">
+                        <option value="">Todas las entidades</option>
+                        {% for ent in entities %}
+                        <option value="{{ ent }}">{{ ent }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Búsqueda</label>
+                    <input type="text" id="filter-search" placeholder="Buscar por tema o nota...">
+                </div>
+
+                <div class="filter-group">
+                    <label>Fecha de Detección</label>
+                    <input type="date" id="filter-date">
+                    <div class="quick-dates">
+                        <button class="btn-small" onclick="setQuickDate('today')">Hoy</button>
+                        <button class="btn-small" onclick="setQuickDate('yesterday')">Ayer</button>
+                        <button class="btn-small" onclick="setQuickDate('')">Limpiar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px; display: flex; gap: 12px; justify-content: flex-end; align-items: center;">
+                <button id="btn-filter" class="btn-primary">Aplicar Filtros</button>
+                <button id="btn-refresh" onclick="loadCasos()" class="btn-secondary">
+                    <span id="refresh-icon" class="ic ic-refresh"></span> <span id="refresh-text">Refrescar</span>
+                </button>
+                <div style="width: 1px; height: 30px; background: #E7E7E7; margin: 0 10px;"></div>
+                <a href="/tags" class="btn-secondary"><span class="ic ic-tag"></span> Definir Etiquetas</a>
+                <a href="/errores" class="btn-secondary"><span class="ic ic-settings"></span> Gestionar Errores</a>
+                <a href="/fuentes" class="btn-secondary"><span class="ic ic-link"></span> Gestionar Fuentes</a>
+                <a href="/status" class="btn-secondary"><span class="ic ic-globe"></span> Estado del Sistema</a>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-section">
+            <div class="table-header-area">
+                <h2 style="margin:0; font-size: 1.2em;">Casos Identificados</h2>
+                <small style="color: var(--gray-500); font-weight: 500;">Sincronizado hace: <span id="last-updated">--</span></small>
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="casos-table" class="display responsive">
+                    <thead>
+                        <tr>
+                            <th style="width: 150px;">Acciones</th>
+                            <th>Estado</th>
+                            <th>Título y Documentos</th>
+                            <th style="width: 100px;">Publicación</th>
+                            <th>Impacto</th>
+                            <th>SOX</th>
+                            <th style="width: 120px;">Seguimiento</th>
+                            <th>Link</th>
+                            <th>Detección</th>
+                        </tr>
+                    </thead>
+                    <tbody id="casos-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Edit Modal -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-entidad-name">Editar Análisis</h2>
+                    <span class="close" onclick="closeModal()">&times;</span>
+                </div>
+                <div id="modal-body-forms" style="max-height: 60vh; overflow-y: auto; padding-right: 10px;">
+                    <!-- Aquí se cargarán los formularios -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allCasos = [];
+
+        function applySemaforoFilter(value) {
+            if (value === 'NUEVOS_HOY') {
+                $('#filter-semaforo').val('').trigger('change');
+                setQuickDate('today');
+            } else {
+                $('#filter-semaforo').val(value).trigger('change');
+                $('#filter-date').val(''); 
+                loadCasos();
+            }
+            document.querySelector('.table-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function setQuickDate(type) {
+            const dateInput = document.getElementById('filter-date');
+            const now = new Date();
+            if (type === 'today') dateInput.value = now.toISOString().split('T')[0];
+            else if (type === 'yesterday') {
+                const yesterday = new Date(now);
+                yesterday.setDate(now.getDate() - 1);
+                dateInput.value = yesterday.toISOString().split('T')[0];
+            } else dateInput.value = '';
+            loadCasos();
+        }
+
+        function formatSemaforo(value) {
+            const map = {
+                'ROJO': '<span class="sem-dot rojo"></span>',
+                'AMARILLO': '<span class="sem-dot amarillo"></span>',
+                'VERDE': '<span class="sem-dot verde"></span>',
+                'CONSOLIDADO': '<span class="sem-dot consolidado"></span>'
+            };
+            return map[value] || '<span class="sem-dot na"></span>';
+        }
+
+        function loadSummary() {
+            $.get('/api/summary', function(data) {
+                $('#count-rojo').text(data.ROJO);
+                $('#count-amarillo').text(data.AMARILLO);
+                $('#count-verde').text(data.VERDE);
+                $('#count-consolidado').text(data.CONSOLIDADO);
+                $('#count-nuevos-hoy').text(data.NUEVOS_HOY || 0);
+                if(data.TOTAL_TOKENS) {
+                    $('#count-tokens').text(data.TOTAL_TOKENS.toLocaleString());
+                }
+            });
+        }
+
+        function loadCasos() {
+            const btn = $('#btn-refresh');
+            const icon = $('#refresh-icon');
+            const text = $('#refresh-text');
+            
+            btn.prop('disabled', true).css('opacity', '0.7');
+            icon.addClass('spin');
+            text.text('Cargando...');
+
+            loadSummary();
+            const params = new URLSearchParams();
+            ['semaforo', 'entidad', 'search', 'date'].forEach(id => {
+                const val = $(`#filter-${id}`).val();
+                if (val) params.append(id, val);
+            });
+
+            $.get('/api/casos?' + params.toString(), function(casos) {
+                allCasos = casos;
+                renderTable(casos);
+                
+                setTimeout(() => {
+                    btn.prop('disabled', false).css('opacity', '1');
+                    icon.removeClass('spin');
+                    text.text('Refrescar');
+                }, 500);
+            });
+        }
+
+        function renderTable(casos) {
+            const tbody = $('#casos-tbody');
+            tbody.empty();
+
+            const hierarchy = { 'ROJO': {}, 'AMARILLO': {}, 'VERDE': {}, 'CONSOLIDADO': {}, 'N/A': {} };
+            
+            casos.forEach(c => {
+                const sem = (c.semaforo || 'N/A').toUpperCase();
+                const ent = c.entidad || 'Sin Entidad';
+                const src = c.fuente_url || 'Sin Fuente';
+
+                if (!hierarchy[sem]) hierarchy[sem] = {};
+                if (!hierarchy[sem][ent]) hierarchy[sem][ent] = {};
+                if (!hierarchy[sem][ent][src]) {
+                    hierarchy[sem][ent][src] = {
+                        entidad: ent,
+                        fuente_url: src,
+                        semaforo: sem,
+                        Título: c.Título,
+                        motivo: c.motivo,
+                        'Incidencia SURA': c['Incidencia SURA'],
+                        'Control SOX': c['Control SOX'],
+                        status: c.status,
+                        link_status: c.link_status,
+                        link_error: c.link_error,
+                        detected_at: c.detected_at,
+                        'Fecha de publicación': c['Fecha de publicación'],
+                        documents: []
+                    };
+                }
+                hierarchy[sem][ent][src].documents.push(c);
+            });
+
+            ['ROJO', 'AMARILLO', 'VERDE', 'CONSOLIDADO', 'N/A'].forEach(sem => {
+                const entidades = hierarchy[sem];
+                const entKeys = Object.keys(entidades).sort();
+                if (entKeys.length === 0) return;
+
+                const colorMap = {'ROJO': 'var(--alert-error)', 'AMARILLO': 'var(--alert-warning)', 'VERDE': 'var(--alert-success)', 'CONSOLIDADO': 'var(--color-primary)'};
+                const colorMapBg = {'ROJO': 'var(--alert-error-bg)', 'AMARILLO': 'var(--alert-warning-bg)', 'VERDE': 'var(--alert-success-bg)', 'CONSOLIDADO': '#2D6DF615'};
+                const color = colorMap[sem] || 'var(--gray-500)';
+                const bg = colorMapBg[sem] || 'var(--gray-100)';
+                
+                tbody.append(`<tr class="sem-header" style="background: ${bg}; color: ${color}; font-weight: 800; font-size: 0.8em; text-transform: uppercase;"><td colspan="10" style="padding: 15px 25px; border-left: 8px solid ${color};">${formatSemaforo(sem)} ${sem}</td></tr>`);
+
+                entKeys.forEach((ent, entIdx) => {
+                    const fuentes = entidades[ent];
+                    const srcKeys = Object.keys(fuentes);
+                    let totalDocs = 0;
+                    srcKeys.forEach(fKey => totalDocs += fuentes[fKey].documents.length);
+
+                    const safeEntId = `ent-${sem}-${entIdx}`.replace(/[^a-z0-9]/gi, '-');
+                    const cleanEnt = ent.replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{27BF}]|🏢/gu, '').trim();
+                    tbody.append(`<tr class="ent-header" onclick="toggleEntity('${safeEntId}')" style="background: white; font-weight: 700; cursor: pointer; border-bottom: 1px solid var(--gray-200);"><td colspan="10" style="padding: 18px 25px; color: var(--gray-900);"><span id="icon-${safeEntId}" style="margin-right: 12px; color: var(--gray-500);">▼</span> <span class="ic ic-building" style="color:var(--color-primary);"></span> ${cleanEnt} <span style="font-weight: 500; color: var(--gray-500); font-size: 0.9em; margin-left: 10px;">(${totalDocs} hallazgos)</span></td></tr>`);
+
+                    srcKeys.forEach(fKey => {
+                        const evt = fuentes[fKey];
+                        const docsHtml = `<div class="docs-scroll-area" style="width: auto; max-width: 250px; background: transparent; border: none; padding: 0;">${evt.documents.map((d, i) => `<a href="${d.document_url}" target="_blank" class="doc-tag" style="border-radius: 6px; background: ${bg}; color: ${color}; border: 1px solid ${color}30;">PDF ${i+1}</a>`).join('')}</div>`;
+                        const mapClass = evt.documents[0]?.has_map ? '' : 'disabled';
+                        const mapTitle = evt.documents[0]?.has_map ? 'Ver Mapa de Navegación' : 'No hay mapa disponible aún';
+                        
+                        const wikiAnalysisFile = evt.documents.find(d => d.wiki_analysis_file)?.wiki_analysis_file;
+                        const mentalMapBtn = wikiAnalysisFile ? `
+                            <a href="/mapa-norma?wiki_file=${encodeURIComponent(wikiAnalysisFile)}" target="_blank"
+                               class="btn-action" style="background: #7B2D8B15; color: #7B2D8B;"
+                               title="Ver Mapa Mental IA">
+                               <span class="ic ic-brain"></span> Mapa
+                            </a>
+                        ` : '';
+                        
+                        const row = `
+                            <tr class="child-of-${safeEntId}" style="background: white;">
+                                <td style="text-align:center; padding: 12px 10px;">
+                                    <div style="display:flex; gap:6px; justify-content:center; align-items:center;">
+                                        <button onclick='openEditModal(${JSON.stringify(evt.documents).replace(/'/g, "&apos;")})' 
+                                                class="btn-action" style="background: ${bg}; color: ${color};" title="Editar análisis">
+                                            <span class="ic ic-edit"></span>
+                                        </button>
+                                        <a href="/detalle?fuente=${encodeURIComponent(evt.fuente_url)}&entidad=${encodeURIComponent(evt.entidad)}" 
+                                           class="btn-action" style="background: #2D6DF615; color: var(--color-primary);"
+                                           title="Ver Expediente">
+                                           <span class="ic ic-folder"></span> Ver
+                                        </a>
+                                        ${mentalMapBtn}
+                                        <a href="/site_tree?entidad=${encodeURIComponent(evt.entidad)}" 
+                                           class="btn-action ${mapClass}" style="background: #0033A015; color: var(--color-secondary);"
+                                           title="${mapTitle}">
+                                           <span class="ic ic-map"></span> Mapa
+                                        </a>
+                                    </div>
+                                </td>
+                                <td style="text-align:center;">${formatSemaforo(evt.semaforo)}</td>
+                                <td style="max-width: 450px;">
+                                    <div style="font-weight:600; color: var(--gray-900); margin-bottom: 4px; font-size: 0.9em; line-height: 1.2;">
+                                        ${evt['Resultado análisis'] === 'Divulgar' && evt.status !== 'consolidado' ? '<span class="badge badge-divulgar" style="font-size:0.7em; margin-right:6px; vertical-align:middle;"><span class="ic ic-megaphone"></span> DIVULGAR</span>' : ''}
+                                        ${evt.Título || evt.motivo || '-'}
+                                    </div>
+                                    ${docsHtml}
+                                </td>
+                                <td style="white-space: nowrap; font-family: monospace; font-size: 0.85em; font-weight: 700; color: var(--gray-900);">${evt['Fecha de publicación'] || '-'}</td>
+                                <td><span class="badge" style="background:${evt['Incidencia SURA']=='ALTA'?'var(--alert-error-bg)':'var(--gray-100)'}; color:${evt['Incidencia SURA']=='ALTA'?'var(--alert-error)':'var(--gray-900)'}; font-size: 0.7em;">${evt['Incidencia SURA'] || 'pend.'}</span></td>
+                                <td><span class="badge" style="background:${evt['Control SOX']=='SÍ'?'#2D6DF620':'var(--gray-100)'}; color:${evt['Control SOX']=='SÍ'?'var(--color-primary)':'var(--gray-500)'}; font-size: 0.7em;">${evt['Control SOX'] || 'NO'}</span></td>
+                                <td>
+                                    <div style="display:flex; flex-direction:column; gap:6px;">
+                                        <span class="badge" style="font-size: 0.7em; background: ${
+                                            evt.status === 'consolidado' ? '#2D6DF620' : 
+                                            evt.status === 'importado_excel' ? '#0033A020' : 
+                                            evt.status === 'validado' ? 'var(--alert-success-bg)' : 
+                                            'var(--gray-100)'
+                                        }; color: ${
+                                            evt.status === 'consolidado' ? 'var(--color-primary)' : 
+                                            evt.status === 'importado_excel' ? 'var(--color-secondary)' : 
+                                            evt.status === 'validado' ? 'var(--alert-success)' : 
+                                            'var(--gray-500)'
+                                        }; border: 1px solid ${
+                                            evt.status === 'importado_excel' ? '#0033A040' : 'transparent'
+                                        };">
+                                            ${evt.status === 'consolidado' ? '<span class="ic ic-check"></span> Consolidado' : (evt.status || 'desc.')}
+                                        </span>
+                                        ${evt.documents[0]?.sincronizado_excel ? 
+                                            `<span class="badge badge-excel-ok" style="font-size: 0.65em; text-align: center;" title="Sincronizado con el Excel de seguimiento manual"><span class="ic ic-link"></span> MANUAL OK</span>` : 
+                                            `<span class="badge badge-no-excel" style="font-size: 0.65em; text-align: center;" title="Este caso es nuevo y no está en tu Excel manual"><span class="ic ic-clock"></span> NO EN EXCEL</span>`
+                                        }
+                                    </div>
+                                </td>
+                                <td style="text-align:center;">
+                                    ${ (evt.link_status === 'ok' && evt.semaforo !== 'ROJO') 
+                                        ? `<span class="badge" style="background: var(--alert-success-bg); color: var(--alert-success); font-size: 0.75em; font-weight: 700; border: 1px solid #06701440; display: block; text-align: center;">OK</span>`
+                                        : `<span class="badge" onclick="showLinkError('${(evt.link_error || 'Error desconocido').replace(/'/g, "\\'").replace(/"/g, '&quot;')}')" style="background: var(--alert-error-bg); color: var(--alert-error); font-size: 0.75em; cursor: pointer; font-weight: 700; border: 1px solid #D12D3540; display: block; text-align: center;" title="Clic para ver detalle">ERR</span>`
+                                    }
+                                </td>
+                                <td style="white-space: nowrap;"><span class="badge" style="background: var(--gray-100); color: var(--gray-500); border: 1px solid var(--gray-200); font-size: 0.75em; font-weight: 600;"><span class="ic ic-clock" style="font-size: 0.9em; margin-right: 2px;"></span>${evt.detected_at ? evt.detected_at.substring(0, 10) : '-'}</span></td>
+                            </tr>
+                        `;
+                        tbody.append(row);
+                    });
+                });
+            });
+
+            $('#last-updated').text(new Date().toLocaleTimeString());
+        }
+
+        function toggleEntity(id) {
+            $(`.child-of-${id}`).toggle();
+            const icon = $(`#icon-${id}`);
+            icon.text(icon.text() === '▼' ? '▶' : '▼');
+        }
+
+        function convertToSuraSelect(selectEl) {
+            const $select = $(selectEl);
+            if ($select.length === 0) return;
+            // Remove previous custom select if it exists
+            $select.next('.sura-select').remove();
+            
+            const id = $select.attr('id') || ('sel-' + Math.random().toString(36).substr(2, 9));
+            const rawPlaceholder = $select.find('option:selected').text() || $select.find('option').first().text() || 'Seleccionar...';
+            const placeholder = rawPlaceholder.replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{27BF}]|🏢/gu, '').trim();
+            
+            const $container = $('<div class="sura-select"></div>');
+            const $trigger = $(`
+                <button type="button" class="sura-select-trigger" aria-haspopup="listbox" aria-expanded="false" id="trigger-${id}">
+                    <span class="sura-select-label">${placeholder}</span>
+                    <span class="ic ic-arrow-down" style="font-size: 0.8em; color: var(--gray-500); margin-left: 8px;"></span>
+                </button>
+            `);
+            const $dropdown = $('<div class="sura-select-dropdown"></div>');
+            const $ul = $('<ul role="listbox"></ul>');
+            
+            $select.find('option').each(function() {
+                const $opt = $(this);
+                const isSelected = $opt.is(':selected');
+                const cleanText = $opt.text().replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{27BF}]|🏢/gu, '').trim();
+                const $li = $(`<li role="option" data-value="${$opt.val()}" aria-selected="${isSelected ? 'true' : 'false'}">${cleanText}</li>`);
+                if (isSelected) $li.addClass('selected');
+                
+                $li.on('click', function(e) {
+                    e.stopPropagation();
+                    $ul.find('li').removeClass('selected').attr('aria-selected', 'false');
+                    $li.addClass('selected').attr('aria-selected', 'true');
+                    $trigger.find('.sura-select-label').text(cleanText);
+                    $select.val($opt.val()).trigger('change');
+                    $container.removeClass('show');
+                    $trigger.attr('aria-expanded', 'false');
+                });
+                
+                $ul.append($li);
+            });
+            
+            $dropdown.append($ul);
+            $container.append($trigger).append($dropdown);
+            $select.hide().after($container);
+            
+            // Listen to native select change to synchronize programmatic changes (e.g. from KPI cards)
+            $select.on('change', function() {
+                const val = $select.val();
+                const $opt = $select.find(`option[value="${val}"]`);
+                const rawText = $opt.text() || placeholder;
+                const cleanText = rawText.replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{27BF}]|🏢/gu, '').trim();
+                $trigger.find('.sura-select-label').text(cleanText);
+                
+                $ul.find('li').removeClass('selected').attr('aria-selected', 'false');
+                const $li = $ul.find(`li[data-value="${val}"]`);
+                $li.addClass('selected').attr('aria-selected', 'true');
+            });
+            
+            $trigger.on('click', function(e) {
+                e.stopPropagation();
+                const isOpen = $container.hasClass('show');
+                $('.sura-select').not($container).removeClass('show').find('.sura-select-trigger').attr('aria-expanded', 'false');
+                if (!isOpen) {
+                    $container.addClass('show');
+                    $trigger.attr('aria-expanded', 'true');
+                } else {
+                    $container.removeClass('show');
+                    $trigger.attr('aria-expanded', 'false');
+                }
+            });
+        }
+
+        // Close dropdowns on click outside
+        $(document).on('click', function() {
+            $('.sura-select').removeClass('show').find('.sura-select-trigger').attr('aria-expanded', 'false');
+        });
+        $(document).on('keydown', function(e) {
+            if (e.key === 'Escape') {
+                $('.sura-select').removeClass('show').find('.sura-select-trigger').attr('aria-expanded', 'false');
+            }
+        });
+
+        function openEditModal(docs) {
+            const container = $('#modal-body-forms');
+            container.empty();
+            $('#modal-entidad-name').text(docs[0].entidad);
+
+            docs.forEach(doc => {
+                const formHtml = `
+                    <div style="border: 1px solid #f2f2f7; padding: 20px; border-radius: 12px; margin-bottom: 20px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+                        <h4 style="margin-top:0; color: #1d1d1f; border-bottom: 1px solid #f2f2f7; padding-bottom: 10px; margin-bottom: 15px;">${doc.Título || 'Documento'}</h4>
+                        <div class="form-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label>Incidencia SURA</label>
+                                <select id="edit-incidencia-${doc.case_id}">
+                                    <option value="pendiente" ${doc['Incidencia SURA']=='pendiente'?'selected':''}>Pendiente</option>
+                                    <option value="ALTA" ${doc['Incidencia SURA']=='ALTA'?'selected':''}>ALTA</option>
+                                    <option value="MEDIA" ${doc['Incidencia SURA']=='MEDIA'?'selected':''}>MEDIA</option>
+                                    <option value="BAJA" ${doc['Incidencia SURA']=='BAJA'?'selected':''}>BAJA</option>
+                                    <option value="NO" ${doc['Incidencia SURA']=='NO'?'selected':''}>NO APLICA</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Control SOX</label>
+                                <select id="edit-sox-${doc.case_id}">
+                                    <option value="NO" ${doc['Control SOX']=='NO'?'selected':''}>NO</option>
+                                    <option value="SÍ" ${doc['Control SOX']=='SÍ'?'selected':''}>SÍ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top:20px;">
+                            <label>Obligaciones / Resumen</label>
+                            <textarea id="edit-obligaciones-${doc.case_id}" rows="4" style="width:100%; border: 1px solid #e5e5ea; border-radius: 12px; padding: 12px; background: #f2f2f7;">${doc.Obligaciones || doc.notes || ''}</textarea>
+                        </div>
+                        <button onclick="saveCase('${doc.case_id}')" class="btn-primary" style="margin-top:20px; width:100%; justify-content: center;">Guardar Cambios</button>
+                    </div>
+                `;
+                container.append(formHtml);
+            });
+
+            $('#editModal').show();
+            
+            // Convert dynamically added select elements to custom ones
+            docs.forEach(doc => {
+                convertToSuraSelect('#edit-incidencia-' + doc.case_id);
+                convertToSuraSelect('#edit-sox-' + doc.case_id);
+            });
+        }
+
+        function closeModal() {
+            $('#editModal').hide();
+        }
+
+        function saveCase(id) {
+            const data = {
+                case_id: id,
+                'Incidencia SURA': $(`#edit-incidencia-${id}`).val(),
+                'Control SOX': $(`#edit-sox-${id}`).val(),
+                'Obligaciones': $(`#edit-obligaciones-${id}`).val(),
+                'status': 'validado'
+            };
+
+            $.ajax({
+                url: '/api/update_case',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function() {
+                    showToast('Cambios guardados con éxito', 'success');
+                    loadCasos();
+                }
+            });
+        }
+
+        function showLinkError(errorMsg) {
+            showConfirm('Detalle del Error de Descarga', errorMsg || 'El servidor de la entidad no respondió o denegó la conexión al intentar descargar el documento.', null, 'Cerrar', '');
+            setTimeout(() => {
+                const cancelBtn = document.getElementById('sura-modal-cancel');
+                if(cancelBtn) cancelBtn.style.display = 'none';
+            }, 10);
+        }
+
+        $(document).ready(function() {
+            loadCasos();
+            $('#btn-filter').click(loadCasos);
+            
+            // Convert filters on page load
+            convertToSuraSelect('#filter-semaforo');
+            convertToSuraSelect('#filter-entidad');
+            
+            window.onclick = function(event) {
+                if (event.target == document.getElementById('editModal')) {
+                    closeModal();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

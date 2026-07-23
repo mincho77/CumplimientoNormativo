@@ -1,0 +1,164 @@
+[
+    {
+        "tag": "normativa",
+        "expert_source": "Derecho Administrativo",
+        "description": "Etiqueta base para todo hallazgo del sistema.",
+        "logic": "Asignación automática global.",
+        "document_types": ["Todos"],
+        "color": "#0033A0",
+        "icon": "ic-link"
+    },
+    {
+        "tag": "sox",
+        "expert_source": "Derecho Financiero y Bursátil",
+        "description": "Documentos con impacto en control interno financiero.",
+        "logic": "Control SOX es 'SÍ'.",
+        "document_types": ["Varios"],
+        "color": "#D12D35",
+        "icon": "ic-shield"
+    },
+    {
+        "tag": "en_tramite",
+        "expert_source": "Derecho Administrativo",
+        "description": "Normativa en proceso de comentarios o discusión.",
+        "logic": "Tipo contiene 'Proyecto' o 'Agenda'.",
+        "document_types": ["Proyecto", "Agenda"],
+        "color": "#ED8B00",
+        "icon": "ic-clock"
+    },
+    {
+        "tag": "firmada",
+        "expert_source": "Derecho Procesal",
+        "description": "Norma vigente y sancionada.",
+        "logic": "Documento final no-proyecto.",
+        "document_types": ["Ley", "Decreto", "Resolución"],
+        "color": "#067014",
+        "icon": "ic-check"
+    },
+    {
+        "tag": "ley",
+        "expert_source": "Derecho Constitucional",
+        "description": "Norma máxima del Congreso.",
+        "logic": "Encabezado 'Ley [N] de [A]'.",
+        "document_types": ["Ley"],
+        "color": "#00A9E0",
+        "icon": "ic-shield"
+    },
+    {
+        "tag": "decreto",
+        "expert_source": "Derecho Administrativo",
+        "description": "Acto del Ejecutivo (Presidencia/Min).",
+        "logic": "Firma del Presidente o Ministro.",
+        "document_types": ["Decreto"],
+        "color": "#81B1FF",
+        "icon": "ic-file-text"
+    },
+    {
+        "tag": "resolución",
+        "expert_source": "Derecho Administrativo",
+        "description": "Acto de autoridad de menor jerarquía.",
+        "logic": "Emitida por Directores o Superintendentes.",
+        "document_types": ["Resolución"],
+        "color": "#FFCD00",
+        "icon": "ic-settings"
+    },
+    {
+        "tag": "circular_externa",
+        "expert_source": "Derecho de los Seguros",
+        "description": "Instrucción técnica obligatoria para vigilados.",
+        "logic": "Emitida por SFC o Supersalud.",
+        "document_types": ["Circular Externa"],
+        "color": "#00AEC7",
+        "icon": "ic-link"
+    },
+    {
+        "tag": "detectado",
+        "expert_source": "Derecho Administrativo",
+        "description": "Estado inicial de un hallazgo nuevo.",
+        "logic": "Status 'detectado' por defecto.",
+        "document_types": ["Todos"],
+        "color": "#A1A1A1",
+        "icon": "ic-clock"
+    },
+    {
+        "tag": "validado",
+        "expert_source": "Derecho Procesal",
+        "description": "Análisis revisado y aprobado.",
+        "logic": "Status 'validado' manualmente.",
+        "document_types": ["Todos"],
+        "color": "#27AE60",
+        "icon": "ic-check"
+    },
+    {
+        "tag": "consolidado",
+        "expert_source": "Derecho Societario",
+        "description": "Integrado formalmente en la matriz final.",
+        "logic": "Status 'consolidado'.",
+        "document_types": ["Todos"],
+        "color": "#26328C",
+        "icon": "ic-briefcase"
+    },
+    {
+        "tag": "rechazado",
+        "expert_source": "Derecho Procesal",
+        "description": "Documento descartado tras análisis.",
+        "logic": "Status 'rechazado'.",
+        "document_types": ["Todos"],
+        "color": "#BC204B",
+        "icon": "ic-trash"
+    },
+    {
+        "tag": "error_fuente",
+        "expert_source": "Derecho Administrativo",
+        "description": "Problemas técnicos en la descarga o acceso.",
+        "logic": "Status 'error_fuente'.",
+        "document_types": ["Todos"],
+        "color": "#FF8200",
+        "icon": "ic-alert"
+    },
+    {
+        "tag": "agenda_regulatoria",
+        "expert_source": "Derecho Administrativo",
+        "description": "Plan futuro de normas del regulador.",
+        "logic": "Tipo 'Agenda Regulatoria'.",
+        "document_types": ["Agenda"],
+        "color": "#F2994A",
+        "icon": "ic-calendar"
+    },
+    {
+        "tag": "auto",
+        "expert_source": "Derecho Procesal",
+        "description": "Decisión procesal de trámite o interlocutoria.",
+        "logic": "Tipo 'Auto'.",
+        "document_types": ["Auto"],
+        "color": "#9B51E0",
+        "icon": "ic-file-text"
+    },
+    {
+        "tag": "boletín",
+        "expert_source": "Derecho Administrativo",
+        "description": "Publicación informativa periódica.",
+        "logic": "Tipo 'Boletín'.",
+        "document_types": ["Boletín"],
+        "color": "#BB6BD9",
+        "icon": "ic-mail"
+    },
+    {
+        "tag": "conpes",
+        "expert_source": "Derecho Administrativo",
+        "description": "Documento de política económica y social.",
+        "logic": "Tipo 'CONPES'.",
+        "document_types": ["CONPES"],
+        "color": "#78BE20",
+        "icon": "ic-award"
+    },
+    {
+        "tag": "directiva",
+        "expert_source": "Derecho Administrativo",
+        "description": "Instrucción de jerarquía superior administrativa.",
+        "logic": "Tipo 'Directiva'.",
+        "document_types": ["Directiva"],
+        "color": "#2F80ED",
+        "icon": "ic-arrow-up"
+    }
+]

@@ -1,16 +1,73 @@
 {
   "collapse-filter": true,
   "search": "",
-  "showTags": false,
+  "showTags": true,
   "showAttachments": false,
   "hideUnresolved": false,
   "showOrphans": true,
-  "collapse-color-groups": true,
-  "colorGroups": [],
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "[riesgo:Crítico]",
+      "color": {
+        "a": 1,
+        "rgb": 16711680
+      }
+    },
+    {
+      "query": "[riesgo:Alto]",
+      "color": {
+        "a": 1,
+        "rgb": 16753920
+      }
+    },
+    {
+      "query": "[impacto_ti:SÍ]",
+      "color": {
+        "a": 1,
+        "rgb": 65535
+      }
+    },
+    {
+      "query": "[linea_negocio:Salud]",
+      "color": {
+        "a": 1,
+        "rgb": 13047173
+      }
+    },
+    {
+      "query": "tag:#publicado",
+      "color": {
+        "a": 1,
+        "rgb": 10066329
+      }
+    },
+    {
+      "query": "tag:#sox",
+      "color": {
+        "a": 1,
+        "rgb": 16726832
+      }
+    },
+    {
+      "query": "tag:#en_tramite",
+      "color": {
+        "a": 1,
+        "rgb": 16752394
+      }
+    },
+    {
+      "query": "path:wiki/temas",
+      "color": {
+        "a": 1,
+        "rgb": 11489758
+      }
+    }
+  ],
   "collapse-display": true,
-  "showArrow": false,
+  "showArrow": true,
   "textFadeMultiplier": 0,
-  "nodeSizeMultiplier": 1,
+  "nodeSizeMultiplier": 1.2,
   "lineSizeMultiplier": 1,
   "collapse-forces": true,
   "centerStrength": 0.518713248970312,

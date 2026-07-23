@@ -1,0 +1,12 @@
+---
+type: entity
+tags: [entidad]
+updated: 2026-06-17
+---
+
+
+
+
+
+## Descripción
+Información sobre Organización de las Naciones Unidas (ONU) - Secretaría General (António Guterres).

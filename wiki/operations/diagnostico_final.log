@@ -1,0 +1,313 @@
+[07:52:08] [START] [1] Senado de la República -> http://leyes.senado.gov.co/proyectos/index.php/proyectos-ley/cuatrenio-2018-2022/2020-2021
+[07:52:09] [1] Senado de la República: 0 documentos encontrados para descargar.
+[07:52:09] [1] FIN | 0 nuevos casos guardados.
+[07:52:09] [START] [2] Cámara de Representantes -> https://www.camara.gov.co/secretaria/proyectos-de-ley
+[07:52:09] [2] Cámara de Representantes: 2 documentos encontrados para descargar.
+[07:52:09] [2] FIN | 0 nuevos casos guardados.
+[07:52:09] [START] [3] Corte Constitucional -> https://www.corteconstitucional.gov.co/
+[07:52:10] [3] Corte Constitucional: 0 documentos encontrados para descargar.
+[07:52:10] [3] FIN | 0 nuevos casos guardados.
+[07:52:10] [START] [4] Procuraduría General de la Nación -> https://www.procuraduria.gov.co/procuraduria/Pages/Normatividad.aspx
+[07:52:12] [4] Procuraduría General de la Nación: 1 documentos encontrados para descargar.
+[07:52:12] [4] FIN | 0 nuevos casos guardados.
+[07:52:12] [START] [5] Defensoría del Pueblo -> https://www.defensoria.gov.co/web/guest/transparencia
+[07:52:13] [5] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Defensoría del Pueblo.
+[07:52:13] [5] Defensoría del Pueblo: 30 documentos encontrados para descargar.
+[07:52:13] [5] FIN | 0 nuevos casos guardados.
+[07:52:13] [START] [6] Contraloría General de la República -> https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+[07:52:28] [6] Contraloría General de la República: 6 documentos encontrados para descargar.
+[07:52:28] [6] FIN | 0 nuevos casos guardados.
+[07:52:28] [START] [7] Auditoría General de la Nación -> https://www.auditoria.gov.co/web/guest/auditoria/normatividad/circulares/-/document_library/pgO78BwckEE6/view/760318?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_pgO78BwckEE6_redirect=https%3A%2F%2Fwww.auditoria.gov.co%2Fweb%2Fguest%2Fauditoria%2Fnormatividad%2Fcirculares%2F-%2Fdocument_library%2FpgO78BwckEE6%2Fview%2F542553%3F_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_pgO78BwckEE6_redirect%3Dhttps%253A%252F%252Fwww.auditoria.gov.co%252Fweb%252Fguest%252Fauditoria%252Fnormatividad%252Fcirculares%253Fp_p_id%253Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_pgO78BwckEE6%2526p_p_lifecycle%253D0%2526p_p_state%253Dnormal%2526p_p_mode%253Dview
+[07:52:39] [7] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Auditoría General de la Nación.
+[07:52:39] [7] Auditoría General de la Nación: 30 documentos encontrados para descargar.
+[07:52:39] [7] FIN | 0 nuevos casos guardados.
+[07:52:39] [START] [8] Banco de la República -> https://www.banrep.gov.co/es/normatividad
+[07:53:21] [8] Banco de la República: 8 documentos encontrados para descargar.
+[07:53:21] [8] FIN | 0 nuevos casos guardados.
+[07:53:21] [START] [9] Presidencia de la República -> https://dapre.presidencia.gov.co/
+[07:53:21] [9] Presidencia de la República: 0 documentos encontrados para descargar.
+[07:53:21] [9] FIN | 0 nuevos casos guardados.
+[07:53:21] [START] [10] Ministerio de Hacienda y Crédito Público -> https://www.minhacienda.gov.co/decretos-2026
+[07:53:22] [10] Ministerio de Hacienda y Crédito Público: 0 documentos encontrados para descargar.
+[07:53:22] [10] FIN | 0 nuevos casos guardados.
+[07:53:22] [START] [11] Unidad de Regulación Financiera - URF -> http://www.urf.gov.co/webcenter/portal/urf/pages_urf
+[07:53:42] [11] ❌ FETCH FAIL en http://www.urf.gov.co/webcenter/portal/urf/pages_urf:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left
+[07:53:42] [11] Unidad de Regulación Financiera - URF: 0 documentos encontrados para descargar.
+[07:53:42] [11] FIN | 1 nuevos casos guardados.
+[07:53:42] [START] [12] Unidad de Gestión Pensional y Parafiscal - UGPP -> https://www.ugpp.gov.co/normas?body_value=&field_norm_list_view=9
+[07:53:55] [12] Unidad de Gestión Pensional y Parafiscal - UGPP: 3 documentos encontrados para descargar.
+[07:53:55] [12] FIN | 0 nuevos casos guardados.
+[07:53:55] [START] [13] Dirección de Impuestos y Aduanas Nacionales - DIAN -> https://www.dian.gov.co/normatividad/Paginas/normas.aspx
+[07:54:04] [13] Dirección de Impuestos y Aduanas Nacionales - DIAN: 5 documentos encontrados para descargar.
+[07:54:04] [13] FIN | 0 nuevos casos guardados.
+[07:54:04] [START] [14] Unidad de Inteligencia y Análisis Financiero - UIAF -> https://www.uiaf.gov.co/sala_prensa/publicaciones
+[07:54:05] [14] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Unidad de Inteligencia y Análisis Financiero - UIAF.
+[07:54:05] [14] Unidad de Inteligencia y Análisis Financiero - UIAF: 30 documentos encontrados para descargar.
+[07:54:05] [14] FIN | 0 nuevos casos guardados.
+[07:54:05] [START] [15] Superintendencia Financiera de Colombia -> https://www.superfinanciera.gov.co/publicaciones/20149/normativanormativa-generalcirculares-externas-cartas-circulares-y-resoluciones-desde-el-ano-20149/
+[07:55:04] [15] ⚠️ TIEMPO LÍMITE (60s) SUPERADO para Superintendencia Financiera de Colombia.
+[07:55:04] [15] Superintendencia Financiera de Colombia: 4 documentos encontrados para descargar.
+[07:55:04] [15] ⚠️ TIEMPO LÍMITE ALCANZADO antes de descargar https://www.cancilleria.gov.co/sites/default/files/Normograma/docs/pdf/decreto_2587_1999.pdf.
+[07:55:04] [15] FIN | 0 nuevos casos guardados.
+[07:55:04] [START] [16] Fondo de Garantías de Instituciones Financieras - FOGAFIN -> https://www.fogafin.gov.co/que-es-fogafin/normatividad-y-asuntos-juridicos
+[07:55:05] [16] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Fondo de Garantías de Instituciones Financieras - FOGAFIN.
+[07:55:05] [16] Fondo de Garantías de Instituciones Financieras - FOGAFIN: 30 documentos encontrados para descargar.
+[07:55:05] [16]   -> Descargando https://www.fogafin.gov.co/sites/default/files/2026-07/DUR%20MHCP%2022%20de%20JULIO%20de%202026.pdf
+[07:55:06] [16]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/8aacf63c19119a7e.pdf
+[07:55:09] [16]   -> Descargando https://www.fogafin.gov.co/sites/default/files/2026-07/Informe%20global%20de%20comentarios%20-%20Circular%20Externa%20Proyectos%20Espec%C3%ADficos%20de%20Regulaci%C3%B3n%202026.docx
+[07:55:10] [16]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/0ec5c4bdf032973e.docx
+[07:55:10] [16] FIN | 2 nuevos casos guardados.
+[07:55:10] [START] [17] Contaduría General de la Nación -> http://www.contaduria.gov.co/resoluciones-2020
+[07:55:30] [17] ❌ FETCH FAIL en http://www.contaduria.gov.co/resoluciones-2020:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left
+[07:55:30] [17] Contaduría General de la Nación: 0 documentos encontrados para descargar.
+[07:55:30] [17] FIN | 1 nuevos casos guardados.
+[07:55:30] [START] [18] Bolsa de Valores de Colombia - BVC -> https://www.bvc.com.co/informes-y-boletines?tab=boletines_normativos-bvc
+[07:55:30] [18] Bolsa de Valores de Colombia - BVC: 0 documentos encontrados para descargar.
+[07:55:30] [18] FIN | 0 nuevos casos guardados.
+[07:55:30] [START] [19] Autorregulador del mercado de valores - AMV -> https://www.amvcolombia.org.co/
+[07:55:32] [19] Autorregulador del mercado de valores - AMV: 2 documentos encontrados para descargar.
+[07:55:32] [19] FIN | 0 nuevos casos guardados.
+[07:55:32] [START] [20] Ministerio de Salud -> https://www2.minsalud.gov.co/Paginas/Norm_Decretos.aspx
+[07:55:32] [20] ❌ FETCH FAIL en https://www2.minsalud.gov.co/Paginas/Norm_Decretos.aspx:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left
+[07:55:32] [20] Ministerio de Salud: 0 documentos encontrados para descargar.
+[07:55:32] [20] FIN | 1 nuevos casos guardados.
+[07:55:32] [START] [21] Instituto Nacional de Salud - INS -> https://www.ins.gov.co/Paginas/Inicio.aspx
+[07:55:33] [21] Instituto Nacional de Salud - INS: 2 documentos encontrados para descargar.
+[07:55:33] [21] FIN | 0 nuevos casos guardados.
+[07:55:33] [START] [22] Instituto Nacional de Vigilancia de Medicamentos y Alimentos - INVIMA -> https://www.invima.gov.co/transparencia
+[07:55:37] [22] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Instituto Nacional de Vigilancia de Medicamentos y Alimentos - INVIMA.
+[07:55:37] [22] Instituto Nacional de Vigilancia de Medicamentos y Alimentos - INVIMA: 30 documentos encontrados para descargar.
+[07:55:37] [22] FIN | 0 nuevos casos guardados.
+[07:55:37] [START] [23] Superintendencia Nacional de Salud -> https://www.supersalud.gov.co/
+[07:55:43] [23] Superintendencia Nacional de Salud: 20 documentos encontrados para descargar.
+[07:55:43] [23] FIN | 0 nuevos casos guardados.
+[07:55:43] [START] [24] Administradora de Recursos de Seguridad Social en Salud - ADRES -> https://www.adres.gov.co/normativa/Paginas/default.aspx
+[07:55:49] [24] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Administradora de Recursos de Seguridad Social en Salud - ADRES.
+[07:55:49] [24] Administradora de Recursos de Seguridad Social en Salud - ADRES: 30 documentos encontrados para descargar.
+[07:55:49] [24] FIN | 0 nuevos casos guardados.
+[07:55:49] [START] [25] Ministerio del Trabajo -> https://www.mintrabajo.gov.co/web/guest/inicio
+[07:55:52] [25] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Ministerio del Trabajo.
+[07:55:52] [25] Ministerio del Trabajo: 30 documentos encontrados para descargar.
+[07:55:52] [25] FIN | 0 nuevos casos guardados.
+[07:55:52] [START] [26] Servicio Nacional de Aprendizaje - SENA -> https://www.sena.edu.co/es-co/transparencia/Paginas/normatividad.aspx
+[07:55:53] [26] Servicio Nacional de Aprendizaje - SENA: 0 documentos encontrados para descargar.
+[07:55:53] [26] FIN | 0 nuevos casos guardados.
+[07:55:53] [START] [27] Ministerio de Comercio, Industria y Turismo -> https://www.mincit.gov.co/normatividad/proyectos-de-normatividad
+[07:56:42] [27] ❌ FETCH FAIL en https://www.mincit.gov.co/normatividad/proyectos-de-normatividad/historico-proyectos-de-normatividad:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left
+[07:56:43] [27] Ministerio de Comercio, Industria y Turismo: 0 documentos encontrados para descargar.
+[07:56:43] [27] FIN | 0 nuevos casos guardados.
+[07:56:43] [START] [28] Superintendencia de Sociedades -> https://www.supersociedades.gov.co/es/web/nuestra-entidad/normativa
+[07:56:48] [28] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Superintendencia de Sociedades.
+[07:56:48] [28] Superintendencia de Sociedades: 30 documentos encontrados para descargar.
+[07:56:48] [28] FIN | 0 nuevos casos guardados.
+[07:56:48] [START] [29] Superintendencia de Industria y Comercio -> https://sedeelectronica.sic.gov.co/transparencia/normativa/Normativa-de-la-entidad
+[07:56:54] [29] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Superintendencia de Industria y Comercio.
+[07:56:54] [29] Superintendencia de Industria y Comercio: 30 documentos encontrados para descargar.
+[07:56:54] [29] FIN | 0 nuevos casos guardados.
+[07:56:54] [START] [30] Consejo Técnico de la Contaduría Pública - CTCP -> http://www.ctcp.gov.co/proyectos/contabilidad-e-informacion-financiera/documentos-discusion-publica
+[07:57:53] [30] ⚠️ TIEMPO LÍMITE (60s) SUPERADO para Consejo Técnico de la Contaduría Pública - CTCP.
+[07:57:53] [30] Consejo Técnico de la Contaduría Pública - CTCP: 2 documentos encontrados para descargar.
+[07:57:53] [30] ⚠️ TIEMPO LÍMITE ALCANZADO antes de descargar https://www.bdo.com.pa/getattachment/bbd832c5-fb8d-47f1-9cf6-bb9bff3ad4e2/NIIF-18-y-su-impacto-en-los-Estados-Financieros.pdf?lang=es-PA).
+[07:57:53] [30] FIN | 0 nuevos casos guardados.
+[07:57:53] [START] [31] Banco de Comercio Exterior - BANCOLDEX -> https://www.bancoldex.com/
+[07:57:55] [31] Banco de Comercio Exterior - BANCOLDEX: 9 documentos encontrados para descargar.
+[07:57:55] [31] FIN | 0 nuevos casos guardados.
+[07:57:55] [START] [32] Ministerio del Interior -> https://www.mininterior.gov.co/normatividad/
+[07:58:06] [32] Ministerio del Interior: 28 documentos encontrados para descargar.
+[07:58:06] [32]   -> Descargando https://www.mininterior.gov.co/wp-content/uploads/2026/07/resolucion-no.-1284-de-17-de-julio-de-2026.pdf
+[07:58:07] [32]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/b572cfe058af1e08.pdf
+[07:58:08] [32]   -> Descargando https://www.mininterior.gov.co/wp-content/uploads/2026/07/resolucion-no.-1281-de-17-de-julio-de-2026.pdf
+[07:58:09] [32]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/5e8e0b5d015cf714.pdf
+[07:58:10] [32]   -> Descargando https://www.mininterior.gov.co/wp-content/uploads/2026/07/resolucion-no.-1280-de-17-de-julio-de-2026.pdf
+[07:58:11] [32]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/ef5c525f96e69f0f.pdf
+[07:58:12] [32]   -> Descargando https://www.mininterior.gov.co/wp-content/uploads/2025/01/resolucion-procedencia-de-consulta-previa-st-0679-de-2020.pdf
+[07:58:14] [32]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/dcc16322a2226024.pdf
+[07:58:15] [32]   -> Descargando https://www.mininterior.gov.co/wp-content/uploads/2025/01/resolucion-procedencia-de-consulta-previa-st-0680-de-2020.pdf
+[07:58:16] [32]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/b059718b62525c06.pdf
+[07:58:18] [32]   -> Descargando https://www.mininterior.gov.co/wp-content/uploads/2025/01/resolucion-procedencia-de-consulta-previa-st-0681-de-2020.pdf
+[07:58:19] [32]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/8c7801e6f165b999.pdf
+[07:58:20] [32]   -> Descargando https://www.mininterior.gov.co/wp-content/uploads/2025/01/resolucion-procedencia-de-consulta-previa-st-0682-de-2020.pdf
+[07:58:21] [32]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/ad65637c08343955.pdf
+[07:58:23] [32]   -> Descargando https://www.mininterior.gov.co/wp-content/uploads/2025/01/resolucion-procedencia-de-consulta-previa-st-0683-de-2020.pdf
+[07:58:27] [32]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/dc80983f399d2438.pdf
+[07:58:29] [32]   -> Descargando https://www.mininterior.gov.co/wp-content/uploads/2025/01/resolucion-procedencia-de-consulta-previa-st-0684-de-2020.pdf
+[07:58:30] [32]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/acb121462709d110.pdf
+[07:58:32] [32] FIN | 9 nuevos casos guardados.
+[07:58:32] [START] [33] Unidad Nacional de Protección - UNP -> https://www.unp.gov.co/normativa/resoluciones-y-circulares/
+[07:58:33] [33] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Unidad Nacional de Protección - UNP.
+[07:58:33] [33] Unidad Nacional de Protección - UNP: 30 documentos encontrados para descargar.
+[07:58:33] [33] FIN | 0 nuevos casos guardados.
+[07:58:33] [START] [34] Ministerio de Vivienda, Ciudad y Territorio -> http://www.minvivienda.gov.co/
+[07:58:53] [34] ❌ FETCH FAIL en http://www.minvivienda.gov.co/:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left
+[07:58:53] [34] Ministerio de Vivienda, Ciudad y Territorio: 0 documentos encontrados para descargar.
+[07:58:53] [34] FIN | 1 nuevos casos guardados.
+[07:58:53] [START] [35] Comisión de Regulación de Agua Potable y Saneamiento Básico - CRA -> https://www.cra.gov.co/seccion/normatividad.html
+[07:58:58] [35] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Comisión de Regulación de Agua Potable y Saneamiento Básico - CRA.
+[07:58:58] [35] Comisión de Regulación de Agua Potable y Saneamiento Básico - CRA: 30 documentos encontrados para descargar.
+[07:58:58] [35] FIN | 0 nuevos casos guardados.
+[07:58:58] [START] [36] Ministerio de Transporte -> https://www.mintransporte.gov.co/
+[07:59:00] [36] Ministerio de Transporte: 0 documentos encontrados para descargar.
+[07:59:00] [36] FIN | 0 nuevos casos guardados.
+[07:59:00] [START] [37] Agencia Nacional de Seguridad Vial - ANSV -> https://ansv.gov.co/index.html
+[07:59:00] [37] Agencia Nacional de Seguridad Vial - ANSV: 0 documentos encontrados para descargar.
+[07:59:00] [37] FIN | 0 nuevos casos guardados.
+[07:59:00] [START] [38] Instituto Nacional de Vías - INVIAS -> https://www.invias.gov.co/
+[07:59:05] [38] Instituto Nacional de Vías - INVIAS: 0 documentos encontrados para descargar.
+[07:59:05] [38] FIN | 0 nuevos casos guardados.
+[07:59:05] [START] [39] Agencia Nacional de Infraestructura - ANI -> https://www.ani.gov.co/
+[07:59:07] [39] Agencia Nacional de Infraestructura - ANI: 15 documentos encontrados para descargar.
+[07:59:07] [39] FIN | 0 nuevos casos guardados.
+[07:59:07] [START] [40] UAE Aeronáutica Civil -> http://www.aerocivil.gov.co/normatividad
+[07:59:19] [40] UAE Aeronáutica Civil: 0 documentos encontrados para descargar.
+[07:59:19] [40] FIN | 0 nuevos casos guardados.
+[07:59:19] [START] [41] Superintendencia de Puertos y Transporte -> https://www.supertransporte.gov.co/
+[07:59:21] [41] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Superintendencia de Puertos y Transporte.
+[07:59:21] [41] Superintendencia de Puertos y Transporte: 30 documentos encontrados para descargar.
+[07:59:21] [41] FIN | 0 nuevos casos guardados.
+[07:59:21] [START] [42] Ministerio de Agricultura y desarrollo rural -> https://www.minagricultura.gov.co/paginas/default.aspx
+[07:59:24] [42] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Ministerio de Agricultura y desarrollo rural.
+[07:59:24] [42] Ministerio de Agricultura y desarrollo rural: 30 documentos encontrados para descargar.
+[07:59:24] [42] FIN | 0 nuevos casos guardados.
+[07:59:24] [START] [43] Instituto Colombia Agropecuario - ICA -> https://www.ica.gov.co/
+[07:59:32] [43] Instituto Colombia Agropecuario - ICA: 5 documentos encontrados para descargar.
+[07:59:32] [43] FIN | 0 nuevos casos guardados.
+[07:59:32] [START] [44] Agencia Nacional de Tierras - ANT -> http://www.agenciadetierras.gov.co/
+[07:59:32] [44] ❌ FETCH FAIL en http://www.agenciadetierras.gov.co/:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left
+[07:59:32] [44] Agencia Nacional de Tierras - ANT: 0 documentos encontrados para descargar.
+[07:59:32] [44] FIN | 1 nuevos casos guardados.
+[07:59:32] [START] [45] Fondo para el Financiamiento del Sector Agropecuario - FINAGRO -> https://www.finagro.com.co/
+[07:59:34] [45] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Fondo para el Financiamiento del Sector Agropecuario - FINAGRO.
+[07:59:34] [45] Fondo para el Financiamiento del Sector Agropecuario - FINAGRO: 30 documentos encontrados para descargar.
+[07:59:34] [45] FIN | 0 nuevos casos guardados.
+[07:59:34] [START] [46] Corporación Colombiana de Investigación Agropecuaria (Corpoica) -> https://www.agrosavia.co/
+[07:59:36] [46] Corporación Colombiana de Investigación Agropecuaria (Corpoica): 3 documentos encontrados para descargar.
+[07:59:36] [46] FIN | 0 nuevos casos guardados.
+[07:59:36] [START] [47] Ministerio de Ambiente y Desarrollo Sostenible -> https://www.minambiente.gov.co/
+[07:59:44] [47] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Ministerio de Ambiente y Desarrollo Sostenible.
+[07:59:44] [47] Ministerio de Ambiente y Desarrollo Sostenible: 30 documentos encontrados para descargar.
+[07:59:44] [47] FIN | 0 nuevos casos guardados.
+[07:59:44] [START] [48] Instituto de Hidrología, Meteorología y Estudios Ambientales (Ideam) -> http://www.ideam.gov.co/
+[08:00:04] [48] ❌ FETCH FAIL en http://www.ideam.gov.co/:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left
+[08:00:04] [48] Instituto de Hidrología, Meteorología y Estudios Ambientales (Ideam): 0 documentos encontrados para descargar.
+[08:00:04] [48] FIN | 1 nuevos casos guardados.
+[08:00:04] [START] [49] Agencia Nacional de Licencias Ambientales - ANLA -> http://www.anla.gov.co/
+[08:00:24] [49] ❌ FETCH FAIL en http://www.anla.gov.co/:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left
+[08:00:24] [49] Agencia Nacional de Licencias Ambientales - ANLA: 0 documentos encontrados para descargar.
+[08:00:24] [49] FIN | 1 nuevos casos guardados.
+[08:00:24] [START] [50] Ministerio de Relaciones Exteriores -> https://www.cancilleria.gov.co/
+[08:00:26] [50] Ministerio de Relaciones Exteriores: 3 documentos encontrados para descargar.
+[08:00:26] [50] FIN | 0 nuevos casos guardados.
+[08:00:26] [START] [51] UAE Migración Colombia -> https://www.migracioncolombia.gov.co/
+[08:00:27] [51] UAE Migración Colombia: 0 documentos encontrados para descargar.
+[08:00:27] [51] FIN | 0 nuevos casos guardados.
+[08:00:27] [START] [52] Ministerio de Justicia y del Derecho -> https://www.minjusticia.gov.co/
+[08:00:28] [52] Ministerio de Justicia y del Derecho: 2 documentos encontrados para descargar.
+[08:00:28] [52] FIN | 0 nuevos casos guardados.
+[08:00:28] [START] [53] Superintendencia de Notariado y Registro -> https://www.supernotariado.gov.co/resoluciones.html
+[08:00:30] [53] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Superintendencia de Notariado y Registro.
+[08:00:30] [53] Superintendencia de Notariado y Registro: 30 documentos encontrados para descargar.
+[08:00:30] [53] FIN | 0 nuevos casos guardados.
+[08:00:30] [START] [54] Ministerio de Minas y Energía -> https://www.minenergia.gov.co/
+[08:00:32] [54] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Ministerio de Minas y Energía.
+[08:00:32] [54] Ministerio de Minas y Energía: 30 documentos encontrados para descargar.
+[08:00:32] [54]   -> Descargando https://www.minenergia.gov.co/documents/16069/Agenda-Regulatoria-DEE-22072026.xlsx
+[08:00:32] [54]   -> Extrayendo /Users/cmotalvaro/Obsidian/Cumplimiento_Normativo/CumplimientoNormativo/raw/inbox/2a7f62563094393b.xlsx
+[08:00:32] [54] FIN | 1 nuevos casos guardados.
+[08:00:32] [START] [55] Agencia Nacional de Hidrocarburos (ANH) -> https://www.anh.gov.co/
+[08:00:34] [55] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Agencia Nacional de Hidrocarburos (ANH).
+[08:00:34] [55] Agencia Nacional de Hidrocarburos (ANH): 30 documentos encontrados para descargar.
+[08:00:34] [55] FIN | 0 nuevos casos guardados.
+[08:00:34] [START] [56] Agencia Nacional de Minería (ANM) -> https://www.anm.gov.co/
+[08:00:37] [56] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Agencia Nacional de Minería (ANM).
+[08:00:37] [56] Agencia Nacional de Minería (ANM): 30 documentos encontrados para descargar.
+[08:00:37] [56] FIN | 0 nuevos casos guardados.
+[08:00:37] [START] [57] Comisión de Regulación de Energía, Gas y Combustible (CREG) -> http://apolo.creg.gov.co/Publicac.nsf/Documentos-Resoluciones?OpenView&Start=1&Count=30&Expand=1
+[08:00:37] [57] ❌ FETCH FAIL en http://apolo.creg.gov.co/Publicac.nsf/Documentos-Resoluciones?OpenView&Start=1&Count=30&Expand=1:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left
+[08:00:37] [57] Comisión de Regulación de Energía, Gas y Combustible (CREG): 0 documentos encontrados para descargar.
+[08:00:37] [57] FIN | 1 nuevos casos guardados.
+[08:00:37] [START] [58] Servicio Geológico Colombiano -> https://www.sgc.gov.co/
+[08:00:38] [58] Servicio Geológico Colombiano: 0 documentos encontrados para descargar.
+[08:00:38] [58] FIN | 0 nuevos casos guardados.
+[08:00:38] [START] [59] Unidad de Planeación Minero Energética - UPME -> https://www1.upme.gov.co/Paginas/default.aspx
+[08:00:38] [59] ❌ FETCH FAIL en https://www1.upme.gov.co/Paginas/default.aspx:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left
+[08:00:38] [59] Unidad de Planeación Minero Energética - UPME: 0 documentos encontrados para descargar.
+[08:00:38] [59] FIN | 1 nuevos casos guardados.
+[08:00:38] [START] [60] Ministerio de Educación Nacional -> https://www.mineducacion.gov.co/portal/
+[08:00:38] [60] Ministerio de Educación Nacional: 1 documentos encontrados para descargar.
+[08:00:38] [60] FIN | 0 nuevos casos guardados.
+[08:00:38] [START] [61] Ministerio de Tecnologías de la Información y las Comunicaciones -> https://www.mintic.gov.co/portal/inicio/Normatividad/
+[08:00:39] [61] Ministerio de Tecnologías de la Información y las Comunicaciones: 0 documentos encontrados para descargar.
+[08:00:39] [61] FIN | 0 nuevos casos guardados.
+[08:00:39] [START] [62] Comisión de Regulación de Comunicaciones (CRC) -> https://www.crcom.gov.co/es/pagina/normatividad
+[08:00:42] [62] Comisión de Regulación de Comunicaciones (CRC): 15 documentos encontrados para descargar.
+[08:00:42] [62] FIN | 0 nuevos casos guardados.
+[08:00:42] [START] [63] Ministerio de Cultura -> https://www.mincultura.gov.co/Paginas/default.aspx
+[08:00:43] [63] Ministerio de Cultura: 1 documentos encontrados para descargar.
+[08:00:43] [63] FIN | 0 nuevos casos guardados.
+[08:00:43] [START] [64] Archivo General de la Nación -> https://www.archivogeneral.gov.co/
+[08:00:44] [64] Archivo General de la Nación: 4 documentos encontrados para descargar.
+[08:00:44] [64] FIN | 0 nuevos casos guardados.
+[08:00:44] [START] [65] Ministerio de Defensa Nacional -> https://www.mindefensa.gov.co/irj/portal/Mindefensa
+[08:00:45] [65] Ministerio de Defensa Nacional: 0 documentos encontrados para descargar.
+[08:00:45] [65] FIN | 0 nuevos casos guardados.
+[08:00:45] [START] [66] Superintendencia de Vigilancia y Seguridad Privada -> https://www.supervigilancia.gov.co/
+[08:00:46] [66] Superintendencia de Vigilancia y Seguridad Privada: 0 documentos encontrados para descargar.
+[08:00:46] [66] FIN | 0 nuevos casos guardados.
+[08:00:46] [START] [67] Departamento Nacional de Planeación -> https://www.dnp.gov.co/normativa/proyectos-de-normatividad
+[08:00:47] [67] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Departamento Nacional de Planeación.
+[08:00:47] [67] Departamento Nacional de Planeación: 30 documentos encontrados para descargar.
+[08:00:47] [67] FIN | 0 nuevos casos guardados.
+[08:00:47] [START] [68] Consejo Nacional de Política Economía y Social - CONPES -> https://www.dnp.gov.co/conpes/Paginas/buscador-conpes-aprobados.aspx
+[08:00:48] [68] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Consejo Nacional de Política Economía y Social - CONPES.
+[08:00:48] [68] Consejo Nacional de Política Economía y Social - CONPES: 30 documentos encontrados para descargar.
+[08:00:48] [68] FIN | 0 nuevos casos guardados.
+[08:00:48] [START] [69] Superintendencia de Servicios Públicos Domiciliarios -> https://www.superservicios.gov.co/resoluciones-y-circulares
+[08:00:49] [69] Superintendencia de Servicios Públicos Domiciliarios: 0 documentos encontrados para descargar.
+[08:00:49] [69] FIN | 0 nuevos casos guardados.
+[08:00:49] [START] [70] UAE Colombia Compra Eficiente -> https://www.colombiacompra.gov.co/colombia-compra/colombia-compra-eficiente
+[08:01:03] [70] UAE Colombia Compra Eficiente: 3 documentos encontrados para descargar.
+[08:01:03] [70] FIN | 0 nuevos casos guardados.
+[08:01:03] [START] [71] Departamento Administrativo de la Función Pública -> https://www.funcionpublica.gov.co/
+[08:01:16] [71] Departamento Administrativo de la Función Pública: 5 documentos encontrados para descargar.
+[08:01:16] [71] FIN | 0 nuevos casos guardados.
+[08:01:16] [START] [72] Departamento Nacional para la Prosperidad Social - DPS -> https://prosperidadsocial.gov.co/transparencia/normativa/
+[08:01:29] [72] Departamento Nacional para la Prosperidad Social - DPS: 1 documentos encontrados para descargar.
+[08:01:29] [72] FIN | 0 nuevos casos guardados.
+[08:01:29] [START] [73] Ministerio de Ciencia, Tecnología e Innovación - Minciencias -> https://minciencias.gov.co/quienes_somos/normatividad/marcolegal
+[08:01:39] [73] Ministerio de Ciencia, Tecnología e Innovación - Minciencias: 28 documentos encontrados para descargar.
+[08:01:39] [73] FIN | 0 nuevos casos guardados.
+[08:01:39] [START] [74] Departamento Administrativo Nacional de Estadística - DANE -> https://www.dane.gov.co/index.php/acerca-del-dane/informacion-institucional/normatividad/resoluciones/normatividad-resoluciones-2020
+[08:01:40] [74] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para Departamento Administrativo Nacional de Estadística - DANE.
+[08:01:40] [74] Departamento Administrativo Nacional de Estadística - DANE: 30 documentos encontrados para descargar.
+[08:01:40] [74] FIN | 0 nuevos casos guardados.
+[08:01:40] [START] [75] OIT -> http://www.ont.es/Paginas/Home.aspx
+[08:01:48] [75] ⚠️ LÍMITE DE DOCUMENTOS (30) ALCANZADO para OIT.
+[08:01:48] [75] OIT: 30 documentos encontrados para descargar.
+[08:01:48] [75] FIN | 0 nuevos casos guardados.
+[08:01:48] [START] [76] Organización Mundial de la Salud - OMS -> https://www.who.int/es
+[08:01:49] [76] Organización Mundial de la Salud - OMS: 0 documentos encontrados para descargar.
+[08:01:49] [76] FIN | 0 nuevos casos guardados.
+[08:01:49] [START] [77] ONU -> https://www.un.org/es/
+[08:01:49] [77] ONU: 3 documentos encontrados para descargar.
+[08:01:49] [77] FIN | 0 nuevos casos guardados.
+[08:01:49] [START] [78] Centro de Estudios Tributarios de Antioquia - CETA -> https://www.ceta.org.co/html/principal.asp
+[08:01:49] [78] Centro de Estudios Tributarios de Antioquia - CETA: 0 documentos encontrados para descargar.
+[08:01:49] [78] FIN | 0 nuevos casos guardados.
+[08:01:49] [START] [79] SUCOP -> https://www.sucop.gov.co/busqueda
+[08:01:50] [79] SUCOP: 0 documentos encontrados para descargar.
+[08:01:50] [79] FIN | 0 nuevos casos guardados.
+[08:01:50] [START] [80] Diario Oficial -> http://svrpubindc.imprenta.gov.co/diario/
+[08:01:51] [80] Diario Oficial: 0 documentos encontrados para descargar.
+[08:01:51] [80] FIN | 0 nuevos casos guardados.
+[08:01:51] --- REPORTE DE BARRIDO ---
+[08:01:51] 🎉 ¡Todos los reguladores se procesaron sin fallos críticos!

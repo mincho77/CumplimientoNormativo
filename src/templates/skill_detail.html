@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Skill | SURA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.0.2">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .detail-header {
+            background: radial-gradient(circle at 15% 10%, #7fc2ff33, transparent 30%), linear-gradient(135deg, #052574 0%, #0033A0 40%, #2D6DF6 100%);
+            color: white;
+            border-radius: 18px;
+            padding: 20px;
+            margin-top: 14px;
+            box-shadow: 0 14px 28px rgba(0, 51, 160, 0.25);
+        }
+        .detail-header h1 { margin: 0; font-size: 1.5rem; }
+        .detail-header p { margin: 6px 0 0 0; opacity: 0.9; }
+
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 16px;
+            margin-top: 14px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 980px) {
+            .detail-layout { grid-template-columns: 1fr; }
+        }
+
+        .block {
+            background: white;
+            border: 1px solid #dce4fa;
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(11, 32, 82, 0.08);
+            padding: 14px;
+        }
+        .block h2 {
+            margin: 0 0 10px 0;
+            color: #0033A0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .muted { color: #6a7695; font-size: .83rem; }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 780px) {
+            .field-grid { grid-template-columns: 1fr; }
+        }
+
+        .field label {
+            display: block;
+            font-size: .78rem;
+            color: #47557a;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .field input, .field textarea, .field select {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ccd7f3;
+            border-radius: 10px;
+            padding: 9px 10px;
+            font-size: .86rem;
+            font-family: inherit;
+            background: #fff;
+        }
+        .field textarea { min-height: 90px; resize: vertical; }
+
+        .list-editor { display: flex; flex-direction: column; gap: 8px; }
+        .item-row {
+            border: 1px solid #dbe4fb;
+            border-radius: 10px;
+            background: #f8faff;
+            padding: 8px;
+        }
+        .item-grid {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: 1.2fr 1fr 1fr auto;
+            align-items: center;
+        }
+        @media (max-width: 960px) {
+            .item-grid { grid-template-columns: 1fr; }
+        }
+
+        .mini-btn {
+            border: 1px solid #bdd2ff;
+            background: #edf3ff;
+            color: #0f3f9f;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 8px 10px;
+            font-size: .78rem;
+        }
+        .mini-btn.danger {
+            border-color: #ffc4c4;
+            color: #a22828;
+            background: #fff3f3;
+        }
+
+        .save-bar {
+            position: sticky;
+            bottom: 10px;
+            z-index: 4;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 14px;
+            padding: 10px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.9);
+            border: 1px solid #dfe7fb;
+            backdrop-filter: blur(4px);
+        }
+        .btn-save {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #067014, #18a043);
+            color: white;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .btn-secondary-lite {
+            border: 1px solid #c7d8ff;
+            border-radius: 999px;
+            padding: 10px 16px;
+            background: #f2f6ff;
+            color: #0d3d9a;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .asset-row {
+            display: grid;
+            grid-template-columns: 2fr .8fr 1fr auto auto;
+            gap: 8px;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid #dbe4fb;
+            border-radius: 10px;
+            background: #fff;
+        }
+        @media (max-width: 1080px) {
+            .asset-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container" style="padding-top:24px;">
+    <a href="/skills" class="btn-back"><span class="ic ic-arrow-left"></span> Volver a Biblioteca</a>
+
+    <section class="detail-header">
+        <h1 id="skill-title">Detalle del Skill</h1>
+        <p id="skill-desc">Cargando...</p>
+    </section>
+
+    <div class="detail-layout">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+            <section class="block">
+                <h2>Identidad y Organización</h2>
+                <div class="field-grid">
+                    <div class="field"><label>Nombre</label><input id="name" type="text"></div>
+                    <div class="field"><label>Estado</label>
+                        <select id="status"><option value="active">active</option><option value="draft">draft</option><option value="archived">archived</option></select>
+                    </div>
+                    <div class="field"><label>Categoría</label><input id="category" type="text" placeholder="general, ui, compliance..."></div>
+                    <div class="field"><label>Owner</label><input id="owner" type="text" placeholder="equipo o persona"></div>
+                    <div class="field"><label>Prioridad</label><input id="priority" type="number" min="1" max="5"></div>
+                    <div class="field"><label>Orden visual</label><input id="display_order" type="number" min="0"></div>
+                    <div class="field" style="grid-column:1/-1;"><label>Tags (coma separada)</label><input id="tags" type="text" placeholder="ui,sura,brand"></div>
+                    <div class="field" style="grid-column:1/-1;"><label>Descripción</label><textarea id="description"></textarea></div>
+                    <div class="field" style="grid-column:1/-1;"><label>Notas de reconfiguración</label><textarea id="notes" placeholder="Reglas internas, decisiones, observaciones..."></textarea></div>
+                </div>
+            </section>
+
+            <section class="block">
+                <h2>
+                    Entradas
+                    <button class="mini-btn" onclick="addEntry()">+ Agregar entrada</button>
+                </h2>
+                <div class="muted">Campos de entrada que espera el skill para ejecutarse.</div>
+                <div id="entries" class="list-editor" style="margin-top:10px;"></div>
+            </section>
+
+            <section class="block">
+                <h2>
+                    Salidas
+                    <button class="mini-btn" onclick="addOutput()">+ Agregar salida</button>
+                </h2>
+                <div class="muted">Define la estructura de respuesta y formatos resultantes.</div>
+                <div id="outputs" class="list-editor" style="margin-top:10px;"></div>
+            </section>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;">
+            <section class="block">
+                <h2>
+                    Assets del Skill
+                    <button class="mini-btn" onclick="addAsset()">+ Asset manual</button>
+                </h2>
+                <div class="muted" id="asset-summary">Detectando assets...</div>
+                <div id="assets" class="list-editor" style="margin-top:10px;"></div>
+            </section>
+
+            <section class="block">
+                <h2>Contexto SKILL.md</h2>
+                <div class="muted" id="skill-path">Ruta: --</div>
+                <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;">
+                    <div><strong style="color:#0033A0;font-size:.84rem;">Overview</strong><div id="overview" class="muted"></div></div>
+                    <div><strong style="color:#0033A0;font-size:.84rem;">When to use</strong><div id="when-use" class="muted"></div></div>
+                    <div><strong style="color:#0033A0;font-size:.84rem;">When not to use</strong><div id="when-not-use" class="muted"></div></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="save-bar">
+        <button class="btn-secondary-lite" onclick="window.location.href='/skills'">Volver</button>
+        <button class="btn-save" onclick="saveSkillConfig()">Guardar configuración</button>
+    </div>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const skillId = params.get('skill') || '';
+    let detail = null;
+
+    function esc(v) {
+        const s = (v === undefined || v === null) ? '' : String(v);
+        return s.replace(/[&<>'\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c] || c));
+    }
+
+    function entryTemplate(e, i) {
+        return `
+            <div class="item-row" data-index="${i}">
+                <div class="item-grid">
+                    <input type="text" class="e-name" placeholder="nombre" value="${esc(e.name)}">
+                    <input type="text" class="e-type" placeholder="tipo" value="${esc(e.type)}">
+                    <input type="text" class="e-desc" placeholder="descripcion" value="${esc(e.description)}">
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <label style="display:flex;align-items:center;gap:4px;font-size:.78rem;color:#57668d;"><input type="checkbox" class="e-required" ${e.required ? 'checked' : ''}> Req</label>
+                        <button class="mini-btn danger" onclick="removeEntry(${i})">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function outputTemplate(o, i) {
+        return `
+            <div class="item-row" data-index="${i}">
+                <div class="item-grid">
+                    <input type="text" class="o-name" placeholder="nombre" value="${esc(o.name)}">
+                    <input type="text" class="o-format" placeholder="formato" value="${esc(o.format)}">
+                    <input type="text" class="o-desc" placeholder="descripcion" value="${esc(o.description)}">
+                    <button class="mini-btn danger" onclick="removeOutput(${i})">Eliminar</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function assetTemplate(a, i) {
+        return `
+            <div class="asset-row" data-index="${i}">
+                <input type="text" class="a-path" placeholder="ruta asset" value="${esc(a.path)}">
+                <input type="text" class="a-type" placeholder="tipo" value="${esc(a.type)}">
+                <input type="text" class="a-role" placeholder="rol" value="${esc(a.role)}">
+                <label style="display:flex;align-items:center;gap:5px;font-size:.8rem;color:#57668d;"><input type="checkbox" class="a-enabled" ${a.enabled !== false ? 'checked' : ''}> Habilitado</label>
+                <button class="mini-btn danger" onclick="removeAsset(${i})">Eliminar</button>
+            </div>
+        `;
+    }
+
+    function renderEditors() {
+        const cfg = detail.skill.config;
+        $('#entries').html((cfg.entries || []).map(entryTemplate).join(''));
+        $('#outputs').html((cfg.outputs || []).map(outputTemplate).join(''));
+        $('#assets').html((cfg.assets || []).map(assetTemplate).join(''));
+    }
+
+    function addEntry() {
+        detail.skill.config.entries = detail.skill.config.entries || [];
+        detail.skill.config.entries.push({ name: '', type: 'text', required: false, description: '' });
+        renderEditors();
+    }
+
+    function removeEntry(i) {
+        detail.skill.config.entries.splice(i, 1);
+        renderEditors();
+    }
+
+    function addOutput() {
+        detail.skill.config.outputs = detail.skill.config.outputs || [];
+        detail.skill.config.outputs.push({ name: '', format: 'markdown', description: '' });
+        renderEditors();
+    }
+
+    function removeOutput(i) {
+        detail.skill.config.outputs.splice(i, 1);
+        renderEditors();
+    }
+
+    function addAsset() {
+        detail.skill.config.assets = detail.skill.config.assets || [];
+        detail.skill.config.assets.push({ path: '', type: 'other', role: '', enabled: true });
+        renderEditors();
+    }
+
+    function removeAsset(i) {
+        detail.skill.config.assets.splice(i, 1);
+        renderEditors();
+    }
+
+    function syncFormToConfig() {
+        const cfg = detail.skill.config;
+        cfg.status = $('#status').val();
+        cfg.category = $('#category').val().trim();
+        cfg.owner = $('#owner').val().trim();
+        cfg.priority = Number($('#priority').val() || 3);
+        cfg.notes = $('#notes').val();
+        cfg.tags = ($('#tags').val() || '').split(',').map(v => v.trim()).filter(Boolean);
+        cfg.organization = cfg.organization || {};
+        cfg.organization.display_order = Number($('#display_order').val() || 0);
+
+        cfg.entries = [];
+        $('#entries .item-row').each(function() {
+            cfg.entries.push({
+                name: $(this).find('.e-name').val().trim(),
+                type: $(this).find('.e-type').val().trim(),
+                description: $(this).find('.e-desc').val().trim(),
+                required: !!$(this).find('.e-required').is(':checked')
+            });
+        });
+
+        cfg.outputs = [];
+        $('#outputs .item-row').each(function() {
+            cfg.outputs.push({
+                name: $(this).find('.o-name').val().trim(),
+                format: $(this).find('.o-format').val().trim(),
+                description: $(this).find('.o-desc').val().trim()
+            });
+        });
+
+        cfg.assets = [];
+        $('#assets .asset-row').each(function() {
+            cfg.assets.push({
+                path: $(this).find('.a-path').val().trim(),
+                type: $(this).find('.a-type').val().trim(),
+                role: $(this).find('.a-role').val().trim(),
+                enabled: !!$(this).find('.a-enabled').is(':checked')
+            });
+        });
+    }
+
+    function fillTopSection() {
+        const skill = detail.skill;
+        const cfg = skill.config;
+        $('#skill-title').text(skill.name || skill.id);
+        $('#skill-desc').text(skill.description || 'Sin descripcion en frontmatter.');
+        $('#skill-path').text('Ruta: ' + (skill.path || 'N/A'));
+
+        $('#overview').text((skill.overview || '').slice(0, 850) || 'No disponible.');
+        $('#when-use').text((skill.when_to_use || '').slice(0, 650) || 'No disponible.');
+        $('#when-not-use').text((skill.when_not_to_use || '').slice(0, 650) || 'No disponible.');
+
+        $('#name').val(skill.name || '');
+        $('#description').val(skill.description || '');
+        $('#status').val(cfg.status || 'active');
+        $('#category').val(cfg.category || 'general');
+        $('#owner').val(cfg.owner || '');
+        $('#priority').val(cfg.priority || 3);
+        $('#display_order').val((cfg.organization && cfg.organization.display_order) || 0);
+        $('#tags').val((cfg.tags || []).join(', '));
+        $('#notes').val(cfg.notes || '');
+
+        const detected = skill.assets_detected || { total: 0, items: [] };
+        $('#asset-summary').text(`Detectados: ${detected.total} assets en SKILL. Editables abajo para organización y habilitación.`);
+
+        renderEditors();
+    }
+
+    function loadSkillDetail() {
+        if (!skillId) {
+            alert('Falta el parámetro skill en la URL.');
+            return;
+        }
+        $.get('/api/skills/detail', { skill: skillId }, function(resp) {
+            detail = resp;
+            fillTopSection();
+        }).fail(function(err) {
+            const msg = err.responseJSON && err.responseJSON.error ? err.responseJSON.error : 'No se pudo cargar el detalle del skill.';
+            alert(msg);
+        });
+    }
+
+    function saveSkillConfig() {
+        if (!detail || !detail.skill) return;
+        syncFormToConfig();
+
+        const skill = detail.skill;
+        skill.name = $('#name').val().trim() || skill.name;
+        skill.description = $('#description').val().trim();
+        $('#skill-title').text(skill.name);
+        $('#skill-desc').text(skill.description);
+
+        $.ajax({
+            url: '/api/skills/save',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                skill_id: skill.id,
+                config: skill.config
+            }),
+            success: function() {
+                alert('Configuracion guardada correctamente.');
+            },
+            error: function(err) {
+                const msg = err.responseJSON && err.responseJSON.error ? err.responseJSON.error : 'Error guardando configuracion.';
+                alert(msg);
+            }
+        });
+    }
+
+    loadSkillDetail();
+</script>
+</body>
+</html>

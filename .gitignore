@@ -10,3 +10,4 @@ build/
 .env.local
 data/state/
 wiki/operations/log.md
+raw/inbox/

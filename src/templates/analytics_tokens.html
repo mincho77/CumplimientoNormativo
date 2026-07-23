@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analítica de Tokens - Cumplimiento Normativo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        @media (min-width: 900px) {
+            .charts-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: var(--elevation-dp2);
+            min-height: 400px;
+            transition: background-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        .chart-card h3 {
+            margin-top: 0;
+            color: #0033A0;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        body.dark-theme .chart-card {
+            background: #001263;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        body.dark-theme .chart-card h3 {
+            color: #81B1FF;
+        }
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .kpi-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--elevation-dp2);
+            text-align: center;
+            border-left: 5px solid #0033A0;
+        }
+        body.dark-theme .kpi-card {
+            background: #001263;
+            border-left-color: #81B1FF;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-left: 5px solid #81B1FF;
+        }
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0033A0;
+            margin-top: 6px;
+        }
+        body.dark-theme .kpi-value {
+            color: #81B1FF;
+        }
+        .kpi-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        body.dark-theme .kpi-title {
+            color: #aaa;
+        }
+    </style>
+    <script src="{{ url_for('static', filename='sura-ui.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn-back"><span class="ic ic-arrow-left"></span> Volver al Dashboard</a>
+
+        <div class="app-bar">
+            <div class="app-bar__brand">
+                <img src="{{ url_for('static', filename='sura-logo.svg') }}" alt="SURA" class="brand-logo">
+                <div class="app-bar__divider"></div>
+                <div class="app-bar__titles">
+                    <h1><span class="ic ic-cpu"></span> Analítica de Tokens IA</h1>
+                    <p class="subtitle">Consumo acumulado, estadísticas temporales y de costo</p>
+                </div>
+            </div>
+            <div class="app-bar__actions">
+                <div class="theme-switch" id="theme-toggle" title="Cambiar tema" style="margin-right: 12px;">
+                    <div class="theme-switch__btn light active" id="theme-light">
+                        <span class="ic ic-sun"></span>
+                    </div>
+                    <div class="theme-switch__btn dark" id="theme-dark">
+                        <span class="ic ic-moon"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <div class="kpi-title">Total Tokens Procesados</div>
+                <div class="kpi-value" id="kpi-total-tokens">0</div>
+            </div>
+            <div class="kpi-card" style="border-left-color: #00AEC7;">
+                <div class="kpi-title">Costo Aprox (USD)</div>
+                <div class="kpi-value" id="kpi-total-cost">$0.00</div>
+            </div>
+            <div class="kpi-card" style="border-left-color: #2D6DF6;">
+                <div class="kpi-title">Normas Analizadas</div>
+                <div class="kpi-value" id="kpi-total-norms">0</div>
+            </div>
+            <div class="kpi-card" style="border-left-color: #067014;">
+                <div class="kpi-title">Promedio por Norma</div>
+                <div class="kpi-value" id="kpi-avg-tokens">0</div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card" style="grid-column: 1/-1;">
+                <h3><span class="ic ic-cpu"></span> Histórico de Consumo de Tokens (Vista Diaria)</h3>
+                <div style="height: 300px; position: relative;">
+                    <canvas id="chart-tokens-date"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3><span class="ic ic-cpu"></span> Consumo Semanal (Agrupado)</h3>
+                <div style="height: 300px; position: relative;">
+                    <canvas id="chart-tokens-week"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3><span class="ic ic-cpu"></span> Consumo Mensual (Agrupado)</h3>
+                <div style="height: 300px; position: relative;">
+                    <canvas id="chart-tokens-month"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card" style="grid-column: 1/-1;">
+                <h3><span class="ic ic-cpu"></span> Top 10 Entidades por Consumo de Tokens</h3>
+                <div style="height: 350px; position: relative;">
+                    <canvas id="chart-tokens-entity"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let charts = {};
+        let lastTokensData = null;
+
+        function renderTokenCharts(stats) {
+            if (!stats) return;
+            lastTokensData = stats;
+            const isDark = document.body.classList.contains('dark-theme');
+            const labelColor = isDark ? '#FFFFFF' : '#000000';
+            const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+
+            // 0. Update KPIs
+            document.getElementById('kpi-total-tokens').textContent = stats.total.toLocaleString();
+            
+            // Estimación de costo: GPT-4o o Azure OpenAI aprox $5.00 por millón de tokens combinados
+            const cost = (stats.total / 1000000) * 5.00;
+            document.getElementById('kpi-total-cost').textContent = '$' + cost.toFixed(2);
+            
+            const numNorms = Object.values(stats.by_entity).length; // Estimación simple por entidad distinta
+            document.getElementById('kpi-total-norms').textContent = numNorms;
+            
+            const avg = numNorms > 0 ? Math.round(stats.total / numNorms) : 0;
+            document.getElementById('kpi-avg-tokens').textContent = avg.toLocaleString();
+
+            // 1. Chart: Tokens por día
+            const dates = Object.keys(stats.by_date).sort();
+            const dateValues = dates.map(d => stats.by_date[d]);
+            createLineChart('chart-tokens-date', dates, dateValues, 'Tokens por día', isDark ? '#81B1FF' : '#0033A0', labelColor, gridColor);
+
+            // 2. Chart: Tokens por semana
+            const weeks = Object.keys(stats.by_week).sort();
+            const weekValues = weeks.map(w => stats.by_week[w]);
+            createBarChart('chart-tokens-week', weeks, weekValues, 'Tokens por semana', '#2D6DF6', labelColor, gridColor);
+
+            // 3. Chart: Tokens por mes
+            const months = Object.keys(stats.by_month).sort();
+            const monthValues = months.map(m => stats.by_month[m]);
+            createBarChart('chart-tokens-month', months, monthValues, 'Tokens por mes', '#067014', labelColor, gridColor);
+
+            // 4. Chart: Top 10 Entidades
+            const topEntities = Object.entries(stats.by_entity)
+                .filter(e => e[1] > 0)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            createHorizontalBarChart('chart-tokens-entity', topEntities.map(e => e[0]), topEntities.map(e => e[1]), 'Tokens por Entidad', '#00AEC7', labelColor, gridColor);
+        }
+
+        function createLineChart(id, labels, data, label, color, labelColor, gridColor) {
+            const ctx = document.getElementById(id).getContext('2d');
+            if (charts[id]) charts[id].destroy();
+            charts[id] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: color,
+                        backgroundColor: color + '20',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { ticks: { color: labelColor }, grid: { color: gridColor } },
+                        y: { ticks: { color: labelColor }, grid: { color: gridColor } }
+                    },
+                    plugins: { 
+                        legend: { labels: { color: labelColor } },
+                        datalabels: { display: false } 
+                    }
+                }
+            });
+        }
+
+        function createBarChart(id, labels, data, label, color, labelColor, gridColor) {
+            const ctx = document.getElementById(id).getContext('2d');
+            if (charts[id]) charts[id].destroy();
+            charts[id] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: color
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { ticks: { color: labelColor }, grid: { color: gridColor } },
+                        y: { ticks: { color: labelColor }, grid: { color: gridColor } }
+                    },
+                    plugins: { 
+                        legend: { labels: { color: labelColor } },
+                        datalabels: { display: false } 
+                    }
+                }
+            });
+        }
+
+        function createHorizontalBarChart(id, labels, data, label, color, labelColor, gridColor) {
+            const ctx = document.getElementById(id).getContext('2d');
+            if (charts[id]) charts[id].destroy();
+            charts[id] = new Chart(ctx, {
+                type: 'bar',
+                plugins: [ChartDataLabels],
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: color
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    layout: { padding: { right: 60 } },
+                    scales: {
+                        x: { ticks: { color: labelColor }, grid: { color: gridColor } },
+                        y: { ticks: { color: labelColor, font: { size: 10 } }, grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { labels: { color: labelColor } },
+                        datalabels: {
+                            color: labelColor,
+                            anchor: 'end',
+                            align: 'right',
+                            formatter: (val) => val.toLocaleString()
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadData() {
+            $.get('/api/tokens_stats', function(stats) {
+                renderTokenCharts(stats);
+            }).fail(function() {
+                console.error("Error cargando estadísticas de tokens");
+            });
+        }
+
+        $(document).ready(function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeLight = document.getElementById('theme-light');
+            const themeDark = document.getElementById('theme-dark');
+
+            function setTheme(theme) {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    themeDark.classList.add('active');
+                    themeLight.classList.remove('active');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    themeLight.classList.add('active');
+                    themeDark.classList.remove('active');
+                    localStorage.setItem('theme', 'light');
+                }
+                if (lastTokensData) renderTokenCharts(lastTokensData);
+            }
+
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) setTheme(savedTheme);
+            else if (window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
+            else setTheme('light');
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+                setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+
+            loadData();
+        });
+    </script>
+</body>
+</html>

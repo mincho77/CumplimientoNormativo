@@ -1,0 +1,92 @@
+---
+case_id: 3328f22bd7de7594
+tipo: Norma
+estado: detectado
+entidad: [[Organización Nacional de Trasplantes (Ministerio de Sanidad) – Circular 2/2022]]
+linea_negocio: [[Salud]]
+riesgo: [[Riesgo Bajo]]
+impacto_ti: NO
+ejecutado: NO
+plazo: Inmediato
+tema: [[Criopreservación SCU haploidéntica]]
+sox: NO
+created: 2026-06-01
+published: 2022-01-20
+tags: []
+---
+
+
+
+
+
+## Detalles del Hallazgo
+- **Entidad Emisora:** [[Organización Nacional de Trasplantes (Ministerio de Sanidad) – Circular 2/2022]]
+- **Tipo de Norma:** Norma
+- **Fecha de Expedición:** 2022-01-20
+- **Fecha de Detección:** 2026-06-01
+- **URL:** https://www.ont.es/wp-content/uploads/2023/06/Circular-ONT-2_2022_Recomendaciones-solicitud-criopreservacion-SCU-para-trasplante-haploidentico.pdf
+- **Control SOX:** NO
+
+## Análisis
+MINISTERIO
+Organización Nacional de Trasplantes
+DE SANIDAD
+CIRCULAR Nº 2/2022 – ORGANIZACIÓN NACIONAL DE TRASPLANTES
+OBJETO: Recomendaciones sobre la criopreservación de sangre de cordón umbilical para eventual
+trasplante haploidéntico.
+DESTINATARIOS: Coordinadores Autonómicos de Trasplante, Equipos de Trasplante de Progenitores
+Hematopoyéticos, Subcomisión de seguimiento del Plan Nacional de Sangre de Cordón Umbilical.
+FECHA: 20 de enero de 2022.
+El Plan Nacional de Sangre de Cordón Umbilical (PNSCU)1, aprobado por la Comisión de Trasplantes
+del Consejo Interterritorial del Sistema Nacional de Salud (CIT-SNS) el 31 de marzo de 2021, define en
+su apartado 2.4 la donación dirigida de sangre de cordón umbilical (SCU) como aquella destinada a
+un paciente determinado, que deberá ser un familiar de primer grado (padre, madre o hermano) del
+recién nacido y que padezca una enfermedad subsidiaria de trasplante alogénico de progenitores
+hematopoyéticos (TPH), según se detalla en el Anexo IV del PNSCU. El Plan establece que la selección
+de las unidades de SCU para TPH se ha de hacer en base a la celularidad recomendada (según el tipo
+de patología) y la compatibilidad HLA, siendo únicamente aceptables aquellas unidades con
+compatibilidad mínima 4/6. El PNSCU también indica el procedimiento para la tramitación de
+solicitudes de recogida y criopreservación de SCU dirigida.
+Desde hace unos meses hay una demanda creciente de solicitudes de criopreservación de unidades
+de SCU para eventual TPH haploidéntico. Si bien es cierto que el TPH haploidéntico ha
+experimentado en los últimos años un ascenso exponencial debido a los resultados asociados al uso
+de ciclofosfamida post TPH y la disponibilidad y bajo coste del donante haploidéntico como donante
+alternativo en pacientes que no disponen de donante ideal, estos datos no se pueden extrapolar al
+trasplante haploidéntico de SCU, cuya indicación continúa siendo excepcional, no existiendo en la
+actualidad protocolos clínicos avalados por el Grupo Español de Trasplante Hematopoyético (GETH).
+El almacenamiento de unidades de SCU para eventual TPH haploidéntico es costoso y poco eficiente
+para los bancos de SCU. Si el/la paciente eventualmente precisara un TPH haploidéntico, la fuente
+recomendada sería un familiar, adulto o niño.
+Por lo anterior y, consultado el Comité de Expertos de la Subcomisión de TPH dependiente de la
+Comisión de Trasplantes del CIT-SNS, así como el Registro Español de Donantes de Médula Ósea
+(REDMO) y la Red Nacional de Bancos de SCU:
+ No se recomienda la criopreservación de SCU para eventual trasplante haploidéntico debido a
+su carácter excepcional.
+ Sólo en casos excepcionales de inexistencia de donante no emparentado y de familiar
+haploidéntico se podría valorar la solicitud por parte del Comité de Expertos de la Subcomisión
+de TPH. Si la compatibilidad de la unidad de SCU a criopreservar con el potencial receptor fuera
+1
+http://www.ont.es/infesp/Documents/Plan%20Nacional%20de%20Sangre%20de%20Cord%C3%B3n%20Umbili
+cal%202020-2025.pdf
+C/ Sinesio Delgado 8 (Pabellón 3)
+ont@sanidad.gob.es 28029 Madrid
+Tel: 91 727 8699
+Fax: 91 314 2956
+MINISTERIO
+Organización Nacional de Trasplantes
+DE SANIDAD
+4/6 o superior (lo que implicaría la determinación de HLA previa a la criopreservación) se
+podría plantear la criopreservación como donación dirigida con la debida justificación del
+médico prescriptor y la aprobación previa del mencionado Comité de Expertos. Si no es el caso,
+se consideraría la criopreservación como donación de SCU para uso alogénico no emparentado
+o bien se dejaría a criterio del banco de SCU la criopreservación de estas unidades con cargo al
+centro solicitante.
+La presente recomendación ratifica la recomendación de 29 de abril de 2015, del Comité de Expertos
+de la Subcomisión de TPH, que acordó por unanimidad no incluir entre las indicaciones estándar de
+donación dirigida las donaciones de SCU para trasplante haploidéntico. Esta recomendación ha sido
+avalada por la Comisión de Trasplantes del CIT-SNS, en su reunión ordinaria celebrada el 14 de
+diciembre de 2021.
+C/ Sinesio Delgado 8 (Pabellón 3)
+ont@sanidad.gob.es 28029 Madrid
+Tel: 91 727 8699
+Fax: 91 314 2956

@@ -1,0 +1,11 @@
+---
+type: concept
+updated: 2026-06-17
+---
+
+
+
+
+
+## Normativa Relacionada
+Conceptos y normas sobre [[Reporte SPQR II 2024]].

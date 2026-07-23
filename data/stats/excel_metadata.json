@@ -1,0 +1,30 @@
+{
+    "responsables": [
+        "Tomás Merchán",
+        "Sara Valencia",
+        "María José Rodríguez",
+        "Fannerys Guardia"
+    ],
+    "ambitos": [
+        "Internacional",
+        "Nacional",
+        "Territorial"
+    ],
+    "regionales": [
+        "Antioquia",
+        "Centro",
+        "Eje Cafetero",
+        "Norte/Santanderes",
+        "Occidente"
+    ],
+    "reguladores_regionales": [
+        "Alcaldía",
+        "Área Metropolitana",
+        "Asamblea",
+        "CAR",
+        "Concejo",
+        "Contraloría Regional",
+        "DIAN Regional",
+        "Gobernación"
+    ]
+}

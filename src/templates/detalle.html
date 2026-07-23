@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expediente Normativo - {{ entidad }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .doc-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 6px solid #2D6DF6;
+            box-shadow: var(--elevation-dp2);
+        }
+        .edit-form {
+            display: none;
+            margin-top: 20px;
+            background: #F4F4F4;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #E7E7E7;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #3F3F41;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 8px;
+            border: 1px solid #E7E7E7;
+            border-radius: 8px;
+        }
+        .tag-sox {
+            background: #ED8B00;
+            color: #0D0D0D;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .btn-save {
+            background: #067014;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .btn-cancel {
+            background: #3F3F41;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 9999px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+    <script src="{{ url_for('static', filename='sura-ui.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn-back"><span class="ic ic-arrow-left"></span> Volver al Dashboard</a>
+
+        <div class="app-bar">
+            <div class="app-bar__brand">
+                <img src="{{ url_for('static', filename='sura-logo.svg') }}" alt="SURA" class="brand-logo">
+                <div class="app-bar__divider"></div>
+                <div class="app-bar__titles">
+                    <h1><span class="ic ic-folder"></span> Expediente: {{ entidad }}</h1>
+                    <p class="subtitle"><strong>Fuente:</strong> {{ fuente }}</p>
+                </div>
+            </div>
+            {% if documentos|length > 0 and documentos[0]['Control SOX'] == 'SÍ' %}
+            <div class="app-bar__actions">
+                <span class="chip"><span class="ic ic-shield"></span> AUDITORÍA SOX</span>
+            </div>
+            {% endif %}
+        </div>
+
+        {% set p_count = namespace(value=0) %}
+        {% set a_count = namespace(value=0) %}
+        {% for doc in documentos %}
+            {% if 'anexo' in doc.document_url.lower() or 'anexo' in doc.notes.lower() %}
+                {% set a_count.value = a_count.value + 1 %}
+            {% else %}
+                {% set p_count.value = p_count.value + 1 %}
+            {% endif %}
+        {% endfor %}
+
+        <h3 class="section-title"><span class="ic ic-file-text"></span> Documentos Principales ({{ p_count.value }})</h3>
+        <div id="sec-principales">
+            {% for doc in documentos %}
+                {% if 'anexo' not in doc.document_url.lower() and 'anexo' not in doc.notes.lower() %}
+                    <div class="doc-card" id="card-{{ doc.case_id }}">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div style="flex:1;">
+                                <strong style="font-size: 1.2em; display: block; margin-bottom: 5px;">
+                                    {{ doc['Título'] or doc['Norma'] or clean_filename(doc.document_url, entidad) }}
+                                </strong>
+                                <span class="badge" style="background: #0033A0; color: white;">{{ get_extension(doc.document_url) }}</span>
+                                {% if doc['Tipo de Norma'] %}<span class="badge" style="background:#F4F4F4; color:#0033A0;">{{ doc['Tipo de Norma'] }}</span>{% endif %}
+
+                                <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em;">
+                                    <div><strong>Incidencia SURA:</strong> {{ doc['Incidencia SURA'] }}</div>
+                                    <div><strong>Status:</strong> {{ doc['status'] }}</div>
+                                    <div><strong>Compañía:</strong> {{ doc['Compañía Impactada'] or '-' }}</div>
+                                    <div><strong>Analista:</strong> {{ doc['Persona que analizó'] or '-' }}</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <a href="{{ doc.document_url }}" target="_blank" class="btn-primary" style="margin:0; justify-content:center;"><span class="ic ic-external"></span> Ver PDF</a>
+                                {% if doc.wiki_analysis_file %}
+                                <a href="/mapa-norma?wiki_file={{ doc.wiki_analysis_file }}" target="_blank" class="btn-secondary" style="margin:0; justify-content:center; background:#7B2D8B15; color:#7B2D8B; border:1px solid #7B2D8B30;"><span class="ic ic-brain"></span> Ver Mapa Mental</a>
+                                {% endif %}
+                                <button onclick="showEditForm('{{ doc.case_id }}')" class="btn-secondary" style="margin:0; justify-content:center;"><span class="ic ic-edit"></span> Editar Análisis</button>
+                            </div>
+                        </div>
+
+                        <!-- Formulario de Edición -->
+                        <div id="form-{{ doc.case_id }}" class="edit-form">
+                            <h4>Editar Análisis Regulatorio</h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Título / Nombre</label>
+                                    <input type="text" id="edit-titulo-{{ doc.case_id }}" value="{{ doc['Título'] }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tipo de Norma</label>
+                                    <select id="edit-tipo-{{ doc.case_id }}">
+                                        <option value="{{ doc['Tipo de Norma'] }}">{{ doc['Tipo de Norma'] or 'Seleccione...' }}</option>
+                                        <option value="Decreto">Decreto</option>
+                                        <option value="Ley">Ley</option>
+                                        <option value="Circular">Circular</option>
+                                        <option value="Resolución">Resolución</option>
+                                        <option value="Concepto">Concepto</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Incidencia SURA</label>
+                                    <select id="edit-incidencia-{{ doc.case_id }}">
+                                        <option value="SÍ" {% if doc['Incidencia SURA'] == 'SÍ' %}selected{% endif %}>SÍ</option>
+                                        <option value="NO" {% if doc['Incidencia SURA'] == 'NO' %}selected{% endif %}>NO</option>
+                                        <option value="parcial" {% if doc['Incidencia SURA'] == 'parcial' %}selected{% endif %}>PARCIAL</option>
+                                        <option value="pendiente" {% if doc['Incidencia SURA'] == 'pendiente' %}selected{% endif %}>PENDIENTE</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status Sistema</label>
+                                    <select id="edit-status-{{ doc.case_id }}">
+                                        <option value="detectado" {% if doc['status'] == 'detectado' %}selected{% endif %}>Detectado</option>
+                                        <option value="en_validacion" {% if doc['status'] == 'en_validacion' %}selected{% endif %}>En Validación</option>
+                                        <option value="validado" {% if doc['status'] == 'validado' %}selected{% endif %}>Validado</option>
+                                        <option value="consolidado" {% if doc['status'] == 'consolidado' %}selected{% endif %}>Consolidado</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Compañía Impactada</label>
+                                    <input type="text" id="edit-compania-{{ doc.case_id }}" value="{{ doc['Compañía Impactada'] }}" placeholder="Ej: Vida, EPS, ARL">
+                                </div>
+                                <div class="form-group">
+                                    <label>Persona que analizó</label>
+                                    <input type="text" id="edit-persona-{{ doc.case_id }}" value="{{ doc['Persona que analizó'] }}">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top:15px;">
+                                <label>Obligaciones / Notas</label>
+                                <textarea id="edit-obligaciones-{{ doc.case_id }}" rows="3">{{ doc['Obligaciones'] or doc['notes'] }}</textarea>
+                            </div>
+                            <button onclick="saveCase('{{ doc.case_id }}')" class="btn-save">Guardar Cambios</button>
+                            <button onclick="hideEditForm('{{ doc.case_id }}')" class="btn-cancel">Cancelar</button>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <h3 class="section-title" style="margin-top:40px;"><span class="ic ic-paperclip"></span> Anexos ({{ a_count.value }})</h3>
+        {% for doc in documentos %}
+            {% if 'anexo' in doc.document_url.lower() or 'anexo' in doc.notes.lower() %}
+                <div class="doc-card" style="border-left-color: #3F3F41; padding: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>{{ clean_filename(doc.document_url, entidad) }}</strong>
+                            <span class="badge" style="background:#3F3F41; color:white; font-size:0.7em;">{{ get_extension(doc.document_url) }}</span>
+                        </div>
+                        <a href="{{ doc.document_url }}" target="_blank" class="btn-small"><span class="ic ic-download"></span> Descargar</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <script>
+        function showEditForm(id) {
+            $(`#form-${id}`).slideDown();
+        }
+        function hideEditForm(id) {
+            $(`#form-${id}`).slideUp();
+        }
+        function saveCase(id) {
+            const data = {
+                case_id: id,
+                'Título': $(`#edit-titulo-${id}`).val(),
+                'Tipo de Norma': $(`#edit-tipo-${id}`).val(),
+                'Incidencia SURA': $(`#edit-incidencia-${id}`).val(),
+                'status': $(`#edit-status-${id}`).val(),
+                'Compañía Impactada': $(`#edit-compania-${id}`).val(),
+                'Persona que analizó': $(`#edit-persona-${id}`).val(),
+                'Obligaciones': $(`#edit-obligaciones-${id}`).val(),
+                'notes': $(`#edit-obligaciones-${id}`).val()
+            };
+
+            $.ajax({
+                url: '/api/update_case',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    showToast('Cambios guardados con éxito. Refrescando...', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                },
+                error: function(err) {
+                    showToast('Error al guardar los cambios.', 'error');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

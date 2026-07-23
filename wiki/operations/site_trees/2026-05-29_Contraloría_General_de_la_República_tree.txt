@@ -1,0 +1,274 @@
+ARQUITECTURA DE RASTREO - Contraloría General de la República
+Fecha: 2026-05-29 09:50:46-0500
+==================================================
+
+📂 Origen: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 Origen: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 Origen: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 Origen: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 Origen: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/documents/d/guest/banner-web-peque-remates-2026-cgr-jpg-
+   └── 🔗 NAV: https://www.contraloria.gov.co/documents/d/guest/banner_palacio_rudas_2026
+   └── 🔗 NAV: https://www.contraloria.gov.co/documents/d/guest/banner_web_congreso-de-paz-2026-jpg-1-
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+
+📂 Origen: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/participa/normas-participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas-participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/participa/normas-participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+
+📂 Origen: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 Origen: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 Origen: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 Origen: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 Origen: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 Origen: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 Origen: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 Origen: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/resultados/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/resultados/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/resultados/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+
+📂 Origen: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/contraloria/talento-humano/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/contraloria/talento-humano/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1010548?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1010754?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_navigation=home&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_curEntry=1&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByCol=modifiedDate&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByType=desc&amp;p_r_p_resetCur=false&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_deltaEntry=20
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1010754?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_navigation=home&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_curEntry=1&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByCol=modifiedDate&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByType=desc&amp;p_r_p_resetCur=false&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_deltaEntry=4
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1010754?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_navigation=home&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_curEntry=1&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByCol=modifiedDate&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByType=desc&amp;p_r_p_resetCur=false&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_deltaEntry=40
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1010754?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_navigation=home&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_curEntry=1&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByCol=modifiedDate&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByType=desc&amp;p_r_p_resetCur=false&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_deltaEntry=60
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1010754?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_navigation=home&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_curEntry=1&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByCol=modifiedDate&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByType=desc&amp;p_r_p_resetCur=false&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_deltaEntry=8
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1010754?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_navigation=home&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByCol=modifiedDate&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_orderByType=desc&amp;p_r_p_resetCur=false&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_deltaEntry=20&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_curEntry=1
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1011491?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1015914?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1017777?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1025153?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/1043603?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/11461056?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/2378794?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/4331627?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/5632642?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/590272?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento/-/document_library/qpai/view/7976553?_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_redirect=https%3A%2F%2Fwww.contraloria.gov.co%2Fes%2Fcontraloria%2Ftalento-humano%2Fresoluciones-de-nombramiento%3Fp_p_id%3Dcom_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento?p_p_id=com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai&amp;p_p_lifecycle=0&amp;p_p_state=normal&amp;p_p_mode=view
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento?p_p_id=com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai&amp;p_p_lifecycle=0&amp;p_p_state=normal&amp;p_p_mode=view&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_mvcRenderCommandName=%2Fdocument_library%2Fedit_file_entry
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento?p_p_id=com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai&amp;p_p_lifecycle=0&amp;p_p_state=normal&amp;p_p_mode=view&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_mvcRenderCommandName=%2Fdocument_library%2Fsearch&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_folderId=0&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_navigation=home&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_keywords=&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_repositoryId=20125&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_searchFolderId=1010754&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_searchRepositoryId=20125&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_showSearchInfo=true
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/contraloria/talento-humano/resoluciones-de-nombramiento?p_p_id=com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai&amp;p_p_lifecycle=0&amp;p_p_state=normal&amp;p_p_mode=view&amp;_com_liferay_document_library_web_portlet_DLPortlet_INSTANCE_qpai_mvcRenderCommandName=%2Fdocument_library%2Fview
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+
+📂 Origen: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/es/participa/normas_participa
+   └── 🔗 NAV: https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 NAV: https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 NAV: https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+

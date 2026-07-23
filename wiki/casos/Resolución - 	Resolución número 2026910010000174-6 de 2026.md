@@ -1,0 +1,34 @@
+---
+case_id: b35ed256d2a5cb9e
+tipo: Resolución
+estado: rechazado
+entidad: [[SuperSalud]]
+linea_negocio: [[Transversal]]
+riesgo: [[Riesgo ]]
+impacto_ti: NO
+ejecutado: SÍ
+plazo: No especificado
+tema: [[OrganismosControl]]
+sox: SÍ
+created: 2026-05-29
+published: 2026-01-15
+tags: [rechazado, sox, publicado, firmada]
+---
+
+
+
+
+
+
+
+## Detalles del Hallazgo
+- **Entidad Emisora:** [[SuperSalud]]
+- **Tipo de Norma:** Resolución
+- **Fecha de Expedición:** 2026-01-15
+- **Fecha de Detección:** 2026-05-29
+- **URL:** 
+- **Incidencia SURA:** NO
+- **Control SOX:** SÍ
+
+## Análisis
+Pendiente de análisis detallado.

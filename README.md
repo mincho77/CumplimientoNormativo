@@ -34,9 +34,14 @@ pip install -r requirements.txt
 El flujo está dividido en dos partes:
 
 **A) Monitor (Ingesta de datos):**
-Ejecuta esto para buscar nuevos documentos en las fuentes oficiales o generar datos de prueba.
+Ejecuta esto para buscar nuevos documentos en las fuentes oficiales.
 ```bash
 ./run_monitor.sh
+```
+
+Para ejecutar un barrido controlado con otra lista de fuentes:
+```bash
+./run_monitor.sh "ruta/a/fuentes.csv"
 ```
 
 **B) Dashboard & Visuals (Servidor):**
@@ -152,10 +157,12 @@ Contadores por semáforo.
 
 ### Ejecutar monitor (fuentes reales)
 ```bash
-python3 scripts/monitor_fuentes.py "data/Fuentes Normativas - limpio utf8 v2.csv"
+./run_monitor.sh
 ```
 
-Genera: `data/casos_detectados.csv` con campos:
+También puedes invocar directamente `scripts/monitor_fuentes.py [ruta-a-fuentes.csv]`.
+
+El monitor agrega casos a `data/casos_detectados.csv` con campos:
 - `case_id`: hash único
 - `link_status`: ok | timeout | http_404 | http_403 | conexion_error
 - `link_error`: mensaje de error
@@ -216,9 +223,11 @@ Werkzeug==3.0.1
 ### `start.sh`
 Script completo que:
 1. Limpia puerto 5001
-2. Elige: Monitor real / Mock / Solo servidor
+2. Elige: Monitor real / Solo servidor
 3. Genera semáforo
 4. Levanta Flask
+
+El modo mock fue retirado el `2026-05-31` porque podía sobrescribir el CSV operativo.
 
 ---
 
@@ -242,6 +251,13 @@ Script completo que:
 ---
 
 ## 🕒 Log de Sesiones
+
+### [2026-05-31] Blindaje del monitor
+**Cambios:**
+- **Recuperación de datos:** Se restauró el CSV operativo desde el respaldo preservando evidencia del archivo contaminado.
+- **Lanzadores estrictos:** `run_monitor.sh`, `run_server.sh` y `start.sh` ahora trabajan desde la raíz del proyecto y propagan errores.
+- **Sin mocks destructivos:** Se retiró el modo de prueba que sobrescribía `data/casos_detectados.csv`.
+- **Monitor robusto:** Se añadió validación de esquema, límites efectivos, descargas parciales seguras y timeout del centinela PDF.
 
 ### [2026-05-27] Refactorización y Visualización en Obsidian
 **Cambios:**

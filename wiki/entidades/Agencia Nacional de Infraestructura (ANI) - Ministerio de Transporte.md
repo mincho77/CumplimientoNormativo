@@ -1,0 +1,22 @@
+---
+type: entity
+tags: [entidad]
+updated: 2026-06-17
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Descripción
+Información sobre Agencia Nacional de Infraestructura (ANI) - Ministerio de Transporte.

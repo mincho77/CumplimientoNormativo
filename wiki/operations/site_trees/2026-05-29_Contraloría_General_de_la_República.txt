@@ -1,0 +1,49 @@
+ÁRBOL DE NAVEGACIÓN - Contraloría General de la República
+
+📂 https://www.contraloria.gov.co/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+   └── 🔗 https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+   └── 🔗 https://www.contraloria.gov.co/web/guest/publicaciones
+   └── 🔗 https://www.contraloria.gov.co/es/participa/normas_participa
+
+📂 https://www.contraloria.gov.co/zh/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/sv/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/ja/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/nl/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/hu/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/ar/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/pt/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/de/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/ca/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/fi/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/fr/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/en/web/relatoria/normatividad-y-relatoria
+
+📂 https://www.contraloria.gov.co/web/guest/resoluciones-de-nombramiento
+
+📂 https://www.contraloria.gov.co/web/guest/publicaciones
+
+📂 https://www.contraloria.gov.co/es/participa/normas_participa
+

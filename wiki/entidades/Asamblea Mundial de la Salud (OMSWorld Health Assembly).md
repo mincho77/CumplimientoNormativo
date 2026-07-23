@@ -1,0 +1,33 @@
+---
+type: entity
+tags: [entidad]
+updated: 2026-06-03
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Descripción
+Información sobre Asamblea Mundial de la Salud (OMS/World Health Assembly).
